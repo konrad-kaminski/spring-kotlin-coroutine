@@ -1,0 +1,82 @@
+group "org.springframework.kotlin"
+version "1.0-SNAPSHOT"
+
+buildscript {
+    ext.kotlin_version = "1.1.1"
+    ext.kotlin_coroutines_version = "0.14.1"
+    ext.spring_version = "4.3.8.RELEASE"
+    ext.spring_boot_version = "1.4.5.RELEASE"
+
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven {
+            url "http://dl.bintray.com/kotlin/kotlin-eap-1.1"
+        }
+    }
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "kotlin"
+
+    compileJava {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+
+    [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven {
+            url "http://dl.bintray.com/kotlin/kotlin-eap-1.1"
+        }
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    }
+
+    kotlin {
+        experimental {
+            coroutines "enable"
+        }
+    }
+}
+
+project(":spring-kotlin-coroutine") {
+    dependencies {
+        compile "org.springframework:spring-context-support:$spring_version"
+        compile "org.springframework:spring-webmvc:$spring_version"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlin_coroutines_version"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlin_coroutines_version"
+        compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    }
+}
+
+project(":spring-kotlin-coroutine-demo") {
+    apply plugin: "org.springframework.boot"
+
+    dependencies {
+        compile project(":spring-kotlin-coroutine")
+
+        compile "net.sf.ehcache:ehcache:2.10.3"
+        compile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
+        compile "org.springframework.boot:spring-boot-starter:$spring_boot_version"
+        compile "org.springframework.boot:spring-boot-starter-web:$spring_boot_version"
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "3.4.1"
+    distributionType = "ALL"
+}
+
