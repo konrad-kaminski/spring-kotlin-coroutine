@@ -12,7 +12,8 @@ This project contains two modules:
 
 ## Supported features
 
-Most of the supported features require adding an `@EnableCoroutine` annotation to your Spring `@Configuration` class.
+Most of the supported features require adding an `@EnableCoroutine` annotation to your Spring 
+[`@Configuration`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/Configuration.html) class.
 
 ### @EnableCoroutine
 
@@ -27,9 +28,9 @@ open class MyAppConfiguration {
 }
 ```
 
-The attributes of `@EnableCoroutine` follow the same semantics as e.g. `@EnableCaching`. 
+The attributes of `@EnableCoroutine` follow the same semantics as e.g. [`@EnableCaching`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/cache/annotation/EnableCaching.html). 
 
-**NOTE** Currently only `AdviceMode.PROXY` mode is supported.
+**NOTE** Currently only [`AdviceMode.PROXY`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/AdviceMode.html#PROXY) mode is supported.
 
 ### Web methods
 
@@ -49,15 +50,15 @@ open class MyController {
 
 ### @Coroutine
 Spring beans and its methods can be annotated with `@Coroutine`. Using this annotation you can specify
-the _coroutine context_ via the `context` attribute and the _coroutine name_ via the `name` attribute. 
-The `context` specifies a name of a bean from which a `CoroutineContext` can be created. Currently the following
+the _coroutine context_ via the `context` attribute and the [_coroutine name_](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-coroutine-name/index.html) via the `name` attribute. 
+The `context` specifies a name of a bean from which a [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) can be created. Currently the following
 contexts/bean types are supported:
 
-1. `CoroutineContext` type beans - used directly
-2. `COMMON_POOL` - a constant specifying the `CommonPool` context
-3. `UNCONFINED` - a constant specifying the `Unconfined` context
-4. `Executor` type beans - converted to `CoroutineContext` with `asCoroutineDispatcher`
-5. Rx2 `Scheduler` type beans - converted to `CoroutineContext` with `asCoroutineDispatcher`
+1. [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) type beans - used directly
+2. `COMMON_POOL` - a constant specifying the [`CommonPool`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-common-pool/index.html) context
+3. `UNCONFINED` - a constant specifying the [`Unconfined`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-unconfined/index.html) context
+4. [`Executor`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executor.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/java.util.concurrent.-executor/as-coroutine-dispatcher.html)
+5. Rx2 [`Scheduler`](http://reactivex.io/RxJava/javadoc/io/reactivex/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-rx2/kotlinx.coroutines.experimental.rx2/io.reactivex.-scheduler/as-coroutine-dispatcher.html)
    
 You can also support your own types of beans or context names by providing Spring beans of type `CoroutineContextResolver`:
    
@@ -67,7 +68,7 @@ interface CoroutineContextResolver {
 }
 ```   
 
-Using `@Coroutine` it is quite easy to achieve the same effect as with `@Async`, although the code will look much simpler:
+Using `@Coroutine` it is quite easy to achieve the same effect as with [`@Async`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/annotation/Async.html), although the code will look much simpler:
 
 ```kotlin
 @RestController
@@ -94,9 +95,9 @@ open class MyRepository {
 
 ### Application events
 
-Spring allows you to decouple senders and receivers of application events with the usage of `ApplicationEventPublisher` and
-`@EventListener` methods. They cannot, however, be coroutines. `spring-kotlin-coroutine` allows you to send
-events in a way that allows the suspension of event processing. You can also have an `@EventListener` method which is a
+Spring allows you to decouple senders and receivers of application events with the usage of [`ApplicationEventPublisher`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html) and
+[`@EventListener`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/event/EventListener.html) methods. They cannot, however, be coroutines. `spring-kotlin-coroutine` allows you to send
+events in a way that allows the suspension of event processing. You can also have an [`@EventListener`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/event/EventListener.html) method which is a
 coroutine.
 
 For sending a component with the following interface can be used:
@@ -118,17 +119,17 @@ interface CoroutineApplicationEventPublisherAware : Aware {
 }
 ```
 
-The events sent by either `CoroutineApplicationEventPublisher` or `ApplicationEventPublisher` can be received 
-by any method annotated with `@EventListener` (a coroutine or a regular one). The result of coroutine listeners will
+The events sent by either `CoroutineApplicationEventPublisher` or [`ApplicationEventPublisher`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html) can be received 
+by any method annotated with [`@EventListener`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/event/EventListener.html) (a coroutine or a regular one). The result of coroutine listeners will
 be handled in the same way as for regular listeners:
-* if it is a `Unit` nothing will happen
+* if it is a [`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/) nothing will happen
 * if it returns a single value it will be treated as a newly published event
 * if it returns an array or a collection of values it will be treated as a collection of newly published events
 
 ### @Cacheable support
 
 Due to an additional callback parameter and a special return value semantics coroutine return values cannot be cached using
-default Spring caching feature. However with `spring-kotlin-coroutine` it is possible to use a `@Cacheable` annotation 
+default Spring caching feature. However with `spring-kotlin-coroutine` it is possible to use a [`@Cacheable`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/cache/annotation/Cacheable.html) annotation 
 on a coroutine, e.g.:
 
 ```kotlin
@@ -149,8 +150,8 @@ class MyComponent {
 
 ### CoroutineRestOperations
 
-Spring provides blocking `RestOperations` to be used as a `REST` client. `spring-kotlin-coroutine` provides 
-`CoroutineRestOperations` which have the same methods as `RestOperations`, but as coroutines:
+Spring provides blocking [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) to be used as a `REST` client. `spring-kotlin-coroutine` provides 
+`CoroutineRestOperations` which have the same methods as [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html), but as coroutines:
 
 ```kotlin
 interface CoroutineRestOperations {
@@ -171,17 +172,18 @@ val restOps = CoroutineRestOperations(restOperations = RestTemplate(), context =
 val defaultRestOps = CoroutineRestOperations() 
 ``` 
 
-If you do not specify any arguments when creating `CoroutineRestOperations` it will delegate all calls to `RestTemplate`
-instance and use a special _coroutine context_ which will invoke the blocking method of `RestTemplate` on a separate thread
- (just like `AsyncRestTemplate`). You can specify your own `RestOperations` and `CoroutineContext` to change that behaviour.
+If you do not specify any arguments when creating `CoroutineRestOperations` it will delegate all calls to [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html)
+instance and use a special _coroutine context_ which will invoke the blocking method of [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) on a separate thread
+ (just like [`AsyncRestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/AsyncRestTemplate.html)). You can specify your own [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) and [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) to change that behaviour.
 
 **NOTE** `CoroutineRestOperations` do not need `@EnableCoroutine` in order to work. Underneath `CoroutineRestOperations`
 uses `createCoroutineProxy`.  
 
 ### ListenableFuture extensions
 
-The `kotlinx.coroutines` library provides interoperability functions with many existing asynchronous libraries (Rx1, Rx2,
-`CompletableFuture`, etc.). However, there is no support for Spring specific `ListenableFuture` interface. Therefore
+The [`kotlinx.coroutines`](https://github.com/Kotlin/kotlinx.coroutines) library provides interoperability functions with many existing asynchronous libraries (
+[`RxJava v1`](https://github.com/ReactiveX/RxJava/tree/1.x), [`RxJava v2`](https://github.com/ReactiveX/RxJava),
+[`CompletableFuture`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html), etc.). However, there is no support for Spring specific [`ListenableFuture`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/concurrent/ListenableFuture.html) interface. Therefore
 `spring-kotlin-coroutine` provides the following features:
 
 1. `fun <T> listenableFuture(context: CoroutineContext = CommonPool, block: suspend () -> T): ListenableFuture<T>` - it 
