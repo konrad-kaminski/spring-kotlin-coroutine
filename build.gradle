@@ -65,7 +65,9 @@ project(":spring-kotlin-coroutine") {
 
         testCompile "org.spockframework:spock-core:$spock_version"
         testCompile "org.spockframework:spock-spring:$spock_version"
+        testCompile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
         testCompile "org.springframework.boot:spring-boot-starter-test:$spring_boot_version"
+        testCompile "org.springframework.boot:spring-boot-starter-web:$spring_boot_version"
     }
 }
 
