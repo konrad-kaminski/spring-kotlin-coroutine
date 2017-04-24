@@ -222,3 +222,7 @@ val Method.isSuspend: Boolean
 
 It's a deliberate choice. In most cases _Coroutine_ just sounded better to me and even though sometimes _Suspending_
 might've been a better choice for consistency _Coroutine_ was used.
+
+
+## License
+`spring-kotlin-coroutine` is released under version 2.0 of the [Apache License](http://www.apache.org/licenses/LICENSE-2.0).
