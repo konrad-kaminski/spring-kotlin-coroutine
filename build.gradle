@@ -55,6 +55,8 @@ subprojects {
 project(":spring-kotlin-coroutine") {
     apply plugin: 'groovy'
 
+    compileTestGroovy.classpath += files(compileTestKotlin.destinationDir)
+
     dependencies {
         compile "org.springframework:spring-context-support:$spring_version"
         compile "org.springframework:spring-webmvc:$spring_version"
