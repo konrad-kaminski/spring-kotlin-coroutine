@@ -62,5 +62,5 @@ internal open class CoroutineApplicationEventMulticaster : SimpleApplicationEven
 private fun <E : CoroutineEvent<ApplicationEvent>> ApplicationListener<*>.getOnApplicationEventInvoker(): suspend (E) -> Unit =
         when (this) {
             is CoroutineApplicationListener<*> -> { event -> (this as CoroutineApplicationListener<E>).onCoroutineApplicationEvent(event) }
-            else                               -> { event -> (this as ApplicationListener<E>).onApplicationEvent(event) }
+            else                               -> { event -> (this as ApplicationListener<ApplicationEvent>).onApplicationEvent(event.payload) }
         }
