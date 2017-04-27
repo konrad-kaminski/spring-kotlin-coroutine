@@ -41,7 +41,7 @@ import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 internal open class CoroutineCacheConfiguration {
     @Bean
-    open fun cachingPostProcessor(): BeanDefinitionRegistryPostProcessor = CorutineCacheBeanFactoryPostProcessor()
+    open fun cachingPostProcessor(): BeanDefinitionRegistryPostProcessor = CoroutineCacheBeanFactoryPostProcessor()
 
     @Bean(COROUTINE_CACHE_INTERCEPTOR_BEAN)
     open fun coroutineCacheInterceptor(config: Optional<CachingConfigurer>, cacheOperationSource: CacheOperationSource): CacheInterceptor =
@@ -61,7 +61,7 @@ internal open class CoroutineCacheConfiguration {
             }
 }
 
-private class CorutineCacheBeanFactoryPostProcessor: BeanDefinitionRegistryPostProcessor {
+private class CoroutineCacheBeanFactoryPostProcessor : BeanDefinitionRegistryPostProcessor {
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {}
 
     override fun postProcessBeanDefinitionRegistry(registry: BeanDefinitionRegistry) {
