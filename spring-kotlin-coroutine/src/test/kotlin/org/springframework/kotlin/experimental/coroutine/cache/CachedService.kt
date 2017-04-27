@@ -35,4 +35,20 @@ open class CachedService {
 
         return a + (counter++)
     }
+
+    @Cacheable("cache3")
+    open fun regularCached(a: Int): Int = a + (counter++)
+
+    @Cacheable("cache4")
+    suspend open fun throwingException(a: Int): Int =
+        throw CacheTestException()
+
+    @Cacheable("cache5")
+    suspend open fun throwingExceptionOnCallback(a: Int): Int {
+        delay(1)
+
+        throw CacheTestException()
+    }
 }
+
+open class CacheTestException: RuntimeException()

@@ -36,11 +36,12 @@ class CacheIntSpec extends Specification {
         cacheManager.cacheNames.forEach {
             cacheManager.getCache(it).clear()
         }
+
+        cachedService.resetCounter()
     }
 
-    def "should cache direct return value"() {
+    def "should cache direct result"() {
         given:
-        cachedService.resetCounter()
         runBlocking { cont ->
             cachedService.cached(1, cont)
         }
@@ -54,9 +55,8 @@ class CacheIntSpec extends Specification {
         value == 1
     }
 
-    def "should cache callback value"() {
+    def "should cache callback result"() {
         given:
-        cachedService.resetCounter()
         runBlocking { cont ->
             cachedService.delayedCached(5, cont)
         }
@@ -68,5 +68,36 @@ class CacheIntSpec extends Specification {
 
         then:
         value == 5
+    }
+
+    def "should cache regular fun result"() {
+        given:
+        cachedService.regularCached(9)
+
+        when:
+        def value = cachedService.regularCached(9)
+
+        then:
+        value == 9
+    }
+
+    def "should receive exception thrown from direct call"() {
+        when:
+        runBlocking { cont ->
+            cachedService.throwingException(11, cont)
+        }
+
+        then:
+        thrown(CacheTestException)
+    }
+
+    def "should receive exception thrown from callback call"() {
+        when:
+        runBlocking { cont ->
+            cachedService.throwingExceptionOnCallback(13, cont)
+        }
+
+        then:
+        thrown(CacheTestException)
     }
 }

@@ -21,4 +21,31 @@
            memoryStoreEvictionPolicy="LFU"
            transactionalMode="off">
     </cache>
+
+    <cache name="cache3"
+           maxEntriesLocalHeap="10000"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
+
+    <cache name="cache4"
+           maxEntriesLocalHeap="10000"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
+
+    <cache name="cache5"
+           maxEntriesLocalHeap="10000"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
 </ehcache>
