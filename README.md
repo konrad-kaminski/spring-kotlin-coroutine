@@ -1,4 +1,5 @@
 [![Build status](https://travis-ci.org/konrad-kaminski/spring-kotlin-coroutine.svg?branch=master)](https://travis-ci.org/konrad-kaminski/spring-kotlin-coroutine)
+[![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
 `spring-kotlin-coroutine` is a repository that contains a library and a demo app which allows using Kotlin coroutines in 
 Spring applications as first-class citizens.
