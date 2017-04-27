@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 
-package demo.app
+package org.springframework.kotlin.experimental.coroutine.cache
 
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.cache.ehcache.EhCacheCacheManager
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.context.annotation.Bean
 import org.springframework.core.io.ClassPathResource
-import org.springframework.kotlin.experimental.coroutine.EnableCoroutine
 
-@SpringBootApplication
-@EnableCoroutine
 @EnableCaching
-open class ApplicationConfiguration {
+class CacheConfiguration {
     @Bean
-    open fun cacheManager(): CacheManager = EhCacheCacheManager(ehCacheManager().`object`)
+    CachedService cachedService() {
+        return new CachedService()
+    }
 
     @Bean
-    open fun ehCacheManager(): EhCacheManagerFactoryBean =
-            EhCacheManagerFactoryBean().apply {
-                setConfigLocation(ClassPathResource("ehcache.xml"))
-                setShared(true)
-            }
+    CacheManager cacheManager(net.sf.ehcache.CacheManager cacheManager) {
+        return new EhCacheCacheManager(cacheManager)
+    }
+
+    @Bean
+    EhCacheManagerFactoryBean ehCacheManager() {
+        def manager = new EhCacheManagerFactoryBean()
+
+        manager.setConfigLocation(new ClassPathResource("ehcache-test.xml"))
+        manager.setShared(true)
+
+        return manager
+    }
 }
 
-fun main(vararg args: String) {
-    SpringApplication.run(ApplicationConfiguration::class.java, *args)
-}

@@ -65,6 +65,7 @@ project(":spring-kotlin-coroutine") {
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlin_coroutines_version"
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
+        testCompile "net.sf.ehcache:ehcache:2.10.3"
         testCompile "org.spockframework:spock-core:$spock_version"
         testCompile "org.spockframework:spock-spring:$spock_version"
         testCompile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
