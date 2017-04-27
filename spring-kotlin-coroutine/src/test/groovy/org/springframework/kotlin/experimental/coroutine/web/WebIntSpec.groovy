@@ -39,15 +39,15 @@ class WebIntSpec extends Specification {
     @Unroll
     def "should handle REST controller coroutine with #resultType result"() {
         when:
-        def result = restTemplate.getForEntity("http://localhost:$port/multiply/3/4", Integer.TYPE)
+        def result = restTemplate.getForEntity("http://localhost:$port/$path", Integer.TYPE)
 
         then:
         result.statusCode == HttpStatus.OK
-        result.body == 3*4
+        result.body == resultValue
 
         where:
-        resultType | path                   | resultValue
-        "direct"   | "/multiply/3/4"        | 3*4
-        "callback" | "/delayedMultiply/2/5" | 2*5
+        resultType | path                     | resultValue
+        "direct"   | "/multiply/3/4"          | 3*4
+        "callback" | "/suspendedMultiply/2/5" | 2*5
     }
 }
