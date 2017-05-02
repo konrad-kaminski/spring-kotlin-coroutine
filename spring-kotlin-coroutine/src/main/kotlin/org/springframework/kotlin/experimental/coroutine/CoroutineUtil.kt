@@ -16,35 +16,19 @@
 
 package org.springframework.kotlin.experimental.coroutine
 
-import org.springframework.kotlin.experimental.coroutine.util.CoroutineUtils.runCoroutine
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 import java.lang.reflect.Method
-import java.lang.reflect.Proxy
-import kotlin.coroutines.experimental.Continuation
 import kotlin.coroutines.experimental.CoroutineContext
 import kotlin.reflect.jvm.kotlinFunction
 
 val Method.isSuspend: Boolean
     get() = kotlinFunction?.isSuspend ?: false
 
-@Suppress("UNCHECKED_CAST")
-fun <T: Any> createCoroutineProxy(coroutineInterface: Class<T>, obj: Any, context: CoroutineContext? = null): T =
-        Proxy.newProxyInstance(coroutineInterface.classLoader, arrayOf(coroutineInterface)) { _, method, args ->
-            if (method.isSuspend) {
-                if (context == null) {
-                    invokeRegularMethod(obj, method, args)
-                } else {
-                    runCoroutine(context, { invokeRegularMethod(obj, method, args) },
-                            args.last() as Continuation<Any?>)
-                }
-            } else {
-                method.invoke(args)
-            }
-        } as T
-
-private fun invokeRegularMethod(obj: Any, method: Method, args: Array<Any>): Any? {
-    val regularMethod = obj.javaClass.getMethod(method.name, *method.parameterTypes.removeLastValue())
-
-    return regularMethod.invoke(obj, *args.removeLastValue())
+internal object NewThreadCoroutineDispatcher: CoroutineDispatcher() {
+    override fun dispatch(context: CoroutineContext, block: Runnable) =
+            Thread {
+                block.run()
+            }.start()
 }
 
 @Suppress("UNCHECKED_CAST")

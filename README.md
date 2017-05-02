@@ -152,7 +152,7 @@ class MyComponent {
 ### CoroutineRestOperations
 
 Spring provides blocking [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) to be used as a `REST` client. `spring-kotlin-coroutine` provides 
-`CoroutineRestOperations` which have the same methods as [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html), but as coroutines:
+`CoroutineRestOperations` interface which has the same methods as [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html), but as coroutines:
 
 ```kotlin
 interface CoroutineRestOperations {
@@ -177,7 +177,43 @@ If you do not specify any arguments when creating `CoroutineRestOperations` it w
 instance and use a special _coroutine context_ which will invoke the blocking method of [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) on a separate thread
  (just like [`AsyncRestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/AsyncRestTemplate.html)). You can specify your own [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) and [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) to change that behaviour.
 
-**NOTE** `CoroutineRestOperations` do not need `@EnableCoroutine` in order to work. Underneath `CoroutineRestOperations`
+**NOTE** `CoroutineRestOperations` does not need `@EnableCoroutine` in order to work. Underneath `CoroutineRestOperations`
+uses `createCoroutineProxy`.  
+
+### DeferredRestOperations
+
+The [`kotlinx.coroutines`](https://github.com/Kotlin/kotlinx.coroutines) library provides [`Deferred<T>`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-deferred/index.html) type 
+for non-blocking cancellable future. Based on that `spring-kotlin-coroutine` provides `DeferredRestOperations` interface which has the same methods as 
+[`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html), but with [`Deferred<T>`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-deferred/index.html) 
+return type:
+
+```kotlin
+interface DeferredRestOperations {
+    fun <T : Any?> postForObject(url: String, request: Any?, responseType: Class<T>?, vararg uriVariables: Any?): Deferred<T>
+
+    fun <T : Any?> postForObject(url: String, request: Any?, responseType: Class<T>?, uriVariables: Map<String, *>): Deferred<T>
+
+    fun <T : Any?> postForObject(url: URI, request: Any?, responseType: Class<T>?): Deferred<T>
+
+    ...
+}
+```
+
+In order to create `DeferredRestOperations` use the following:
+ 
+```kotlin
+val restOps = DeferredRestOperations(restOperations = RestTemplate(), start = true, context = COMMON_POOL)
+val defaultRestOps = DeferredRestOperations() 
+``` 
+
+If you do not specify any arguments when creating `DeferredRestOperations` it will delegate all calls to [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html)
+instance and use a special _coroutine context_ which will immediately invoke the blocking method of [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) on a separate thread
+ (just like [`AsyncRestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/AsyncRestTemplate.html)). You can specify your own [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) and [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) to change that behaviour.
+By changing the `start` parameter value you can specify whether the REST operation should be invoked immediately or wait till the invocation of one of the [`start`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-job/start.html), 
+[`join`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-job/join.html) or
+[`await`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-deferred/await.html) methods.
+
+**NOTE** `DeferredRestOperations` does not need `@EnableCoroutine` in order to work. Underneath `DeferredRestOperations`
 uses `createCoroutineProxy`.  
 
 ### ListenableFuture extensions
@@ -201,13 +237,21 @@ The [`kotlinx.coroutines`](https://github.com/Kotlin/kotlinx.coroutines) library
 
 #### createCoroutineProxy
 
-`createCoroutineProxy` can be used to create an instance of an interface with coroutines which will delegate all
-function invocations to a regular object with matching method signatures. The `createCoroutineProxy` is defined
-as follows:
+`createCoroutineProxy` can be used to create a smart proxy - an instance of an interface which will delegate all
+function invocations to a regular object with matching method signatures. The runtime characteristics of this
+proxy call depends on the types of the interface methods, the types of the proxied object methods and
+the proxy config. The `createCoroutineProxy` is declared as follows:
 
 ```kotlin
-fun <T: Any> createCoroutineProxy(coroutineInterface: Class<T>, obj: Any, context: CoroutineContext? = null): T
+fun <T: Any> createCoroutineProxy(coroutineInterface: Class<T>, obj: Any, proxyConfig: CoroutineProxyConfig): T
 ```
+
+Currently supported proxy types are as follows:
+
+| Coroutine interface method     | Object method    | Proxy config                   |
+|--------------------------------|------------------|--------------------------------|
+| `suspend fun m(a: A): T`       | `fun m(a: A): T` | `DefaultCoroutineProxyConfig`  |
+| `fun <T> m(a: A): Deferred<T>` | `fun m(a: A): T` | `DeferredCoroutineProxyConfig` |
 
 #### Method.isSuspend
 

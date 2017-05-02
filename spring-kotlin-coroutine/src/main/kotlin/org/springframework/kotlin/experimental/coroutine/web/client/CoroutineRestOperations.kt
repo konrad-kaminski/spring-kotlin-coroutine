@@ -16,14 +16,15 @@
 
 package org.springframework.kotlin.experimental.coroutine.web.client
 
-import kotlinx.coroutines.experimental.CoroutineDispatcher
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.RequestEntity
 import org.springframework.http.ResponseEntity
-import org.springframework.kotlin.experimental.coroutine.createCoroutineProxy
+import org.springframework.kotlin.experimental.coroutine.NewThreadCoroutineDispatcher
+import org.springframework.kotlin.experimental.coroutine.proxy.DefaultCoroutineProxyConfig
+import org.springframework.kotlin.experimental.coroutine.proxy.createCoroutineProxy
 import org.springframework.web.client.RequestCallback
 import org.springframework.web.client.ResponseExtractor
 import org.springframework.web.client.RestOperations
@@ -114,16 +115,9 @@ interface CoroutineRestOperations {
 
     suspend fun delete(url: URI)
 
-    companion object Factory {
+    companion object {
         operator fun invoke(restOperations: RestOperations = RestTemplate(),
             context: CoroutineContext? = NewThreadCoroutineDispatcher): CoroutineRestOperations =
-                createCoroutineProxy(CoroutineRestOperations::class.java, restOperations, context)
+                createCoroutineProxy(CoroutineRestOperations::class.java, restOperations, DefaultCoroutineProxyConfig(context))
     }
-}
-
-private object NewThreadCoroutineDispatcher: CoroutineDispatcher() {
-    override fun dispatch(context: CoroutineContext, block: Runnable) =
-        Thread {
-            block.run()
-        }.start()
 }
