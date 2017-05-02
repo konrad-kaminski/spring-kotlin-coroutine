@@ -20,6 +20,7 @@ import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Role
 import org.springframework.core.MethodParameter
+import org.springframework.kotlin.experimental.coroutine.ConditionalOnClass
 import org.springframework.kotlin.experimental.coroutine.isSuspend
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
@@ -36,6 +37,7 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
 import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
 
 @Configuration
+@ConditionalOnClass(WebMvcConfigurerAdapter::class)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 internal open class CoroutinesWebMvcConfigurerAdapter : WebMvcConfigurerAdapter() {
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {

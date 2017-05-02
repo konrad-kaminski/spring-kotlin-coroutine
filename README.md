@@ -1,4 +1,5 @@
 [![Build status](https://travis-ci.org/konrad-kaminski/spring-kotlin-coroutine.svg?branch=master)](https://travis-ci.org/konrad-kaminski/spring-kotlin-coroutine)
+[![Download](https://api.bintray.com/packages/konrad-kaminski/maven/spring-kotlin-coroutine/images/download.svg)](https://bintray.com/konrad-kaminski/maven/spring-kotlin-coroutine/_latestVersion)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
 `spring-kotlin-coroutine` is a repository that contains a library and a demo app which allows using Kotlin coroutines in 
@@ -261,13 +262,53 @@ Currently supported proxy types are as follows:
 val Method.isSuspend: Boolean
 ```
 
+## Using in your projects
+
+> Note that this library is experimental and is subject to change.
+
+The library is published to [konrad-kaminski/maven](https://bintray.com/konrad-kaminski/maven/spring-kotlin-coroutine) Bintray repository.
+
+### Gradle
+
+Add Bintray repository:
+
+```groovy
+repositories {
+  maven { url 'https://dl.bintray.com/konrad-kaminski/maven' }
+}
+```
+
+Add dependencies:
+
+```groovy
+compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.1.0'
+```
+
+**NOTE** Some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
+runtime dependencies of your application if you want to use the features that require them. The table below contains the 
+details:
+
+| Feature                                                                                                                                | Dependency                                              |
+|----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| Web methods                                                                                                                            | `org.springframework:spring-webmvc:4.3.8.RELEASE`       |
+| Rx2 [`Scheduler`](http://reactivex.io/RxJava/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                      | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.15`     |
+| Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.15` |
+| Reactor [`TimedScheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/TimedScheduler.html) in `@Coroutine` | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.15` |
+
+And make sure that you use the right Kotlin version:
+
+```groovy
+buildscript {
+    ext.kotlin_version = '1.1.2'
+}
+```
+
 ## FAQ
 
 ### Why all the methods/classes have "Coroutine" as part of its name and not "Suspending"? 
 
 It's a deliberate choice. In most cases _Coroutine_ just sounded better to me and even though sometimes _Suspending_
 might've been a better choice for consistency _Coroutine_ was used.
-
 
 ## License
 `spring-kotlin-coroutine` is released under version 2.0 of the [Apache License](http://www.apache.org/licenses/LICENSE-2.0).

@@ -23,11 +23,14 @@ import org.springframework.context.annotation.ImportAware
 import org.springframework.context.annotation.Role
 import org.springframework.core.annotation.AnnotationAttributes
 import org.springframework.core.type.AnnotationMetadata
+import org.springframework.kotlin.experimental.coroutine.ConditionalOnClass
 import org.springframework.kotlin.experimental.coroutine.EnableCoroutine
 import org.springframework.kotlin.experimental.coroutine.context.resolver.DefaultCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.ExecutorCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.ReactorSchedulerCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.Rx2SchedulerCoroutineContextResolver
+import io.reactivex.Scheduler as Rx2Scheduler
+import reactor.core.scheduler.Scheduler as ReactorScheduler
 
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -53,8 +56,10 @@ internal open class ProxyCoroutineConfiguration : ImportAware {
     open fun executorCoroutineContextesolver() = ExecutorCoroutineContextResolver()
 
     @Bean
+    @ConditionalOnClass(ReactorScheduler::class)
     open fun reactorSchedulerCoroutineContextResolver() = ReactorSchedulerCoroutineContextResolver()
 
     @Bean
+    @ConditionalOnClass(Rx2Scheduler::class)
     open fun rx2SchedulerCoroutineContextResolver() = Rx2SchedulerCoroutineContextResolver()
 }
