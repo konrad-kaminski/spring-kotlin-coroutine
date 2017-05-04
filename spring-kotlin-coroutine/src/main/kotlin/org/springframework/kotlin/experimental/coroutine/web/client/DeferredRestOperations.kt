@@ -16,6 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.web.client
 
+import kotlinx.coroutines.experimental.CoroutineStart
 import kotlinx.coroutines.experimental.Deferred
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
@@ -117,8 +118,8 @@ interface DeferredRestOperations {
     fun delete(url: URI): Deferred<Unit>
 
     companion object {
-        operator fun invoke(restOperations: RestOperations = RestTemplate(), start: Boolean = true,
-            context: CoroutineContext = NewThreadCoroutineDispatcher): DeferredRestOperations =
+        operator fun invoke(restOperations: RestOperations = RestTemplate(), start: CoroutineStart = CoroutineStart.DEFAULT,
+                            context: CoroutineContext = NewThreadCoroutineDispatcher): DeferredRestOperations =
                 createCoroutineProxy(DeferredRestOperations::class.java, restOperations, DeferredCoroutineProxyConfig(start, context))
     }
 }

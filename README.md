@@ -202,16 +202,14 @@ interface DeferredRestOperations {
 In order to create `DeferredRestOperations` use the following:
  
 ```kotlin
-val restOps = DeferredRestOperations(restOperations = RestTemplate(), start = true, context = COMMON_POOL)
+val restOps = DeferredRestOperations(restOperations = RestTemplate(), start = CoroutineStart.DEFAULT, context = COMMON_POOL)
 val defaultRestOps = DeferredRestOperations() 
 ``` 
 
 If you do not specify any arguments when creating `DeferredRestOperations` it will delegate all calls to [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html)
 instance and use a special _coroutine context_ which will immediately invoke the blocking method of [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) on a separate thread
  (just like [`AsyncRestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/AsyncRestTemplate.html)). You can specify your own [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) and [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) to change that behaviour.
-By changing the `start` parameter value you can specify whether the REST operation should be invoked immediately or wait till the invocation of one of the [`start`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-job/start.html), 
-[`join`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-job/join.html) or
-[`await`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-deferred/await.html) methods.
+By changing the `start` parameter value you can specify when the REST operation should be invoked (see [`CoroutineStart`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-coroutine-start/index.html) for details).
 
 **NOTE** `DeferredRestOperations` does not need `@EnableCoroutine` in order to work. Underneath `DeferredRestOperations`
 uses `createCoroutineProxy`.  

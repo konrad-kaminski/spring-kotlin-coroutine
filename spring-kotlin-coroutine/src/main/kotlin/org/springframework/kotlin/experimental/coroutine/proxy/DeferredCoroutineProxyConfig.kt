@@ -16,9 +16,10 @@
 
 package org.springframework.kotlin.experimental.coroutine.proxy
 
+import kotlinx.coroutines.experimental.CoroutineStart
 import kotlin.coroutines.experimental.CoroutineContext
 
 data class DeferredCoroutineProxyConfig(
-    val start: Boolean,
-    val coroutineContext: CoroutineContext
+        val start: CoroutineStart,
+        val coroutineContext: CoroutineContext
 ): CoroutineProxyConfig
