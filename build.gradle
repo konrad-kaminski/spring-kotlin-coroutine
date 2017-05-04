@@ -62,6 +62,7 @@ project(":spring-kotlin-coroutine") {
         compile "org.springframework:spring-webmvc:$spring_version"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlin_coroutines_version"
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlin_coroutines_version"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlin_coroutines_version"
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 

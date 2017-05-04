@@ -26,6 +26,7 @@ import org.springframework.core.type.AnnotationMetadata
 import org.springframework.kotlin.experimental.coroutine.EnableCoroutine
 import org.springframework.kotlin.experimental.coroutine.context.resolver.DefaultCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.ExecutorCoroutineContextResolver
+import org.springframework.kotlin.experimental.coroutine.context.resolver.ReactorSchedulerCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.Rx2SchedulerCoroutineContextResolver
 
 @Configuration
@@ -50,6 +51,9 @@ internal open class ProxyCoroutineConfiguration : ImportAware {
 
     @Bean
     open fun executorCoroutineContextesolver() = ExecutorCoroutineContextResolver()
+
+    @Bean
+    open fun reactorSchedulerCoroutineContextResolver() = ReactorSchedulerCoroutineContextResolver()
 
     @Bean
     open fun rx2SchedulerCoroutineContextResolver() = Rx2SchedulerCoroutineContextResolver()

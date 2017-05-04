@@ -16,9 +16,12 @@
 
 package org.springframework.kotlin.experimental.coroutine.context
 
-import io.reactivex.Scheduler
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Scheduler as Rx2Scheduler
+import io.reactivex.schedulers.Schedulers as Rx2Schedulers
 import org.springframework.context.annotation.Bean
+import reactor.core.scheduler.Scheduler as ReactorScheduler
+import reactor.core.scheduler.Schedulers as ReactorSchedulers
+import reactor.core.scheduler.TimedScheduler
 
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -29,15 +32,25 @@ class ContextConfiguration {
         return new CustomContextService()
     }
 
+    @Bean("ReactorScheduler")
+    ReactorScheduler reactorScheduler() {
+        return ReactorSchedulers.newSingle("ReactorSingleTest")
+    }
+
+    @Bean("ReactorTimedScheduler")
+    TimedScheduler reactorTimedScheduler() {
+        return ReactorSchedulers.newTimer("ReactorTimedSingleTest")
+    }
+
     @Bean("Rx2IoScheduler")
-    Scheduler ioScheduler() {
-        return Schedulers.io()
+    Rx2Scheduler rx2IoScheduler() {
+        return Rx2Schedulers.io()
     }
 
     @Bean("SingleTestExecutor")
     Executor executor() {
         return Executors.newSingleThreadExecutor { runnable ->
-            new Thread(runnable, "SingleTest")
+            new Thread(runnable, "ExecutorSingleTest")
         }
     }
 }

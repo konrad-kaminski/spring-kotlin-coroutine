@@ -26,6 +26,12 @@ open class CustomContextService {
     @Coroutine(UNCONFINED)
     suspend open fun unconfinedPoolFun(): Thread = currentThread()
 
+    @Coroutine("ReactorScheduler")
+    suspend open fun reactorSchedulerFun(): Thread = currentThread()
+
+    @Coroutine("ReactorTimedScheduler")
+    suspend open fun reactorTimedSchedulerFun(): Thread = currentThread()
+
     @Coroutine("Rx2IoScheduler")
     suspend open fun rx2IoSchedulerFun(): Thread = currentThread()
 

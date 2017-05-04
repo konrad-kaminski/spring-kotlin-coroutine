@@ -48,6 +48,26 @@ class ContextIntSpec extends Specification {
         thread == Thread.currentThread()
     }
 
+    def "should use Reactor scheduler thread when using context from Reactor scheduler"() {
+        when:
+        def thread = runBlocking { cont ->
+            customContextService.reactorSchedulerFun(cont)
+        }
+
+        then:
+        thread.name =~ /^ReactorSingleTest/
+    }
+
+    def "should use Reactor timed scheduler thread when using context from Reactor timed scheduler"() {
+        when:
+        def thread = runBlocking { cont ->
+            customContextService.reactorTimedSchedulerFun(cont)
+        }
+
+        then:
+        thread.name =~ /^ReactorTimedSingleTest/
+    }
+
     def "should use Rx2 io scheduler thread when using context from Rx2 io scheduler"() {
         when:
         def thread = runBlocking { cont ->
@@ -65,6 +85,6 @@ class ContextIntSpec extends Specification {
         }
 
         then:
-        thread.name == "SingleTest"
+        thread.name == "ExecutorSingleTest"
     }
 }
