@@ -32,7 +32,7 @@ open class MyAppConfiguration {
 
 The attributes of `@EnableCoroutine` follow the same semantics as e.g. [`@EnableCaching`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/cache/annotation/EnableCaching.html). 
 
-**NOTE** Currently only [`AdviceMode.PROXY`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/AdviceMode.html#PROXY) mode is supported.
+> Note that currently only [`AdviceMode.PROXY`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/AdviceMode.html#PROXY) mode is supported.
 
 ### Web methods
 
@@ -180,7 +180,7 @@ If you do not specify any arguments when creating `CoroutineRestOperations` it w
 instance and use a special _coroutine context_ which will invoke the blocking method of [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) on a separate thread
  (just like [`AsyncRestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/AsyncRestTemplate.html)). You can specify your own [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) and [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) to change that behaviour.
 
-**NOTE** `CoroutineRestOperations` does not need `@EnableCoroutine` in order to work. Underneath `CoroutineRestOperations`
+> Note that `CoroutineRestOperations` does not need `@EnableCoroutine` in order to work. Underneath `CoroutineRestOperations`
 uses `createCoroutineProxy`.  
 
 ### DeferredRestOperations
@@ -214,7 +214,7 @@ instance and use a special _coroutine context_ which will immediately invoke the
  (just like [`AsyncRestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/AsyncRestTemplate.html)). You can specify your own [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) and [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) to change that behaviour.
 By changing the `start` parameter value you can specify when the REST operation should be invoked (see [`CoroutineStart`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-coroutine-start/index.html) for details).
 
-**NOTE** `DeferredRestOperations` does not need `@EnableCoroutine` in order to work. Underneath `DeferredRestOperations`
+> Note that `DeferredRestOperations` does not need `@EnableCoroutine` in order to work. Underneath `DeferredRestOperations`
 uses `createCoroutineProxy`.  
 
 ### ListenableFuture extensions
@@ -230,11 +230,11 @@ The [`kotlinx.coroutines`](https://github.com/Kotlin/kotlinx.coroutines) library
     Kotlin coroutine specific `Deferred` type.
 3. `suspend fun <T> ListenableFuture<T>.await(): T` - it allows you to create a coroutine from a `ListenableFuture`.    
 
-**NOTE** These extensions do not need `@EnableCoroutine` in order to work.
+> Note that these extensions do not need `@EnableCoroutine` in order to work.
 
 ### Utility functions
 
-**NOTE** The utility functions do not need `@EnableCoroutine` in order to work.
+> Note that utility functions do not need `@EnableCoroutine` in order to work.
 
 #### createCoroutineProxy
 
@@ -284,7 +284,7 @@ Add dependencies:
 compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.1.0'
 ```
 
-**NOTE** Some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
+> Note that some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
 runtime dependencies of your application if you want to use the features that require them. The table below contains the 
 details:
 
