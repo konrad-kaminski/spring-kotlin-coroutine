@@ -287,13 +287,13 @@ compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.1.0'
 > Note that some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
 runtime dependencies of your application if you want to use the features that require them. The table below contains the 
 details:
-
-| Feature                                                                                                                                | Dependency                                              |
-|----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
-| Web methods                                                                                                                            | `org.springframework:spring-webmvc:4.3.8.RELEASE`       |
-| Rx2 [`Scheduler`](http://reactivex.io/RxJava/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                      | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.15`     |
-| Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.15` |
-| Reactor [`TimedScheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/TimedScheduler.html) in `@Coroutine` | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.15` |
+>
+> | Feature                                                                                                                                | Dependency                                              |
+> |----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+> | Web methods                                                                                                                            | `org.springframework:spring-webmvc:4.3.8.RELEASE`       |
+> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                      | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.15`     |
+> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.15` |
+> | Reactor [`TimedScheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/TimedScheduler.html) in `@Coroutine` | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.15` |
 
 And make sure that you use the right Kotlin version:
 
