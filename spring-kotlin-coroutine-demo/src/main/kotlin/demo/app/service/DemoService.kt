@@ -16,15 +16,28 @@
 
 package demo.app.service
 
+import demo.app.util.logger
 import kotlinx.coroutines.experimental.delay
 import org.springframework.cache.annotation.Cacheable
-import demo.app.util.logger
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
 import org.springframework.kotlin.experimental.coroutine.context.COMMON_POOL
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.io.PrintStream
+import java.io.PrintWriter
 
 @Component
 open class DemoService {
+    @Scheduled(cron = "0 0 0 1 1 *")
+    suspend open fun newYear() {
+        logger.info("Happy New Year!")
+    }
+
+    @Scheduled(fixedRate = 60_000)
+    suspend open fun everyMinute() {
+        logger.info("I'm still alive...")
+    }
+
     suspend open fun delayedReturn(s: String, delayMillis: Long): String {
         logger.info ("Before delay in [delayedReturn]")
         delay(delayMillis)

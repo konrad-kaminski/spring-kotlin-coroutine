@@ -17,12 +17,13 @@
 package org.springframework.kotlin.experimental.coroutine.context
 
 import org.springframework.aop.framework.autoproxy.AbstractBeanFactoryAwareAdvisingPostProcessor
-import org.springframework.beans.factory.BeanFactory
+import org.springframework.beans.factory.InitializingBean
 
 internal open class CoroutineAnnotationBeanPostProcessor(
-        private val resolvers: Set<CoroutineContextResolver>
-) : AbstractBeanFactoryAwareAdvisingPostProcessor() {
-    override fun setBeanFactory(beanFactory: BeanFactory) {
-        advisor = CoroutinePointcutAdvisor(beanFactory, resolvers)
+        private val contextResolver: GlobalCoroutineContextResolver
+) : AbstractBeanFactoryAwareAdvisingPostProcessor(), InitializingBean {
+
+    override fun afterPropertiesSet() {
+        advisor = CoroutinePointcutAdvisor(contextResolver)
     }
 }

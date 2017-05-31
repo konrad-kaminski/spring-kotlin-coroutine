@@ -19,8 +19,6 @@ package org.springframework.kotlin.experimental.coroutine.context
 import kotlinx.coroutines.experimental.CoroutineName
 import org.aopalliance.intercept.MethodInterceptor
 import org.aopalliance.intercept.MethodInvocation
-import org.springframework.beans.factory.BeanFactory
-import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
 import org.springframework.kotlin.experimental.coroutine.util.CoroutineUtils
@@ -33,8 +31,7 @@ import kotlin.coroutines.experimental.CoroutineContext
 private typealias ContextKey = Pair<String, String>
 
 internal open class CoroutineMethodInterceptor(
-        private val beanFactory: BeanFactory,
-        private val resolvers: Set<CoroutineContextResolver>
+        private val contextResolver: GlobalCoroutineContextResolver
 ) : MethodInterceptor {
     private val contextMap = ConcurrentHashMap<ContextKey, Optional<CoroutineContext>>().apply {
         put("" to "", Optional.empty())
@@ -60,13 +57,7 @@ internal open class CoroutineMethodInterceptor(
     private fun getContext(contextKey: ContextKey): Optional<CoroutineContext> {
         val (contextBeanName, coroutineName) = contextKey
 
-        val context = if (contextBeanName != "") {
-            resolvers.asSequence().mapNotNull {
-                it.resolveContext(contextBeanName, beanFactory.findBean(contextBeanName))
-            }.firstOrNull() ?: throw CannotObtainContextException("Cannot obtain context $contextBeanName")
-        } else {
-            null
-        }
+        val context = contextResolver.resolveContext(contextBeanName)
 
         val name = if (coroutineName != "") {
             CoroutineName(coroutineName)
@@ -84,14 +75,6 @@ internal open class CoroutineMethodInterceptor(
 }
 
 private fun <T> T?.asOptional(): Optional<T> = Optional.ofNullable(this)
-
-private fun BeanFactory.findBean(name: String): Any? =
-        try {
-            getBean(name)
-        } catch (e: NoSuchBeanDefinitionException) {
-            //ignore
-            null
-        }
 
 private fun <A: Annotation> getMergedMethodOrClassAnnotation(method: Method, annotationType: Class<A>): A =
         AnnotatedElementUtils.findMergedAnnotation(method, annotationType) ?:

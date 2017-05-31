@@ -22,14 +22,12 @@ import org.springframework.aop.support.AbstractPointcutAdvisor
 import org.springframework.aop.support.ComposablePointcut
 import org.springframework.aop.support.StaticMethodMatcher
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut
-import org.springframework.beans.factory.BeanFactory
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
 import org.springframework.kotlin.experimental.coroutine.isSuspend
 import java.lang.reflect.Method
 
 internal open class CoroutinePointcutAdvisor(
-        beanFactory: BeanFactory,
-        resolvers: Set<CoroutineContextResolver>
+        contextResolver: GlobalCoroutineContextResolver
 ) : AbstractPointcutAdvisor() {
     private val advice: Advice
     private val pointcut: Pointcut
@@ -39,7 +37,7 @@ internal open class CoroutinePointcutAdvisor(
         val methodMatchingPointcut = AnnotationMatchingPointcut.forMethodAnnotation(Coroutine::class.java)
         pointcut = ComposablePointcut(classMatchingPointcut).union(methodMatchingPointcut).intersection(CoroutineMethodMatcher)
 
-        advice = CoroutineMethodInterceptor(beanFactory, resolvers)
+        advice = CoroutineMethodInterceptor(contextResolver)
     }
 
     override fun getAdvice(): Advice = advice
