@@ -25,10 +25,12 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.context.annotation.Bean
 import org.springframework.core.io.ClassPathResource
 import org.springframework.kotlin.experimental.coroutine.EnableCoroutine
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
 @EnableCoroutine
 @EnableCaching
+@EnableScheduling
 open class ApplicationConfiguration {
     @Bean
     open fun cacheManager(): CacheManager = EhCacheCacheManager(ehCacheManager().`object`)
