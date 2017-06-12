@@ -25,6 +25,7 @@ import org.springframework.kotlin.experimental.coroutine.ConditionalOnClass
 import org.springframework.kotlin.experimental.coroutine.context.resolver.DefaultCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.ExecutorCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.ReactorSchedulerCoroutineContextResolver
+import org.springframework.kotlin.experimental.coroutine.context.resolver.Rx1SchedulerCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.Rx2SchedulerCoroutineContextResolver
 import org.springframework.kotlin.experimental.coroutine.context.resolver.TaskSchedulerCoroutineContextResolver
 import reactor.core.scheduler.Scheduler
@@ -49,6 +50,11 @@ open class CoroutineContextResolverConfiguration {
     @ConditionalOnClass(Scheduler::class)
     open fun reactorSchedulerCoroutineContextResolver(): CoroutineContextResolver =
             ReactorSchedulerCoroutineContextResolver()
+
+    @Bean
+    @ConditionalOnClass(rx.Scheduler::class)
+    open fun rx1SchedulerCoroutineContextResolver(): CoroutineContextResolver =
+            Rx1SchedulerCoroutineContextResolver()
 
     @Bean
     @ConditionalOnClass(io.reactivex.Scheduler::class)

@@ -1,9 +1,9 @@
 buildscript {
     ext.kotlin_version = "1.1.2"
-    ext.kotlin_coroutines_version = "0.15"
-    ext.spock_version = '1.1-groovy-2.4-rc-3'
-    ext.spring_version = "4.3.8.RELEASE"
-    ext.spring_boot_version = "1.5.3.RELEASE"
+    ext.kotlin_coroutines_version = "0.16"
+    ext.spock_version = '1.1-groovy-2.4'
+    ext.spring_version = "4.3.9.RELEASE"
+    ext.spring_boot_version = "1.5.4.RELEASE"
     ext['reactor.version'] = '3.0.4.RELEASE'
 
     repositories {
@@ -71,6 +71,7 @@ project(":spring-kotlin-coroutine") {
         compile "org.springframework:spring-webmvc:$spring_version", optional
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlin_coroutines_version", optional
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx1:$kotlin_coroutines_version", optional
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlin_coroutines_version", optional
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
