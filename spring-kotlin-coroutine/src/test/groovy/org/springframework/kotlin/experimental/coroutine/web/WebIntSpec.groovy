@@ -49,5 +49,6 @@ class WebIntSpec extends Specification {
         resultType | path                     | resultValue
         "direct"   | "/multiply/3/4"          | 3*4
         "callback" | "/suspendedMultiply/2/5" | 2*5
+        "delayed"  | "/delayedMultiply/2/5"   | 2*5
     }
 }

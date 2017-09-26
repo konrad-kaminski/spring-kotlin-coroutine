@@ -18,5 +18,5 @@ annotation class ConditionalOnClass (
 
 internal open class OnClassCondition: Condition {
     override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata): Boolean =
-        metadata.getAnnotationAttributes(ConditionalOnClass::class.java.name)["value"] is Class<*>
+        metadata.getAnnotationAttributes(ConditionalOnClass::class.java.name)?.get("value") is Class<*>
 }

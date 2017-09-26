@@ -16,6 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.web
 
+import kotlinx.coroutines.experimental.Unconfined
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Role
@@ -33,7 +34,6 @@ import org.springframework.web.method.support.ModelAndViewContainer
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import kotlin.coroutines.experimental.Continuation
 import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.EmptyCoroutineContext
 import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
 
 @Configuration
@@ -85,7 +85,7 @@ private class DeferredResultContinuation: Continuation<Any> {
     val deferredResult = DeferredResult<Any>()
 
     override val context: CoroutineContext
-        get() = EmptyCoroutineContext
+        get() = Unconfined
 
     override fun resume(value: Any) {
         deferredResult.setResult(value)

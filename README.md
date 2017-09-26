@@ -303,7 +303,7 @@ repositories {
 Add dependencies:
 
 ```groovy
-compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.2.1'
+compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.2.2'
 ```
 
 > Note that some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
@@ -322,7 +322,7 @@ And make sure that you use the right Kotlin version:
 
 ```groovy
 buildscript {
-    ext.kotlin_version = '1.1.2'
+    ext.kotlin_version = '1.1.50'
 }
 ```
 

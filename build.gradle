@@ -1,10 +1,10 @@
 buildscript {
-    ext.kotlin_version = "1.1.2"
-    ext.kotlin_coroutines_version = "0.16"
+    ext.kotlin_version = "1.1.50"
+    ext.kotlin_coroutines_version = "0.18"
     ext.spock_version = '1.1-groovy-2.4'
-    ext.spring_version = "4.3.9.RELEASE"
-    ext.spring_boot_version = "1.5.4.RELEASE"
-    ext['reactor.version'] = '3.0.4.RELEASE'
+    ext.spring_version = "4.3.11.RELEASE"
+    ext.spring_boot_version = "1.5.7.RELEASE"
+    ext['reactor.version'] = '3.0.7.RELEASE'
 
     repositories {
         jcenter()
@@ -175,6 +175,6 @@ project(":spring-kotlin-coroutine-demo") {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "3.4.1"
+    gradleVersion = "4.2"
     distributionType = "ALL"
 }
