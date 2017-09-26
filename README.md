@@ -312,11 +312,11 @@ details:
 >
 > | Feature                                                                                                                                | Dependency                                              |
 > |----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
-> | Web methods                                                                                                                            | `org.springframework:spring-webmvc:4.3.9.RELEASE`       |
-> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.16`     |
-> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.16`     |
-> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.16` |
-> | Reactor [`TimedScheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/TimedScheduler.html) in `@Coroutine` | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.16` |
+> | Web methods                                                                                                                            | `org.springframework:spring-webmvc:4.3.11.RELEASE`      |
+> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.18`     |
+> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.18`     |
+> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.18` |
+> | Reactor [`TimedScheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/TimedScheduler.html) in `@Coroutine` | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.18` |
 
 And make sure that you use the right Kotlin version:
 
