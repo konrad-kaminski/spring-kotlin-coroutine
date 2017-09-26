@@ -17,8 +17,8 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7"
-        classpath "pl.allegro.tech.build:axion-release-plugin:1.6.0"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+        classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
         classpath "com.netflix.nebula:gradle-extra-configurations-plugin:3.0.3"
     }
 }
