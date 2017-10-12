@@ -17,7 +17,7 @@
 package org.springframework.kotlin.experimental.coroutine.web
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.context.embedded.LocalServerPort
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.kotlin.experimental.coroutine.IntSpecConfiguration
