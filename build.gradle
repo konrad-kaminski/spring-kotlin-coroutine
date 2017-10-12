@@ -1,6 +1,6 @@
 buildscript {
     ext.kotlin_version = "1.1.50"
-    ext.kotlin_coroutines_version = "0.18"
+    ext.kotlin_coroutines_version = "0.19.1"
     ext.spock_version = '1.1-groovy-2.4'
     ext.spring_version = "4.3.11.RELEASE"
     ext.spring_boot_version = "1.5.7.RELEASE"

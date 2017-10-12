@@ -62,13 +62,13 @@ contexts/bean types are supported:
 
 1. [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) type beans - used directly
 2. `COMMON_POOL` - a constant specifying the [`CommonPool`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-common-pool/index.html) context
+2. `DEFAULT_DISPATCHER` - a constant specifying the [`DefaultDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-default-dispatcher.html) context
 3. `UNCONFINED` - a constant specifying the [`Unconfined`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-unconfined/index.html) context
 4. [`Executor`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executor.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/java.util.concurrent.-executor/as-coroutine-dispatcher.html)
 5. Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/io/reactivex/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-rx1/kotlinx.coroutines.experimental.rx1/rx.-scheduler/as-coroutine-dispatcher.html)
 6. Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-rx2/kotlinx.coroutines.experimental.rx2/io.reactivex.-scheduler/as-coroutine-dispatcher.html)
 7. Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-reactor/kotlinx.coroutines.experimental.reactor/reactor.core.scheduler.-scheduler/as-coroutine-dispatcher.html)
-8. Reactor [`TimedScheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/TimedScheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-reactor/kotlinx.coroutines.experimental.reactor/reactor.core.scheduler.-timed-scheduler/as-coroutine-dispatcher.html)
-9. [`TaskScheduler`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/TaskScheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with `asCoroutineDispatcher` method of [`TaskSchedulerCoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt)
+8. [`TaskScheduler`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/TaskScheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with `asCoroutineDispatcher` method of [`TaskSchedulerCoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt)
    
 You can also support your own types of beans or context names by providing Spring beans of type [`CoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/context/CoroutineContextResolver.kt):
    
@@ -246,7 +246,7 @@ The [`kotlinx.coroutines`](https://github.com/Kotlin/kotlinx.coroutines) library
 [`CompletableFuture`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html), etc.). However, there is no support for Spring specific [`ListenableFuture`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/concurrent/ListenableFuture.html) interface. Therefore
 `spring-kotlin-coroutine` provides the following features:
 
-1. `fun <T> listenableFuture(context: CoroutineContext = CommonPool, block: suspend () -> T): ListenableFuture<T>` - it 
+1. `fun <T> listenableFuture(context: CoroutineContext = DefaultDispatcher, block: suspend () -> T): ListenableFuture<T>` - it 
    allows you to create a `ListenableFuture` from a coroutine with specific _coroutine context_. 
 2. `fun <T> Deferred<T>.asListenableFuture(): ListenableFuture<T>` - it allows you to create a `ListenableFuture` from
     Kotlin coroutine specific `Deferred` type.
@@ -303,7 +303,7 @@ repositories {
 Add dependencies:
 
 ```groovy
-compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.2.2'
+compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.2.3'
 ```
 
 > Note that some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
@@ -313,10 +313,9 @@ details:
 > | Feature                                                                                                                                | Dependency                                              |
 > |----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
 > | Web methods                                                                                                                            | `org.springframework:spring-webmvc:4.3.11.RELEASE`      |
-> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.18`     |
-> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.18`     |
-> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.18` |
-> | Reactor [`TimedScheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/TimedScheduler.html) in `@Coroutine` | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.18` |
+> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.19`     |
+> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.19`     |
+> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.19` |
 
 And make sure that you use the right Kotlin version:
 

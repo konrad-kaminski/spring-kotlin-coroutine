@@ -24,8 +24,8 @@ import kotlin.coroutines.experimental.CoroutineContext
 import kotlin.coroutines.experimental.startCoroutine
 import kotlinx.coroutines.experimental.CancellableContinuation
 import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.DefaultDispatcher
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.cancelFutureOnCompletion
@@ -38,7 +38,7 @@ import org.springframework.util.concurrent.SettableListenableFuture
 
 /**
  * Starts new coroutine and returns its results an an implementation of [ListenableFuture].
- * This coroutine builder uses [CommonPool] context by default and is conceptually
+ * This coroutine builder uses [DefaultDispatcher] context by default and is conceptually
  * similar to [CompletableFuture.supplyAsync].
  *
  * The running coroutine is cancelled when the resulting future is cancelled or otherwise completed.
@@ -55,8 +55,8 @@ import org.springframework.util.concurrent.SettableListenableFuture
  * @author Roman Elizarov
  * @since 5.0
  */
-fun <T> listenableFuture(context: CoroutineContext = CommonPool, block: suspend () -> T): ListenableFuture<T> {
-    val newContext = newCoroutineContext(CommonPool + context)
+fun <T> listenableFuture(context: CoroutineContext = DefaultDispatcher, block: suspend () -> T): ListenableFuture<T> {
+    val newContext = newCoroutineContext(DefaultDispatcher + context)
     val job = Job(newContext[Job])
 
     return ListenableFutureCoroutine<T>(newContext + job).apply {

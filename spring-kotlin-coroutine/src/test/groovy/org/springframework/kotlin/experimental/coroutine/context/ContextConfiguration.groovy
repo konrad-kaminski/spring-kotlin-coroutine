@@ -21,7 +21,6 @@ import io.reactivex.schedulers.Schedulers as Rx2Schedulers
 import org.springframework.context.annotation.Bean
 import reactor.core.scheduler.Scheduler as ReactorScheduler
 import reactor.core.scheduler.Schedulers as ReactorSchedulers
-import reactor.core.scheduler.TimedScheduler
 import rx.Scheduler as Rx1Scheduler
 import rx.schedulers.Schedulers as Rx1Schedulers
 
@@ -37,11 +36,6 @@ class ContextConfiguration {
     @Bean("ReactorScheduler")
     ReactorScheduler reactorScheduler() {
         return ReactorSchedulers.newSingle("ReactorSingleTest")
-    }
-
-    @Bean("ReactorTimedScheduler")
-    TimedScheduler reactorTimedScheduler() {
-        return ReactorSchedulers.newTimer("ReactorTimedSingleTest")
     }
 
     @Bean("Rx1IoScheduler")

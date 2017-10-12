@@ -98,7 +98,7 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
 
     private fun launchCoroutine(dispatcher: CoroutineContext, coroutine: ScheduledCoroutine,
                                 exceptionHandler: ScheduledCoroutineExceptionHandler): Job =
-            launch(dispatcher, CoroutineStart.LAZY) {
+            launch(dispatcher, CoroutineStart.DEFAULT) {
                 var lastStart: Date? = null
                 var delayPeriod = coroutine.policy.getInitialDelay() ?: coroutine.policy.getDelayBeforeNextRun(null, Date())
 

@@ -1,3 +1,7 @@
+## 0.2.3
+* New version of kotlinx-coroutines.
+* Dropped support for deprecated Reactor [`TimedScheduler`]()
+
 ## 0.2.2
 * New versions of: Spring, Spring Boot, Kotlin, kotlinx-coroutines, Gradle.
 

@@ -29,9 +29,6 @@ open class CustomContextService {
     @Coroutine("ReactorScheduler")
     suspend open fun reactorSchedulerFun(): Thread = currentThread()
 
-    @Coroutine("ReactorTimedScheduler")
-    suspend open fun reactorTimedSchedulerFun(): Thread = currentThread()
-
     @Coroutine("Rx1IoScheduler")
     suspend open fun rx1IoSchedulerFun(): Thread = currentThread()
 

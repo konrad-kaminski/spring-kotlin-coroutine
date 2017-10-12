@@ -19,13 +19,11 @@ package org.springframework.kotlin.experimental.coroutine.context.resolver
 import kotlinx.coroutines.experimental.reactor.asCoroutineDispatcher
 import org.springframework.kotlin.experimental.coroutine.context.CoroutineContextResolver
 import reactor.core.scheduler.Scheduler
-import reactor.core.scheduler.TimedScheduler
 import kotlin.coroutines.experimental.CoroutineContext
 
 internal open class ReactorSchedulerCoroutineContextResolver : CoroutineContextResolver {
     override fun resolveContext(beanName: String, bean: Any?): CoroutineContext? =
             when (bean) {
-                is TimedScheduler -> bean.asCoroutineDispatcher()
                 is Scheduler      -> bean.asCoroutineDispatcher()
                 else              -> null
             }

@@ -23,8 +23,6 @@ import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
 import org.springframework.kotlin.experimental.coroutine.context.COMMON_POOL
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.io.PrintStream
-import java.io.PrintWriter
 
 @Component
 open class DemoService {
