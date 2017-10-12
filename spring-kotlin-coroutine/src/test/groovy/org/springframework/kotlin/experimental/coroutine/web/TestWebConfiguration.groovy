@@ -18,10 +18,10 @@ package org.springframework.kotlin.experimental.coroutine.web
 
 import org.springframework.context.annotation.Bean
 
-class WebConfiguration {
+class TestWebConfiguration {
     @Bean
-    CoroutineController coroutineController() {
-        return new CoroutineController()
+    TestController testController() {
+        return new TestController()
     }
 }
 

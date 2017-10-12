@@ -110,7 +110,7 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
                         try {
                             coroutine.run()
                         } catch(e: Throwable) {
-                            exceptionHandler.invoke(context, e)
+                            exceptionHandler.invoke(coroutineContext, e)
                         }
                     }
 

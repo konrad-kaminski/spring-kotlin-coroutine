@@ -1,2 +1,2 @@
-include 'spring-kotlin-coroutine', 'spring-kotlin-coroutine-demo'
+include 'spring-kotlin-coroutine', 'spring-webmvc-kotlin-coroutine', 'spring-kotlin-coroutine-demo'
 

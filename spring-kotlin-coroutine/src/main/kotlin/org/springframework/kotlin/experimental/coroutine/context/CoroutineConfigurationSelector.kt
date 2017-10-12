@@ -19,12 +19,31 @@ package org.springframework.kotlin.experimental.coroutine.context
 import org.springframework.context.annotation.AdviceMode
 import org.springframework.context.annotation.AdviceMode.PROXY
 import org.springframework.context.annotation.AdviceModeImportSelector
+import org.springframework.core.io.UrlResource
 import org.springframework.kotlin.experimental.coroutine.EnableCoroutine
+import java.net.URL
+import java.util.Enumeration
+import kotlin.streams.asSequence
 
 internal open class CoroutineConfigurationSelector : AdviceModeImportSelector<EnableCoroutine>() {
     override fun selectImports(adviceMode: AdviceMode): Array<String> =
-            when (adviceMode) {
-                PROXY -> arrayOf(ProxyCoroutineConfiguration::class.java.name)
-                else  -> throw NotImplementedError()
-            }
+            (loadCoroutineConfigurations() + getAdviceModeConfiguration(adviceMode)).toList().toTypedArray()
+
+    private fun loadCoroutineConfigurations(): Sequence<String> =
+        CoroutineConfigurationSelector::class.java.classLoader.getResources("coroutine.configurations").asSequence()
+                .flatMap(this::getLines)
+                .filterNot(CharSequence::isEmpty)
+
+    private fun getLines(url: URL): Sequence<String> =
+        UrlResource(url).inputStream.bufferedReader().lines().asSequence()
+
+    private fun getAdviceModeConfiguration(adviceMode: AdviceMode): Sequence<String> =
+        when (adviceMode) {
+            PROXY -> sequenceOf(ProxyCoroutineConfiguration::class.java.name)
+            else  -> throw NotImplementedError()
+        }
+}
+
+private fun <T: Any> Enumeration<T>.asSequence(): Sequence<T> = generateSequence {
+    if (hasMoreElements()) nextElement() else null
 }

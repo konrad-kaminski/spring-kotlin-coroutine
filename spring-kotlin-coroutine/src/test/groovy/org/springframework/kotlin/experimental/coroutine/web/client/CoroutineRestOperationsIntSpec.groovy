@@ -5,7 +5,7 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.kotlin.experimental.coroutine.IntSpecConfiguration
-import org.springframework.kotlin.experimental.coroutine.web.WebConfiguration
+import org.springframework.kotlin.experimental.coroutine.web.TestWebConfiguration
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -13,7 +13,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.kotlin.experimental.coroutine.TestUtilsKt.runBlocking
 import static org.springframework.kotlin.experimental.coroutine.web.CoroutineRestOperationsIntSpecHelper.coroutineRestOperations
 
-@SpringBootTest(classes = [IntSpecConfiguration, WebConfiguration], webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = [IntSpecConfiguration, TestWebConfiguration], webEnvironment = RANDOM_PORT)
 @EnableAutoConfiguration
 class CoroutineRestOperationsIntSpec extends Specification {
     @LocalServerPort

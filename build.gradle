@@ -4,7 +4,6 @@ buildscript {
     ext.spock_version = '1.1-groovy-2.4'
     ext.spring_version = "5.0.0.RELEASE"
     ext.spring_boot_version = "2.0.0.M5"
-//    ext['reactor.version'] = '3.1.0.RELEASE'
 
     repositories {
         jcenter()
@@ -74,7 +73,7 @@ project(":spring-kotlin-coroutine") {
 
     dependencies {
         compile "org.springframework:spring-context-support:$spring_version"
-        compile "org.springframework:spring-webmvc:$spring_version", optional
+        compile "org.springframework:spring-web:$spring_version", optional
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlin_coroutines_version", optional
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx1:$kotlin_coroutines_version", optional
@@ -167,11 +166,29 @@ project(":spring-kotlin-coroutine") {
     }
 }
 
+project(":spring-webmvc-kotlin-coroutine") {
+    apply plugin: 'groovy'
+
+    compileTestGroovy.classpath += files(compileTestKotlin.destinationDir)
+
+    dependencies {
+        compile project(":spring-kotlin-coroutine")
+        compile "org.springframework:spring-webmvc:$spring_version"
+
+        testCompile "org.spockframework:spock-core:$spock_version"
+        testCompile "org.spockframework:spock-spring:$spock_version"
+        testCompile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
+        testCompile "org.springframework.boot:spring-boot-starter-test:$spring_boot_version"
+        testCompile "org.springframework.boot:spring-boot-starter-web:$spring_boot_version"
+    }
+}
+
 project(":spring-kotlin-coroutine-demo") {
     apply plugin: "org.springframework.boot"
 
     dependencies {
         compile project(":spring-kotlin-coroutine")
+        compile project(":spring-webmvc-kotlin-coroutine")
 
         compile "net.sf.ehcache:ehcache:2.10.3"
         compile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"

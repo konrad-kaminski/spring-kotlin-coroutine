@@ -25,12 +25,11 @@ import org.springframework.kotlin.experimental.coroutine.context.CoroutineContex
 import org.springframework.kotlin.experimental.coroutine.context.CoroutineContexts
 import org.springframework.kotlin.experimental.coroutine.event.CoroutineEventSupportConfiguraton
 import org.springframework.kotlin.experimental.coroutine.scheduler.CoroutineSchedulerConfiguration
-import org.springframework.kotlin.experimental.coroutine.web.CoroutinesWebMvcConfigurer
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@Import(CoroutineConfigurationSelector::class, CoroutinesWebMvcConfigurer::class,
+@Import(CoroutineConfigurationSelector::class,
         CoroutineContextResolverConfiguration::class, CoroutineContexts::class,
         CoroutineEventSupportConfiguraton::class, CoroutineCacheConfiguration::class,
         CoroutineSchedulerConfiguration::class)

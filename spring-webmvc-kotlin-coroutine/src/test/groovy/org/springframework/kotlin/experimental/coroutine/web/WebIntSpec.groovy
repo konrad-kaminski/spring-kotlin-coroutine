@@ -17,8 +17,8 @@
 package org.springframework.kotlin.experimental.coroutine.web
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.kotlin.experimental.coroutine.IntSpecConfiguration
 import org.springframework.web.client.RestOperations
@@ -26,9 +26,7 @@ import org.springframework.web.client.RestTemplate
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-
-@SpringBootTest(classes = [IntSpecConfiguration, WebConfiguration], webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = [IntSpecConfiguration, WebConfiguration], webEnvironment = org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
 class WebIntSpec extends Specification {
     @LocalServerPort
