@@ -30,16 +30,16 @@ import org.springframework.web.method.support.AsyncHandlerMethodReturnValueHandl
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler
 import org.springframework.web.method.support.ModelAndViewContainer
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import kotlin.coroutines.experimental.Continuation
 import kotlin.coroutines.experimental.CoroutineContext
 import kotlin.coroutines.experimental.EmptyCoroutineContext
 import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
 
 @Configuration
-@ConditionalOnClass(WebMvcConfigurerAdapter::class)
+@ConditionalOnClass(WebMvcConfigurer::class)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-internal open class CoroutinesWebMvcConfigurerAdapter : WebMvcConfigurerAdapter() {
+internal open class CoroutinesWebMvcConfigurer : WebMvcConfigurer {
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         argumentResolvers.add(0, object: HandlerMethodArgumentResolver {
             override fun supportsParameter(parameter: MethodParameter) =
