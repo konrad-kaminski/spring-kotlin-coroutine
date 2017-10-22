@@ -42,7 +42,7 @@ internal open class SimpleCoroutineApplicationListenerMethodAdapter(beanName: St
      * Process the specified [ApplicationEvent], checking if the condition
      * match and handling non-null result, if any.
      */
-    suspend fun processApplicationEvent(event: ApplicationEvent) {
+    suspend private fun processApplicationEvent(event: ApplicationEvent) {
         val args = resolveArguments(event)
         if (shouldHandle(event, args)) {
             val result = suspendCoroutine<Any?> { cont ->
@@ -53,7 +53,7 @@ internal open class SimpleCoroutineApplicationListenerMethodAdapter(beanName: St
                     COROUTINE_SUSPENDED
                 }
 
-                if (result != COROUTINE_SUSPENDED) {
+                if (result !== COROUTINE_SUSPENDED) {
                     cont.resume(result)
                 }
             }
@@ -66,7 +66,7 @@ internal open class SimpleCoroutineApplicationListenerMethodAdapter(beanName: St
         }
     }
 
-    suspend protected fun handleResult(result: Any) {
+    suspend private fun handleResult(result: Any) {
         if (result.javaClass.isArray) {
             val events = ObjectUtils.toObjectArray(result)
             for (event in events) {

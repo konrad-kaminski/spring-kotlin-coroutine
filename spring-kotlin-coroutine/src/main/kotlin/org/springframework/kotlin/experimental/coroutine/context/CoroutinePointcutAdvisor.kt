@@ -34,7 +34,7 @@ internal open class CoroutinePointcutAdvisor(
 
     init {
         val classMatchingPointcut = AnnotationMatchingPointcut(Coroutine::class.java, true)
-        val methodMatchingPointcut = AnnotationMatchingPointcut.forMethodAnnotation(Coroutine::class.java)
+        val methodMatchingPointcut = AnnotationMatchingPointcut(null, Coroutine::class.java, true)
         pointcut = ComposablePointcut(classMatchingPointcut).union(methodMatchingPointcut).intersection(CoroutineMethodMatcher)
 
         advice = CoroutineMethodInterceptor(contextResolver)

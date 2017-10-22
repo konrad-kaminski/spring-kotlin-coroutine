@@ -126,7 +126,7 @@ private class CoroutineCacheInterceptor: CacheInterceptor() {
     override fun invokeOperation(invoker: CacheOperationInvoker): Any? {
         val result = super.invokeOperation(invoker)
 
-        if (result == COROUTINE_SUSPENDED) {
+        if (result === COROUTINE_SUSPENDED) {
             throw CoroutineSuspendedException()
         } else {
             return result

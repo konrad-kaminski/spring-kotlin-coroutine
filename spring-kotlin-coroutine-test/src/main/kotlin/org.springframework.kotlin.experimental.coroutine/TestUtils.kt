@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,31 @@
 
 package org.springframework.kotlin.experimental.coroutine
 
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.channels.consumeEach
+import kotlinx.coroutines.experimental.runBlocking
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import java.util.Optional
 import kotlin.coroutines.experimental.Continuation
 import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
 
 @Suppress("UNCHECKED_CAST")
-fun <T: Any> runBlocking(lambda: (Continuation<T>) -> Any) = kotlinx.coroutines.experimental.runBlocking {
+fun <T: Any> runBlocking(lambda: (Continuation<T>) -> Any) = runBlocking {
     suspendCancellableCoroutine<T> { cont ->
         var result: Optional<Any> = Optional.of(COROUTINE_SUSPENDED)
 
         try {
             result = Optional.ofNullable(lambda(cont))
-        }
-        catch (e: Throwable) {
+        } catch (e: Throwable) {
             cont.resumeWithException(e)
         }
 
-        if (result.get() != COROUTINE_SUSPENDED) cont.resume(result.get() as T)
+        if (result.get() !== COROUTINE_SUSPENDED) cont.resume(result.get() as T)
+    }
+}
+
+fun <T> ReceiveChannel<T>.asList(): List<T> = runBlocking {
+    mutableListOf<T>().apply {
+        consumeEach { add(it) }
     }
 }

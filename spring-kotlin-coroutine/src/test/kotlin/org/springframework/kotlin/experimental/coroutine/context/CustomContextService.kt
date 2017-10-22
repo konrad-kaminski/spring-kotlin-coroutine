@@ -18,8 +18,29 @@ package org.springframework.kotlin.experimental.coroutine.context
 
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
 import java.lang.Thread.currentThread
+import java.lang.annotation.Inherited
 
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+@Inherited
+@Coroutine(COMMON_POOL)
+annotation class CommonPoolCoroutine
+
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
+@Inherited
+@Coroutine("ReactorScheduler")
+annotation class ReactorSchedulerCoroutine
+
+@ReactorSchedulerCoroutine
 open class CustomContextService {
+    suspend open fun defaultContextFun(): Thread = currentThread()
+
+    @CommonPoolCoroutine
+    suspend open fun metaCommonPoolFun(): Thread = currentThread()
+
     @Coroutine(COMMON_POOL)
     suspend open fun commonPoolFun(): Thread = currentThread()
 
@@ -40,4 +61,11 @@ open class CustomContextService {
 
     @Coroutine(COMMON_POOL, name = "customCoroutineName")
     suspend open fun customCoroutineNameFun(): String = currentThread().name
+}
+
+@ReactorSchedulerCoroutine
+interface ReactorSchedulerService
+
+open class TestReactorSchedulerService: ReactorSchedulerService {
+    suspend open fun contextFun(): Thread = currentThread()
 }

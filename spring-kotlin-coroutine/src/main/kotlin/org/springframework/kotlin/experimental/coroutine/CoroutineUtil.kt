@@ -17,8 +17,11 @@
 package org.springframework.kotlin.experimental.coroutine
 
 import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import org.springframework.util.ClassUtils
 import java.lang.reflect.Method
 import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.reflect.KClass
 import kotlin.reflect.jvm.kotlinFunction
 
 val Method.isSuspend: Boolean
@@ -38,3 +41,23 @@ internal fun <T> Array<T>.removeLastValue(): Array<T> =
 internal fun <T> Array<T>.setLast(value: T): Unit {
     this[lastIndex] = value
 }
+
+val Class<*>.isCoroutineCollection: Boolean
+    get() = this === ReceiveChannel::class.java || isArray || ClassUtils.isAssignable(Iterable::class.java, this)
+
+data class TypeMetaData(
+        val clazz: Class<*>,
+        val clazzArg: Class<*>?
+) {
+    val domainClazz: Class<*>
+        get() = clazzArg?.takeIf { clazz.isCoroutineCollection } ?: clazz
+}
+
+val Method.returnTypeMetadata: TypeMetaData
+    get() {
+        val rt = kotlinFunction?.returnType
+        val clazz = (rt?.classifier as? KClass<*>)?.java ?: returnType
+        val clazzArg = (rt?.arguments?.firstOrNull()?.type?.classifier as? KClass<*>)?.java
+
+        return TypeMetaData(clazz, clazzArg)
+    }

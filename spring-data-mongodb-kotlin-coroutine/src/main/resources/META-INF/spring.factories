@@ -1,0 +1,2 @@
+org.springframework.data.repository.core.support.RepositoryFactorySupport=\
+org.springframework.data.mongodb.repository.support.CoroutineRepositoryFactorySupport

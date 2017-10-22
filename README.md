@@ -2,15 +2,27 @@
 [![Download](https://api.bintray.com/packages/konrad-kaminski/maven/spring-kotlin-coroutine/images/download.svg)](https://bintray.com/konrad-kaminski/maven/spring-kotlin-coroutine/_latestVersion)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
-`spring-kotlin-coroutine` is a repository that contains a library and a demo app which allows using Kotlin coroutines in 
+`spring-kotlin-coroutine` is a repository that contains several libraries and a demo app which allows using Kotlin coroutines in 
 Spring applications as first-class citizens.
 
 ## Project modules
 
-This project contains two modules:
-1. `spring-kotlin-coroutine` - contains code for a library with Spring components and Kotlin extension functions which allow using
-                               Kotlin coroutines in Spring applications.
-2. `spring-kotlin-coroutine-demo` - contains a sample application which demonstrates the use `spring-kotlin-coroutine`                             
+This project contains several modules:
+1. `spring-kotlin-coroutine` - a library which allow using Kotlin coroutines in Spring applications. It contains support
+   for [`@Coroutine`](#coroutine) annotation, [application events](#application-events), [caching](#cacheable-support),
+   [scheduled tasks](#scheduled-support), [`CoroutineRestOperations`](#coroutinerestoperations), [`DeferredRestOperations`](#deferredrestoperations),
+   [`ListenableFuture` extensions](#listenablefuture-extensions).
+2. `spring-webmvc-kotlin-coroutine` - a library which allow using Kotlin coroutines in Spring MVC applications. It contains
+   support for [web methods](#web-methods).
+3. `spring-webflux-kotlin-coroutine` - a library which allow using Kotlin coroutines in Spring Web Flux applications. It contains
+   support for [Web Flux web methods](#web-flux-web-methods), [`CoroutineWebClient`](#coroutinewebclient) and
+   [functional style routes definition](#functional-style-routes-definition).
+4. `spring-data-mongodb-kotlin-coroutine` - a library which allow using Kotlin coroutines in Spring Data Mongo applications. It contains
+   support for [`CoroutineMongoRepository`](#coroutinemongorepository) and [`CoroutineMongoTemplate`](#coroutinemongotemplate).
+5. `spring-boot-autoconfigure-kotlin-coroutine` - a library which contains autoconfiguration support for `spring-data-mongodb-kotlin-coroutine`
+   via [`@EnableCoroutineMongoRepositories` annotation](#enablecoroutinemongorepositories).  
+6. `spring-kotlin-coroutine-demo` - contains a sample application which demonstrates the use of `spring-kotlin-coroutine` and
+    `spring-webmvc-kotlin-coroutine`.                             
 
 ## Supported features
 
@@ -41,7 +53,7 @@ used to run [`@Scheduled`](http://docs.spring.io/spring/docs/current/javadoc-api
 ### Web methods
 
 Because coroutines can be suspended and they have an additional implicit callback parameter they cannot be used
-as web methods by default. With special parameter and result handling introduced in `spring-kotlin-coroutine`
+as web methods by default. With special parameter and result handling introduced in `spring-webmvc-kotlin-coroutine`
 you can safely use coroutines as web methods. You can e.g. have the following component:
 
 ```kotlin
@@ -239,6 +251,37 @@ By changing the `start` parameter value you can specify when the REST operation 
 > Note that [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/DeferredRestOperations.kt) does not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/EnableCoroutine.kt) in order to work. Underneath [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/DeferredRestOperations.kt)
 uses [`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/proxy/CoroutineProxy.kt).  
 
+### Web Flux web methods
+
+By using `spring-webflux-kotlin-coroutine` module instead of `spring-webmvc-kotlin-coroutine` web methods which are
+suspending functions will use Spring Web Flux. This enables them to use non-blocking I/O API. 
+
+## CoroutineWebClient
+
+`CoroutineWebClient` is a counterpart of the Spring Web Flux `WebClient` component. The differences between these components
+can be found mainly in the functions which operate on reactive types - in `CoroutineWebClient` they are suspending functions
+operating on regular types. Also the naming of the methods can be slightly different (e.g. in `WebClient` you can find `bodyToMono`
+and in `CoroutineWebClient` it is simply `body`).
+
+## Functional style routes definition
+
+TBD
+
+## CoroutineMongoRepository
+
+`spring-data-mongodb-kotlin-coroutine` contains support for `CoroutineMongoRepository`-based repositories. These repositories
+work as regular Spring Data Mongo or Spring Data Mongo Reactive repositories, but have support for suspending functions
+and `ReceiveChannel` type.
+
+## CoroutineMongoTemplate
+
+`CoroutineMongoTemplate` is a counterpart of regular `MongoTemplate`, but contains suspending functions instead of regular ones.
+
+## EnableCoroutineMongoRepositories
+
+The `@EnableCoroutineMongoRepositories` annotation works just like `@EnableMongoRepositories` annotation, but enables
+the usage of `CoroutineMongoRepository` repositories.
+
 ### ListenableFuture extensions
 
 The [`kotlinx.coroutines`](https://github.com/Kotlin/kotlinx.coroutines) library provides interoperability functions with many existing asynchronous libraries (
@@ -303,7 +346,7 @@ repositories {
 Add dependencies:
 
 ```groovy
-compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.2.3'
+compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.3.0'
 ```
 
 > Note that some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
@@ -313,15 +356,15 @@ details:
 > | Feature                                                                                                                                | Dependency                                              |
 > |----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
 > | Web methods                                                                                                                            | `org.springframework:spring-webmvc:4.3.11.RELEASE`      |
-> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.19`     |
-> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.19`     |
-> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.19` |
+> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.19.2`     |
+> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.19.2`     |
+> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.19.2` |
 
 And make sure that you use the right Kotlin version:
 
 ```groovy
 buildscript {
-    ext.kotlin_version = '1.1.50'
+    ext.kotlin_version = '1.1.51'
 }
 ```
 

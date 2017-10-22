@@ -33,6 +33,11 @@ class ContextConfiguration {
         return new CustomContextService()
     }
 
+    @Bean
+    TestReactorSchedulerService testReactorSchedulerService() {
+        return new TestReactorSchedulerService()
+    }
+
     @Bean("ReactorScheduler")
     ReactorScheduler reactorScheduler() {
         return ReactorSchedulers.newSingle("ReactorSingleTest")

@@ -1,8 +1,9 @@
 buildscript {
-    ext.kotlin_version = "1.1.50"
-    ext.kotlin_coroutines_version = "0.19.1"
+    ext.kotlin_version = "1.1.51"
+    ext.kotlin_coroutines_version = "0.19.2"
     ext.spock_version = '1.1-groovy-2.4'
     ext.spring_version = "5.0.0.RELEASE"
+    ext.spring_data_version = "2.0.0.RELEASE"
     ext.spring_boot_version = "2.0.0.M5"
 
     repositories {
@@ -80,6 +81,7 @@ project(":spring-kotlin-coroutine") {
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$kotlin_coroutines_version", optional
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
+        testCompile project(':spring-kotlin-coroutine-test')
         testCompile "net.sf.ehcache:ehcache:2.10.3"
         testCompile "org.spockframework:spock-core:$spock_version"
         testCompile "org.spockframework:spock-spring:$spock_version"
@@ -167,7 +169,14 @@ project(":spring-kotlin-coroutine") {
 }
 
 project(":spring-webmvc-kotlin-coroutine") {
+    apply plugin: 'pl.allegro.tech.build.axion-release'
+    apply plugin: 'com.jfrog.bintray'
     apply plugin: 'groovy'
+    apply plugin: 'nebula.optional-base'
+    apply plugin: 'maven-publish'
+
+    group "org.springframework.kotlin"
+    project.version = scmVersion.version
 
     compileTestGroovy.classpath += files(compileTestKotlin.destinationDir)
 
@@ -181,6 +190,388 @@ project(":spring-webmvc-kotlin-coroutine") {
         testCompile "org.springframework.boot:spring-boot-starter-test:$spring_boot_version"
         testCompile "org.springframework.boot:spring-boot-starter-web:$spring_boot_version"
     }
+
+    bintray {
+        user = "konrad-kaminski"
+        key = System.getenv('BINTRAY_KEY')
+        dryRun = false
+        publish = true
+        publications = ['Bintray']
+        pkg {
+            repo = 'maven'
+            name = 'spring-webmvc-kotlin-coroutine'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+            websiteUrl = 'https://github.com/konrad-kaminski/spring-kotlin-coroutine'
+            issueTrackerUrl = 'https://github.com/konrad-kaminski/spring-kotlin-coroutine/issues'
+            labels = ['spring', 'kotlin', 'coroutine']
+            version {
+                name = project.version
+                vcsTag = "release-${project.version}"
+            }
+        }
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        from sourceSets.main.kotlin
+    }
+
+    task javadocJar (type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    publishing {
+        publications {
+            Bintray(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier 'sources'
+                }
+
+                artifact javadocJar {
+                    classifier 'javadoc'
+                }
+
+                pom.withXml {
+                    asNode().children().last() + {
+                        resolveStrategy = Closure.DELEGATE_FIRST
+
+                        name 'spring-webmvc-kotlin-coroutine'
+                        description 'Kotlin coroutine support for Spring MVC.'
+                        url 'https://github.com/konrad-kaminski/spring-kotlin-coroutine'
+                        scm {
+                            url 'https://github.com/konrad-kaminski/spring-kotlin-coroutine.git'
+                            connection 'scm:git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+                            developerConnection 'git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+                            tag project.version
+                        }
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id 'konrad-kaminski'
+                                name 'Konrad Kamiński'
+                                email 'kaminski.konrad@gmail.com'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+project(":spring-webflux-kotlin-coroutine") {
+    apply plugin: 'pl.allegro.tech.build.axion-release'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'groovy'
+    apply plugin: 'nebula.optional-base'
+    apply plugin: 'maven-publish'
+
+    group "org.springframework.kotlin"
+    project.version = scmVersion.version
+
+    compileTestGroovy.classpath += files(compileTestKotlin.destinationDir)
+
+    dependencies {
+        compile project(":spring-kotlin-coroutine")
+        compile "org.springframework:spring-webflux:$spring_version"
+
+        testCompile "org.spockframework:spock-core:$spock_version"
+        testCompile "org.spockframework:spock-spring:$spock_version"
+        testCompile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
+        testCompile "org.springframework.boot:spring-boot-starter-test:$spring_boot_version"
+        testCompile "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version"
+        testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.0.0"
+    }
+
+    bintray {
+        user = "konrad-kaminski"
+        key = System.getenv('BINTRAY_KEY')
+        dryRun = false
+        publish = true
+        publications = ['Bintray']
+        pkg {
+            repo = 'maven'
+            name = 'spring-webflux-kotlin-coroutine'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+            websiteUrl = 'https://github.com/konrad-kaminski/spring-kotlin-coroutine'
+            issueTrackerUrl = 'https://github.com/konrad-kaminski/spring-kotlin-coroutine/issues'
+            labels = ['spring', 'kotlin', 'coroutine']
+            version {
+                name = project.version
+                vcsTag = "release-${project.version}"
+            }
+        }
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        from sourceSets.main.kotlin
+    }
+
+    task javadocJar (type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    publishing {
+        publications {
+            Bintray(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier 'sources'
+                }
+
+                artifact javadocJar {
+                    classifier 'javadoc'
+                }
+
+                pom.withXml {
+                    asNode().children().last() + {
+                        resolveStrategy = Closure.DELEGATE_FIRST
+
+                        name 'spring-webflux-kotlin-coroutine'
+                        description 'Kotlin coroutine support for Spring Web Flux.'
+                        url 'https://github.com/konrad-kaminski/spring-kotlin-coroutine'
+                        scm {
+                            url 'https://github.com/konrad-kaminski/spring-kotlin-coroutine.git'
+                            connection 'scm:git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+                            developerConnection 'git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+                            tag project.version
+                        }
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id 'konrad-kaminski'
+                                name 'Konrad Kamiński'
+                                email 'kaminski.konrad@gmail.com'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+project("spring-data-mongodb-kotlin-coroutine") {
+    apply plugin: 'pl.allegro.tech.build.axion-release'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'groovy'
+    apply plugin: 'nebula.optional-base'
+    apply plugin: 'maven-publish'
+
+    group "org.springframework.kotlin"
+    project.version = scmVersion.version
+
+    compileTestGroovy.classpath += files(compileTestKotlin.destinationDir)
+
+    dependencies {
+        compile project(":spring-kotlin-coroutine")
+        compile "org.springframework.data:spring-data-mongodb:$spring_data_version"
+        compile "org.mongodb:mongodb-driver-reactivestreams:1.6.0"
+    }
+
+    bintray {
+        user = "konrad-kaminski"
+        key = System.getenv('BINTRAY_KEY')
+        dryRun = false
+        publish = true
+        publications = ['Bintray']
+        pkg {
+            repo = 'maven'
+            name = 'spring-data-mongodb-kotlin-coroutine'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+            websiteUrl = 'https://github.com/konrad-kaminski/spring-kotlin-coroutine'
+            issueTrackerUrl = 'https://github.com/konrad-kaminski/spring-kotlin-coroutine/issues'
+            labels = ['spring', 'kotlin', 'coroutine']
+            version {
+                name = project.version
+                vcsTag = "release-${project.version}"
+            }
+        }
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        from sourceSets.main.kotlin
+    }
+
+    task javadocJar (type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    publishing {
+        publications {
+            Bintray(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier 'sources'
+                }
+
+                artifact javadocJar {
+                    classifier 'javadoc'
+                }
+
+                pom.withXml {
+                    asNode().children().last() + {
+                        resolveStrategy = Closure.DELEGATE_FIRST
+
+                        name 'spring-data-mongodb-kotlin-coroutine'
+                        description 'Kotlin coroutine support for Spring Data Mongo.'
+                        url 'https://github.com/konrad-kaminski/spring-kotlin-coroutine'
+                        scm {
+                            url 'https://github.com/konrad-kaminski/spring-kotlin-coroutine.git'
+                            connection 'scm:git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+                            developerConnection 'git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+                            tag project.version
+                        }
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id 'konrad-kaminski'
+                                name 'Konrad Kamiński'
+                                email 'kaminski.konrad@gmail.com'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+project("spring-boot-autoconfigure-kotlin-coroutine") {
+    apply plugin: 'pl.allegro.tech.build.axion-release'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'groovy'
+    apply plugin: 'nebula.optional-base'
+    apply plugin: 'maven-publish'
+
+    group "org.springframework.kotlin"
+    project.version = scmVersion.version
+
+    compileTestGroovy.classpath += files(compileTestKotlin.destinationDir)
+
+    dependencies {
+        compile project(":spring-data-mongodb-kotlin-coroutine"), optional
+        compile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
+
+        testCompile project(':spring-kotlin-coroutine-test')
+        testCompile "org.spockframework:spock-core:$spock_version"
+        testCompile "org.spockframework:spock-spring:$spock_version"
+        testCompile "org.springframework.boot:spring-boot-starter-test:$spring_boot_version"
+        testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.0.0"
+    }
+
+    bintray {
+        user = "konrad-kaminski"
+        key = System.getenv('BINTRAY_KEY')
+        dryRun = false
+        publish = true
+        publications = ['Bintray']
+        pkg {
+            repo = 'maven'
+            name = 'spring-boot-autoconfigure-kotlin-coroutine'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+            websiteUrl = 'https://github.com/konrad-kaminski/spring-kotlin-coroutine'
+            issueTrackerUrl = 'https://github.com/konrad-kaminski/spring-kotlin-coroutine/issues'
+            labels = ['spring', 'kotlin', 'coroutine']
+            version {
+                name = project.version
+                vcsTag = "release-${project.version}"
+            }
+        }
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        from sourceSets.main.kotlin
+    }
+
+    task javadocJar (type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    publishing {
+        publications {
+            Bintray(MavenPublication) {
+                from components.java
+
+                artifact sourceJar {
+                    classifier 'sources'
+                }
+
+                artifact javadocJar {
+                    classifier 'javadoc'
+                }
+
+                pom.withXml {
+                    asNode().children().last() + {
+                        resolveStrategy = Closure.DELEGATE_FIRST
+
+                        name 'spring-boot-autoconfigure-kotlin-coroutine'
+                        description 'Kotlin coroutine support for Spring Autoconfiguration.'
+                        url 'https://github.com/konrad-kaminski/spring-kotlin-coroutine'
+                        scm {
+                            url 'https://github.com/konrad-kaminski/spring-kotlin-coroutine.git'
+                            connection 'scm:git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+                            developerConnection 'git@github.com:konrad-kaminski/spring-kotlin-coroutine.git'
+                            tag project.version
+                        }
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/license/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id 'konrad-kaminski'
+                                name 'Konrad Kamiński'
+                                email 'kaminski.konrad@gmail.com'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+project("spring-kotlin-coroutine-test") {
+    dependencies {
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
+    }
 }
 
 project(":spring-kotlin-coroutine-demo") {
@@ -193,7 +584,8 @@ project(":spring-kotlin-coroutine-demo") {
         compile "net.sf.ehcache:ehcache:2.10.3"
         compile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
         compile "org.springframework.boot:spring-boot-starter:$spring_boot_version"
-        compile "org.springframework.boot:spring-boot-starter-web:$spring_boot_version"
+        compile "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version"
+        compile "javax.servlet:javax.servlet-api:3.1.0"
     }
 }
 

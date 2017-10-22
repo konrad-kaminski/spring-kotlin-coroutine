@@ -1,2 +1,3 @@
-include 'spring-kotlin-coroutine', 'spring-webmvc-kotlin-coroutine', 'spring-kotlin-coroutine-demo'
+include 'spring-kotlin-coroutine', 'spring-webmvc-kotlin-coroutine', 'spring-webflux-kotlin-coroutine', 'spring-kotlin-coroutine-demo',
+        'spring-data-mongodb-kotlin-coroutine', 'spring-boot-autoconfigure-kotlin-coroutine', 'spring-kotlin-coroutine-test'
 
