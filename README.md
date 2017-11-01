@@ -256,28 +256,28 @@ uses [`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/spring
 By using `spring-webflux-kotlin-coroutine` module instead of `spring-webmvc-kotlin-coroutine` web methods which are
 suspending functions will use Spring Web Flux. This enables them to use non-blocking I/O API. 
 
-## CoroutineWebClient
+### CoroutineWebClient
 
 `CoroutineWebClient` is a counterpart of the Spring Web Flux `WebClient` component. The differences between these components
 can be found mainly in the functions which operate on reactive types - in `CoroutineWebClient` they are suspending functions
 operating on regular types. Also the naming of the methods can be slightly different (e.g. in `WebClient` you can find `bodyToMono`
 and in `CoroutineWebClient` it is simply `body`).
 
-## Functional style routes definition
+### Functional style routes definition
 
 TBD
 
-## CoroutineMongoRepository
+### CoroutineMongoRepository
 
 `spring-data-mongodb-kotlin-coroutine` contains support for `CoroutineMongoRepository`-based repositories. These repositories
 work as regular Spring Data Mongo or Spring Data Mongo Reactive repositories, but have support for suspending functions
 and `ReceiveChannel` type.
 
-## CoroutineMongoTemplate
+### CoroutineMongoTemplate
 
 `CoroutineMongoTemplate` is a counterpart of regular `MongoTemplate`, but contains suspending functions instead of regular ones.
 
-## EnableCoroutineMongoRepositories
+### EnableCoroutineMongoRepositories
 
 The `@EnableCoroutineMongoRepositories` annotation works just like `@EnableMongoRepositories` annotation, but enables
 the usage of `CoroutineMongoRepository` repositories.
