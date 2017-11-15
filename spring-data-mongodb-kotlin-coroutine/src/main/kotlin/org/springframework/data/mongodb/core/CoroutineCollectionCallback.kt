@@ -17,11 +17,10 @@
 package org.springframework.data.mongodb.core
 
 import com.mongodb.coroutines.client.CoroutineMongoCollection
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import org.bson.Document
 
 interface CoroutineCollectionCallback<T> {
     val reactiveCollectionCallback: ReactiveCollectionCallback<T>
 
-    suspend fun doInCollection(collection: CoroutineMongoCollection<Document>): ReceiveChannel<T>
+    suspend fun doInCollection(collection: CoroutineMongoCollection<Document>): List<T>
 }

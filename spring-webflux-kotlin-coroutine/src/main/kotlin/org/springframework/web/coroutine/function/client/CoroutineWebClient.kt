@@ -47,6 +47,10 @@ interface CoroutineWebClient {
     }
 
     interface UriSpec<T: RequestHeadersSpec<T>> {
+        fun uri(uri: String, vararg uriVariables: Any): T
+
+        fun uri(uri: String, uriVariables: Map<String, *>): T
+
         fun uri(uri: URI): T
     }
 
@@ -66,6 +70,7 @@ interface CoroutineWebClient {
     }
 }
 
+inline suspend fun <reified T : Any> CoroutineWebClient.CoroutineResponseSpec.body(): T? = body(T::class.java)
 
 open class DefaultCoroutineWebClient(
     private val client: WebClient
@@ -103,6 +108,14 @@ open class DefaultCoroutineResponseSpec(
 open class DefaultRequestBodyUriSpec(
     private val spec: WebClient.RequestBodyUriSpec
 ): CoroutineWebClient.RequestBodyUriSpec {
+    override fun uri(uri: String, vararg uriVariables: Any): CoroutineWebClient.RequestBodySpec = apply {
+        spec.uri(uri, *uriVariables)
+    }
+
+    override fun uri(uri: String, uriVariables: Map<String, *>): CoroutineWebClient.RequestBodySpec = apply {
+        spec.uri(uri, uriVariables)
+    }
+
     override fun uri(uri: URI): CoroutineWebClient.RequestBodySpec = apply {
         spec.uri(uri)
     }
@@ -114,4 +127,3 @@ open class DefaultRequestBodyUriSpec(
     suspend override fun retrieve(): CoroutineWebClient.CoroutineResponseSpec =
         spec.retrieve().asCoroutineResponseSpec()
 }
-

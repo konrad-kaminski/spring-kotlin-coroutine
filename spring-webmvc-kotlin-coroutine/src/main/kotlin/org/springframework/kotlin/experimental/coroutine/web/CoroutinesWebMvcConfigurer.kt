@@ -74,14 +74,11 @@ internal open class CoroutinesWebMvcConfigurer : WebMvcConfigurer {
                     returnType.method.isSuspend
 
             override fun handleReturnValue(returnValue: Any?, type: MethodParameter,
-                                           mavContainer: ModelAndViewContainer, webRequest: NativeWebRequest) =
-                if (returnValue === COROUTINE_SUSPENDED) {
-                    val result = mavContainer.model[DEFERRED_RESULT] as DeferredResult<*>
+                                           mavContainer: ModelAndViewContainer, webRequest: NativeWebRequest) {
+                val result = mavContainer.model[DEFERRED_RESULT] as DeferredResult<*>
 
-                    delegate.handleReturnValue(result, type, mavContainer, webRequest)
-                } else {
-                    mavContainer.isRequestHandled = true
-                }
+                return delegate.handleReturnValue(result, type, mavContainer, webRequest)
+            }
 
             override fun isAsyncReturnValue(returnValue: Any, returnType: MethodParameter): Boolean =
                     returnValue === COROUTINE_SUSPENDED

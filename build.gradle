@@ -285,6 +285,7 @@ project(":spring-webflux-kotlin-coroutine") {
         compile project(":spring-kotlin-coroutine")
         compile "org.springframework:spring-webflux:$spring_version"
 
+        testCompile project(":spring-kotlin-coroutine-test")
         testCompile "org.spockframework:spock-core:$spock_version"
         testCompile "org.spockframework:spock-spring:$spock_version"
         testCompile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"

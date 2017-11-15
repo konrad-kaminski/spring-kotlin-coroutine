@@ -90,7 +90,7 @@ interface CoroutineMongoOperations {
      * @param action callback object that specifies the MongoDB actions to perform on the passed in DB instance.
      * @return a result object returned by the action
     </T> */
-    fun <T> execute(action: CoroutineDatabaseCallback<T>): ReceiveChannel<T>
+    suspend fun <T> execute(action: CoroutineDatabaseCallback<T>): List<T>
 
     /**
      * Executes the given [CoroutineCollectionCallback] on the entity collection of the specified class.
@@ -103,7 +103,7 @@ interface CoroutineMongoOperations {
      * @param action callback object that specifies the MongoDB action
      * @return a result object returned by the action or <tt>null</tt>
     </T> */
-    fun <T> execute(entityClass: Class<*>, action: CoroutineCollectionCallback<T>): ReceiveChannel<T>
+    suspend fun <T> execute(entityClass: Class<*>, action: CoroutineCollectionCallback<T>): List<T>
 
     /**
      * Executes the given [CoroutineCollectionCallback] on the collection of the given name.
@@ -116,7 +116,7 @@ interface CoroutineMongoOperations {
      * @param action callback object that specifies the MongoDB action the callback action.
      * @return a result object returned by the action or <tt>null</tt>
     </T> */
-    fun <T> execute(collectionName: String, action: CoroutineCollectionCallback<T>): ReceiveChannel<T>
+    suspend fun <T> execute(collectionName: String, action: CoroutineCollectionCallback<T>): List<T>
 
     /**
      * Create an uncapped collection with a name based on the provided entity class.
@@ -157,7 +157,7 @@ interface CoroutineMongoOperations {
      *
      * @return Flux of collection names
      */
-    fun getCollectionNames(): ReceiveChannel<String>
+    suspend fun getCollectionNames(): List<String>
 
     /**
      * Get a collection by name, creating it if it doesn't exist.
@@ -226,7 +226,7 @@ interface CoroutineMongoOperations {
      * @param entityClass the parametrized type of the returned [ReceiveChannel].
      * @return the converted collection
      */
-    fun <T> findAll(entityClass: Class<T>): ReceiveChannel<T>
+    suspend fun <T> findAll(entityClass: Class<T>): List<T>
 
     /**
      * Query for a [ReceiveChannel] of objects of type T from the specified collection.
@@ -243,7 +243,7 @@ interface CoroutineMongoOperations {
      * @param collectionName name of the collection to retrieve the objects from
      * @return the converted collection
      */
-    fun <T> findAll(entityClass: Class<T>, collectionName: String): ReceiveChannel<T>
+    suspend fun <T> findAll(entityClass: Class<T>, collectionName: String): List<T>
 
     /**
      * Map the results of an ad-hoc query on the collection for the entity class to a single instance of an object of the
@@ -330,7 +330,7 @@ interface CoroutineMongoOperations {
      * @param entityClass the parametrized type of the returned [ReceiveChannel].
      * @return the [ReceiveChannel] of converted objects
      */
-    fun <T> find(query: Query, entityClass: Class<T>): ReceiveChannel<T>
+    suspend fun <T> find(query: Query, entityClass: Class<T>): List<T>
 
     /**
      * Map the results of an ad-hoc query on the specified collection to a [ReceiveChannel] of the specified type.
@@ -349,7 +349,7 @@ interface CoroutineMongoOperations {
      * @param collectionName name of the collection to retrieve the objects from
      * @return the [ReceiveChannel] of converted objects
      */
-    fun <T> find(query: Query, entityClass: Class<T>, collectionName: String): ReceiveChannel<T>
+    suspend fun <T> find(query: Query, entityClass: Class<T>, collectionName: String): List<T>
 
     /**
      * Returns a document with the given id mapped onto the given class. The collection the query is ran against will be
@@ -392,7 +392,7 @@ interface CoroutineMongoOperations {
      * @throws IllegalArgumentException if `aggregation`, `collectionName` or `outputType` is
      * null.
      */
-    fun <O> aggregate(aggregation: TypedAggregation<*>, collectionName: String, outputType: Class<O>): ReceiveChannel<O>
+    suspend fun <O> aggregate(aggregation: TypedAggregation<*>, collectionName: String, outputType: Class<O>): List<O>
 
     /**
      * Execute an aggregation operation.
@@ -412,7 +412,7 @@ interface CoroutineMongoOperations {
      * @return The results of the aggregation operation.
      * @throws IllegalArgumentException if `aggregation` or `outputType` is null.
      */
-    fun <O> aggregate(aggregation: TypedAggregation<*>, outputType: Class<O>): ReceiveChannel<O>
+    suspend fun <O> aggregate(aggregation: TypedAggregation<*>, outputType: Class<O>): List<O>
 
     /**
      * Execute an aggregation operation.
@@ -434,7 +434,7 @@ interface CoroutineMongoOperations {
      * @throws IllegalArgumentException if `aggregation`, `inputType` or `outputType` is
      * null.
      */
-    fun <O> aggregate(aggregation: Aggregation, inputType: Class<*>, outputType: Class<O>): ReceiveChannel<O>
+    suspend fun <O> aggregate(aggregation: Aggregation, inputType: Class<*>, outputType: Class<O>): List<O>
 
     /**
      * Execute an aggregation operation.
@@ -456,7 +456,7 @@ interface CoroutineMongoOperations {
      * @throws IllegalArgumentException if `aggregation`, `collectionName` or `outputType` is
      * null.
      */
-    fun <O> aggregate(aggregation: Aggregation, collectionName: String, outputType: Class<O>): ReceiveChannel<O>
+    suspend fun <O> aggregate(aggregation: Aggregation, collectionName: String, outputType: Class<O>): List<O>
 
     /**
      * Returns [ReceiveChannel] of [GeoResult] for all entities matching the given [NearQuery]. Will consider
@@ -468,7 +468,7 @@ interface CoroutineMongoOperations {
      * @param entityClass must not be null.
      * @return
      */
-    fun <T> geoNear(near: NearQuery, entityClass: Class<T>): ReceiveChannel<GeoResult<T>>
+    suspend fun <T> geoNear(near: NearQuery, entityClass: Class<T>): List<GeoResult<T>>
 
     /**
      * Returns [ReceiveChannel] of [GeoResult] for all entities matching the given [NearQuery]. Note, that MongoDB
@@ -481,7 +481,7 @@ interface CoroutineMongoOperations {
      * will be inspected.
      * @return
      */
-    fun <T> geoNear(near: NearQuery, entityClass: Class<T>, collectionName: String): ReceiveChannel<GeoResult<T>>
+    suspend fun <T> geoNear(near: NearQuery, entityClass: Class<T>, collectionName: String): List<GeoResult<T>>
 
     /**
      * Triggers [findAndModify <a></a>
@@ -655,7 +655,7 @@ interface CoroutineMongoOperations {
      * @param entityClass class that determines the collection to use
      * @return
      */
-    fun <T> insert(batchToSave: Collection<T>, entityClass: Class<*>): ReceiveChannel<T>
+    suspend fun <T> insert(batchToSave: Collection<T>, entityClass: Class<*>): List<T>
 
     /**
      * Insert a batch of objects into the specified collection in a single batch write to the database.
@@ -664,7 +664,7 @@ interface CoroutineMongoOperations {
      * @param collectionName name of the collection to store the object in
      * @return
      */
-    fun <T> insert(batchToSave: Collection<T>, collectionName: String): ReceiveChannel<T>
+    suspend fun <T> insert(batchToSave: Collection<T>, collectionName: String): List<T>
 
     /**
      * Insert a mixed Collection of objects into a database collection determining the collection name to use based on the
@@ -673,7 +673,7 @@ interface CoroutineMongoOperations {
      * @param objectsToSave the list of objects to save.
      * @return
      */
-    fun <T> insertAll(objectsToSave: Collection<T>): ReceiveChannel<T>
+    suspend fun <T> insertAll(objectsToSave: Collection<T>): List<T>
 
     /**
      * Insert the object into the collection for the entity type of the object to save.
@@ -705,7 +705,7 @@ interface CoroutineMongoOperations {
      * @param entityClass class that determines the collection to use
      * @return
      */
-    suspend fun <T> insertAll(batchToSave: suspend () -> Collection<T>, entityClass: Class<*>): ReceiveChannel<T>
+    suspend fun <T> insertAll(batchToSave: suspend () -> Collection<T>, entityClass: Class<*>): List<T>
 
     /**
      * Insert objects into the specified collection in a single batch write to the database.
@@ -714,7 +714,7 @@ interface CoroutineMongoOperations {
      * @param collectionName name of the collection to store the object in
      * @return
      */
-    suspend fun <T> insertAll(batchToSave: suspend () -> Collection<T>, collectionName: String): ReceiveChannel<T>
+    suspend fun <T> insertAll(batchToSave: suspend () -> Collection<T>, collectionName: String): List<T>
 
     /**
      * Insert a mixed Collection of objects into a database collection determining the collection name to use based on the
@@ -723,7 +723,7 @@ interface CoroutineMongoOperations {
      * @param objectsToSave the publisher which provides objects to save.
      * @return
      */
-    suspend fun <T> insertAll(objectsToSave: suspend () -> Collection<T>): ReceiveChannel<T>
+    suspend fun <T> insertAll(objectsToSave: suspend () -> Collection<T>): List<T>
 
     /**
      * Save the object to the collection for the entity type of the object to save. This will perform an insert if the
@@ -996,7 +996,7 @@ interface CoroutineMongoOperations {
      * @param collectionName
      * @return
      */
-    fun <T> findAllAndRemove(query: Query, collectionName: String): ReceiveChannel<T>
+    suspend fun <T> findAllAndRemove(query: Query, collectionName: String): List<T>
 
     /**
      * Returns and removes all documents matching the given query form the collection used to store the entityClass.
@@ -1005,7 +1005,7 @@ interface CoroutineMongoOperations {
      * @param entityClass
      * @return
      */
-    fun <T> findAllAndRemove(query: Query, entityClass: Class<T>): ReceiveChannel<T>
+    suspend fun <T> findAllAndRemove(query: Query, entityClass: Class<T>): List<T>
 
     /**
      * Returns and removes all documents that match the provided query document criteria from the the collection used to
@@ -1017,7 +1017,7 @@ interface CoroutineMongoOperations {
      * @param collectionName
      * @return
      */
-    fun <T> findAllAndRemove(query: Query, entityClass: Class<T>, collectionName: String): ReceiveChannel<T>
+    suspend fun <T> findAllAndRemove(query: Query, entityClass: Class<T>, collectionName: String): List<T>
 
     /**
      * Map the results of an ad-hoc query on the collection for the entity class to a stream of objects of the specified
@@ -1068,4 +1068,6 @@ interface CoroutineMongoOperations {
      * @return
      */
     val converter: MongoConverter
+
+    val reactiveMongoOperations: ReactiveMongoOperations
 }

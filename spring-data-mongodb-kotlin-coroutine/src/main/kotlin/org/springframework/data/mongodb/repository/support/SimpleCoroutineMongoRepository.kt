@@ -16,10 +16,8 @@
 
 package org.springframework.data.mongodb.repository.support
 
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.reactive.awaitFirstOrDefault
 import kotlinx.coroutines.experimental.reactive.awaitSingle
-import kotlinx.coroutines.experimental.reactive.openSubscription
 import org.springframework.data.mongodb.core.CoroutineMongoOperations
 import org.springframework.data.mongodb.core.CoroutineMongoTemplate
 import org.springframework.data.mongodb.repository.CoroutineMongoRepository
@@ -35,8 +33,8 @@ open class SimpleCoroutineMongoRepository<T, ID: Serializable>(
     suspend override fun <S : T> save(entity: S): S =
         reactiveRepo.save(entity).awaitSingle()
 
-    suspend override fun <S : T> saveAll(entities: Iterable<S>): ReceiveChannel<S> =
-        reactiveRepo.saveAll(entities).openSubscription()
+    suspend override fun <S : T> saveAll(entities: Iterable<S>): List<S> =
+        reactiveRepo.saveAll(entities).collectList().awaitSingle()
 
     suspend override fun findById(id: ID): T? =
         reactiveRepo.findById(id).awaitFirstOrDefault(null)
@@ -44,11 +42,11 @@ open class SimpleCoroutineMongoRepository<T, ID: Serializable>(
     suspend override fun existsById(id: ID): Boolean =
         reactiveRepo.existsById(id).awaitSingle()
 
-    suspend override fun findAll(): ReceiveChannel<T> =
-        reactiveRepo.findAll().openSubscription()
+    suspend override fun findAll(): List<T> =
+        reactiveRepo.findAll().collectList().awaitSingle()
 
-    suspend override fun findAllById(ids: Iterable<ID>): ReceiveChannel<T> =
-        reactiveRepo.findAllById(ids).openSubscription()
+    suspend override fun findAllById(ids: Iterable<ID>): List<T> =
+        reactiveRepo.findAllById(ids).collectList().awaitSingle()
 
     suspend override fun count(): Long =
         reactiveRepo.count().awaitSingle()

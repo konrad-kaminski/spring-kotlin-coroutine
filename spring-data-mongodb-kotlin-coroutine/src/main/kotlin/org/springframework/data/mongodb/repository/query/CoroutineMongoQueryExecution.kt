@@ -18,6 +18,7 @@ package org.springframework.data.mongodb.repository.query
 
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
+import kotlinx.coroutines.experimental.reactive.openSubscription
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.EntityInstantiators
 import org.springframework.data.domain.Pageable
@@ -43,7 +44,7 @@ interface CoroutineMongoQueryExecution {
             private val returnTypeMetaData: TypeMetaData
     ) : CoroutineMongoQueryExecution {
         override suspend fun execute(query: Query, type: Class<*>, collection: String): Any =
-            operations.find(query.with(pageable), type, collection).let {
+            operations.reactiveMongoOperations.find(query.with(pageable), type, collection).openSubscription().let {
                 if (returnTypeMetaData.clazz == List::class.java) {
                     it.toList()
                 } else {
@@ -116,7 +117,7 @@ interface CoroutineMongoQueryExecution {
             return if (isStreamOfGeoResult) results else TODO()//results.map { it.content }
         }
 
-        protected suspend fun doExecuteQuery(query: Query?, type: Class<*>, collection: String): ReceiveChannel<GeoResult<out Any>> {
+        protected suspend fun doExecuteQuery(query: Query?, type: Class<*>, collection: String): List<GeoResult<out Any>> {
 
             val nearLocation = accessor.geoNearLocation
             val nearQuery = NearQuery.near(nearLocation)

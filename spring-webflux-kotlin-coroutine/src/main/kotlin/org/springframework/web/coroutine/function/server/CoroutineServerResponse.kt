@@ -135,7 +135,7 @@ private fun ServerResponse.BodyBuilder.asCoroutineBodyBuilder(): CoroutineBodyBu
 inline suspend fun <reified T : Any> CoroutineBodyBuilder.body(channel: ReceiveChannel<T>): CoroutineServerResponse? =
         body(channel, T::class.java)
 
-inline suspend fun <reified T: Any> CoroutineBodyBuilder. body(value: T?): CoroutineServerResponse? =
+inline suspend fun <reified T: Any> CoroutineBodyBuilder.body(value: T?): CoroutineServerResponse? =
         body(value, T::class.java)
 
 inline fun <T : CoroutineServerResponse> ServerResponse.asCoroutineServerResponse(): T =

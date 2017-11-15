@@ -36,10 +36,10 @@ interface CoroutineCrudRepository<T, ID>: Repository<T, ID> {
      * Saves all given entities.
      *
      * @param entities must not be null.
-     * @return ReceiveChannel emitting the saved entities.
+     * @return saved entities.
      * @throws IllegalArgumentException in case the given [Iterable] `entities` is null.
      */
-    suspend fun <S : T> saveAll(entities: Iterable<S>): ReceiveChannel<S>
+    suspend fun <S : T> saveAll(entities: Iterable<S>): List<S>
 
     /**
      * Retrieves an entity by its id.
@@ -64,16 +64,16 @@ interface CoroutineCrudRepository<T, ID>: Repository<T, ID> {
      *
      * @return [ReceiveChannel] emitting all entities.
      */
-    suspend fun findAll(): ReceiveChannel<T>
+    suspend fun findAll(): List<T>
 
     /**
      * Returns all instances with the given IDs.
      *
      * @param ids must not be null.
-     * @return ReceiveChannel emitting the found entities.
+     * @return found entities.
      * @throws IllegalArgumentException in case the given [Iterable] `ids` is null.
      */
-    suspend fun findAllById(ids: Iterable<ID>): ReceiveChannel<T>
+    suspend fun findAllById(ids: Iterable<ID>): List<T>
 
     /**
      * Returns the number of entities available.
