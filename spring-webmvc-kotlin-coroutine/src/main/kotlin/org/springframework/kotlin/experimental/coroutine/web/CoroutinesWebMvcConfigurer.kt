@@ -37,7 +37,7 @@ import kotlin.coroutines.experimental.EmptyCoroutineContext
 import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
 
 @Configuration
-@ConditionalOnClass(WebMvcConfigurer::class)
+@ConditionalOnClass("org.springframework.web.servlet.config.annotation.WebMvcConfigurer")
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 internal open class CoroutinesWebMvcConfigurer : WebMvcConfigurer {
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
