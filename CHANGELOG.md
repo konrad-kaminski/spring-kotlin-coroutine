@@ -1,3 +1,12 @@
+## 0.3.1
+* CoroutineMongoTemplate now returns List<T> in most operations instead of ReceiveChannel<T>.
+* A workaround for missing optional dependencies.
+* uri methods in CoroutineWebClient.
+
+## 0.3.0
+* Introduced support for Spring WebFlux based coroutines, functional style routing, CoroutineMongoRepository,
+  CoroutineMongoTemplate, CoroutineWebClient.
+
 ## 0.2.3
 * New version of kotlinx-coroutines.
 * Dropped support for deprecated Reactor [`TimedScheduler`]()
