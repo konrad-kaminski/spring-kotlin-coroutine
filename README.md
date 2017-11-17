@@ -346,7 +346,7 @@ repositories {
 Add dependencies:
 
 ```groovy
-compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.3.0'
+compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.3.1'
 ```
 
 > Note that some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
