@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.repository.config.EnableCoroutineMongoRepositories
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 import test.TestEntity
@@ -87,6 +88,7 @@ class CoroutineMongoRepositoryIntSpec extends Specification {
         result.number == 17
     }
 
+    @Unroll
     def "should not find non-existing entity"() {
         when:
         def result = runBlocking { cont ->
@@ -141,6 +143,7 @@ class CoroutineMongoRepositoryIntSpec extends Specification {
         result.size() == 1
     }
 
+    @Ignore
     @Unroll
     def "should find entity by id"() {
         when:
