@@ -89,6 +89,7 @@ class CoroutineMongoRepositoryIntSpec extends Specification {
     }
 
     @Unroll
+    @Ignore
     def "should not find non-existing entity"() {
         when:
         def result = runBlocking { cont ->
