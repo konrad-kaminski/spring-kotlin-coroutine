@@ -3,6 +3,7 @@ package org.springframework.kotlin.experimental.coroutine
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.http.MediaType
 import org.springframework.kotlin.experimental.coroutine.web.WebConfiguration
 import org.springframework.web.coroutine.function.client.CoroutineWebClient
 import org.springframework.web.coroutine.function.client.CoroutineWebClientUtils
@@ -16,13 +17,14 @@ class CoroutineWebClientSpec extends Specification {
     @LocalServerPort
     private int port
 
-    def "should be able to access endpoint with CoroutineWebClient"() {
+    def "should be able to access endpoint with CoroutineWebClient with custom header"() {
         when:
         final String url = "http://localhost:$port"
         final CoroutineWebClient.CoroutineResponseSpec spec = runBlocking { cont ->
             CoroutineWebClientUtils.createCoroutineWebClient(url)
                     .post()
-                    .uri("/postTest")
+                    .uri("/postWithHeaderTest")
+                    .header("X-Coroutine-Test", "123456")
                     .retrieve(cont)
         }
 

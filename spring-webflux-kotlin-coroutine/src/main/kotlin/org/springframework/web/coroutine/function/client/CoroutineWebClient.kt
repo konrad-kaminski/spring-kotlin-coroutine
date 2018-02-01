@@ -16,10 +16,15 @@
 
 package org.springframework.web.coroutine.function.client
 
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
 import org.springframework.kotlin.experimental.coroutine.web.awaitFirstOrNull
+import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.client.WebClient
 import java.net.URI
+import java.nio.charset.Charset
+import java.time.ZonedDateTime
 
 interface CoroutineWebClient {
     fun get(): CoroutineWebClient.RequestHeadersUriSpec<*>
@@ -55,9 +60,29 @@ interface CoroutineWebClient {
     }
 
     interface RequestHeadersSpec<T: RequestHeadersSpec<T>> {
-        suspend fun exchange(): CoroutineClientResponse?
+        fun accept(vararg acceptableMediaTypes: MediaType): T
+
+        fun acceptCharset(vararg acceptableCharsets: Charset): T
+
+        fun cookie(name: String, value: String): T
+
+        fun cookies(cookiesConsumer: (MultiValueMap<String, String>) -> Unit): T
+
+        fun ifModifiedSince(ifModifiedSince: ZonedDateTime): T
+
+        fun ifNoneMatch(vararg ifNoneMatches: String): T
+
+        fun header(headerName: String, vararg headerValues: String): T
+
+        fun headers(headersConsumer: (HttpHeaders) -> Unit): T
+
+        fun attribute(name: String, value: Any): T
+
+        fun attributes(attributesConsumer: (Map<String, Any>) -> Unit): T
 
         suspend fun retrieve(): CoroutineResponseSpec
+
+        suspend fun exchange(): CoroutineClientResponse?
     }
 
     interface CoroutineResponseSpec {
@@ -70,7 +95,7 @@ interface CoroutineWebClient {
     }
 }
 
-inline suspend fun <reified T : Any> CoroutineWebClient.CoroutineResponseSpec.body(): T? = body(T::class.java)
+suspend inline fun <reified T : Any> CoroutineWebClient.CoroutineResponseSpec.body(): T? = body(T::class.java)
 
 open class DefaultCoroutineWebClient(
     private val client: WebClient
@@ -101,7 +126,7 @@ private fun WebClient.ResponseSpec.asCoroutineResponseSpec(): CoroutineWebClient
 open class DefaultCoroutineResponseSpec(
     private val spec: WebClient.ResponseSpec
 ): CoroutineWebClient.CoroutineResponseSpec {
-    suspend override fun <T> body(clazz: Class<T>): T? =
+    override suspend fun <T> body(clazz: Class<T>): T? =
             spec.bodyToMono(clazz).awaitFirstOrNull()
 }
 
@@ -120,10 +145,50 @@ open class DefaultRequestBodyUriSpec(
         spec.uri(uri)
     }
 
-    suspend override fun exchange(): CoroutineClientResponse? = spec.exchange().awaitFirstOrNull()?.let {
+    override fun accept(vararg acceptableMediaTypes: MediaType): CoroutineWebClient.RequestBodySpec = apply {
+        spec.accept(*acceptableMediaTypes)
+    }
+
+    override fun acceptCharset(vararg acceptableCharsets: Charset): CoroutineWebClient.RequestBodySpec = apply {
+        spec.acceptCharset(*acceptableCharsets)
+    }
+
+    override fun cookie(name: String, value: String): CoroutineWebClient.RequestBodySpec = apply {
+        spec.cookie(name, value)
+    }
+
+    override fun cookies(cookiesConsumer: (MultiValueMap<String, String>) -> Unit): CoroutineWebClient.RequestBodySpec = apply {
+        spec.cookies(cookiesConsumer)
+    }
+
+    override fun ifModifiedSince(ifModifiedSince: ZonedDateTime): CoroutineWebClient.RequestBodySpec = apply {
+        spec.ifModifiedSince(ifModifiedSince)
+    }
+
+    override fun ifNoneMatch(vararg ifNoneMatches: String): CoroutineWebClient.RequestBodySpec = apply {
+        spec.ifNoneMatch(*ifNoneMatches)
+    }
+
+    override fun header(headerName: String, vararg headerValues: String): CoroutineWebClient.RequestBodySpec = apply {
+        spec.header(headerName, *headerValues)
+    }
+
+    override fun headers(headersConsumer: (HttpHeaders) -> Unit): CoroutineWebClient.RequestBodySpec = apply {
+        spec.headers(headersConsumer)
+    }
+
+    override fun attribute(name: String, value: Any): CoroutineWebClient.RequestBodySpec = apply {
+        spec.attribute(name, value)
+    }
+
+    override fun attributes(attributesConsumer: (Map<String, Any>) -> Unit): CoroutineWebClient.RequestBodySpec = apply {
+        spec.attributes(attributesConsumer)
+    }
+
+    override suspend fun exchange(): CoroutineClientResponse? = spec.exchange().awaitFirstOrNull()?.let {
         DefaultCoroutineClientResponse(it)
     }
 
-    suspend override fun retrieve(): CoroutineWebClient.CoroutineResponseSpec =
+    override suspend fun retrieve(): CoroutineWebClient.CoroutineResponseSpec =
         spec.retrieve().asCoroutineResponseSpec()
 }

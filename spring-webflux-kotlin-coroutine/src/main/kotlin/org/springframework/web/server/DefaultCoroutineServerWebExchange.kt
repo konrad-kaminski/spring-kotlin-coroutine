@@ -27,7 +27,7 @@ class DefaultCoroutineServerWebExchange(val exchange: ServerWebExchange): Corout
     override val response: CoroutineServerHttpResponse
         get() = CoroutineServerHttpResponse(exchange.response)
 
-    override suspend fun getSession(): CoroutineWebSession? = exchange.session?.awaitFirstOrNull()?.asCoroutineWebSession()
+    override suspend fun getSession(): CoroutineWebSession? = exchange.session.awaitFirstOrNull()?.asCoroutineWebSession()
 
     override fun mutate(): CoroutineServerWebExchange.Builder = DefaultCoroutineServerWebExchangeBuilder(exchange.mutate())
 

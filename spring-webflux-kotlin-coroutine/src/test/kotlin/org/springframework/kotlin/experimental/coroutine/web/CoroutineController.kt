@@ -26,21 +26,22 @@ import org.springframework.kotlin.experimental.coroutine.context.COMMON_POOL
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 open class CoroutineController {
     @GetMapping("/suspendedMultiply/{a}/{b}")
     @Coroutine(COMMON_POOL)
-    suspend open fun suspendedMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int =
+    open suspend fun suspendedMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int =
         a*b
 
     @GetMapping("/multiply/{a}/{b}")
-    suspend open fun multiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int =
+    open suspend fun multiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int =
         a*b
 
     @GetMapping("/delayedMultiply/{a}/{b}")
-    suspend open fun delayedMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int {
+    open suspend fun delayedMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int {
         delay(1L)
         return a * b
     }
@@ -52,7 +53,7 @@ open class CoroutineController {
         }
 
     @GetMapping("/delayedChannelMultiply/{a}/{b}")
-    suspend open fun delayedChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): ReceiveChannel<Int> {
+    open suspend fun delayedChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): ReceiveChannel<Int> {
         delay(1L)
 
         return produce {
@@ -61,31 +62,31 @@ open class CoroutineController {
     }
 
     @GetMapping("/channelMultiplyList/{a}/{b}")
-    suspend open fun channelMultiplyList(@PathVariable("a") a: Int, @PathVariable("b") b: Int): List<Int> = listOf(a*b)
+    open suspend fun channelMultiplyList(@PathVariable("a") a: Int, @PathVariable("b") b: Int): List<Int> = listOf(a*b)
 
     @GetMapping("/suspendChannelMultiply/{a}/{b}")
-    suspend open fun suspendChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
+    open suspend fun suspendChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
         produce {
             send(a * b)
         }
 
-    @GetMapping("/sseChannelMultiply/{a}/{b}", produces = arrayOf(MediaType.TEXT_EVENT_STREAM_VALUE))
+    @GetMapping("/sseChannelMultiply/{a}/{b}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     open fun sseChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
             channelMultiply(a, b)
 
-    @GetMapping("/sseDelayedChannelMultiply/{a}/{b}", produces = arrayOf(MediaType.TEXT_EVENT_STREAM_VALUE))
-    suspend open fun sseDelayedChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): ReceiveChannel<Int> =
+    @GetMapping("/sseDelayedChannelMultiply/{a}/{b}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    open suspend fun sseDelayedChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): ReceiveChannel<Int> =
             delayedChannelMultiply(a, b)
 
-    @GetMapping("/sseChannelMultiplyList/{a}/{b}", produces = arrayOf(MediaType.TEXT_EVENT_STREAM_VALUE))
-    suspend open fun sseChannelMultiplyList(@PathVariable("a") a: Int, @PathVariable("b") b: Int): List<Int> =
+    @GetMapping("/sseChannelMultiplyList/{a}/{b}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    open suspend fun sseChannelMultiplyList(@PathVariable("a") a: Int, @PathVariable("b") b: Int): List<Int> =
             channelMultiplyList(a, b)
 
-    @GetMapping("/sseSuspendChannelMultiply/{a}/{b}", produces = arrayOf(MediaType.TEXT_EVENT_STREAM_VALUE))
-    suspend open fun sseSuspendChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
+    @GetMapping("/sseSuspendChannelMultiply/{a}/{b}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    open suspend fun sseSuspendChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
             suspendChannelMultiply(a, b)
 
-    @GetMapping("/test", produces = arrayOf(MediaType.TEXT_EVENT_STREAM_VALUE))
+    @GetMapping("/test", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     open fun test() = produce(CommonPool) {
         repeat(5) {
             send(it)
@@ -93,8 +94,8 @@ open class CoroutineController {
         }
     }
 
-    @GetMapping("/delayedTest", produces = arrayOf(MediaType.TEXT_EVENT_STREAM_VALUE))
-    suspend open fun delayedTest() = produce(CommonPool) {
+    @GetMapping("/delayedTest", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    open suspend fun delayedTest() = produce(CommonPool) {
         repeat(5) {
             send(it)
             delay(500L)
@@ -102,5 +103,8 @@ open class CoroutineController {
     }
 
     @PostMapping("/postTest")
-    suspend open fun postTest(): Int = 123456
+    open suspend fun postTest(): Int = 123456
+
+    @PostMapping("/postWithHeaderTest")
+    open suspend fun postWithHeaderTest(@RequestHeader("X-Coroutine-Test") headerValue: String): String = headerValue
 }

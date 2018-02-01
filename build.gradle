@@ -1,17 +1,14 @@
 buildscript {
-    ext.kotlin_version = "1.1.51"
-    ext.kotlin_coroutines_version = "0.19.2"
+    ext.kotlin_version = "1.2.21"
+    ext.kotlin_coroutines_version = "0.22.1"
     ext.spock_version = '1.1-groovy-2.4'
-    ext.spring_version = "5.0.0.RELEASE"
-    ext.spring_data_version = "2.0.0.RELEASE"
-    ext.spring_boot_version = "2.0.0.M5"
+    ext.spring_version = "5.0.3.RELEASE"
+    ext.spring_data_version = "2.0.3.RELEASE"
+    ext.spring_boot_version = "2.0.0.RC1"
 
     repositories {
         jcenter()
         mavenCentral()
-        maven {
-            url "http://dl.bintray.com/kotlin/kotlin-eap-1.1"
-        }
         maven {
             url "https://repo.spring.io/milestone"
         }
@@ -41,9 +38,6 @@ subprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven {
-            url "http://dl.bintray.com/kotlin/kotlin-eap-1.1"
-        }
         maven {
             url "https://repo.spring.io/milestone"
         }
@@ -585,12 +579,12 @@ project(":spring-kotlin-coroutine-demo") {
         compile "net.sf.ehcache:ehcache:2.10.3"
         compile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
         compile "org.springframework.boot:spring-boot-starter:$spring_boot_version"
-        compile "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version"
+        compile "org.springframework.boot:spring-boot-starter-web:$spring_boot_version"
         compile "javax.servlet:javax.servlet-api:3.1.0"
     }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "4.2"
+    gradleVersion = "4.5"
     distributionType = "ALL"
 }
