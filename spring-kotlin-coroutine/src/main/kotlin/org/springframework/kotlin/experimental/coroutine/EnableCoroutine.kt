@@ -24,12 +24,13 @@ import org.springframework.kotlin.experimental.coroutine.context.CoroutineConfig
 import org.springframework.kotlin.experimental.coroutine.context.CoroutineContextResolverConfiguration
 import org.springframework.kotlin.experimental.coroutine.context.CoroutineContexts
 import org.springframework.kotlin.experimental.coroutine.event.CoroutineEventSupportConfiguraton
+import org.springframework.kotlin.experimental.coroutine.reactive.CoroutineReactiveAdapterRegistryConfiguration
 import org.springframework.kotlin.experimental.coroutine.scheduler.CoroutineSchedulerConfiguration
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-@Import(CoroutineConfigurationSelector::class,
+@Import(CoroutineConfigurationSelector::class, CoroutineReactiveAdapterRegistryConfiguration::class,
         CoroutineContextResolverConfiguration::class, CoroutineContexts::class,
         CoroutineEventSupportConfiguraton::class, CoroutineCacheConfiguration::class,
         CoroutineSchedulerConfiguration::class)

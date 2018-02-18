@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.kotlin.experimental.coroutine.IntSpecConfiguration
 import org.springframework.web.client.RestOperations
 import org.springframework.web.client.RestTemplate
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -89,5 +90,24 @@ data:4"""
         then:
         result.statusCode == HttpStatus.OK
         result.body == "123456"
+    }
+
+    def "should handle suspending controller functions which return view name"() {
+        when:
+        def result = restTemplate.getForEntity("http://localhost:$port/blog", String)
+
+        then:
+        result.statusCode == HttpStatus.OK
+        result.body.trim() == "<article><title>TestTitle</title><text>TestText</text></article>"
+    }
+
+    @Ignore("Waiting for the fix in Spring 5")
+    def "should handle suspending controller functions which return view name different from endpoint path"() {
+        when:
+        def result = restTemplate.getForEntity("http://localhost:$port/blogEndpoint", String)
+
+        then:
+        result.statusCode == HttpStatus.OK
+        result.body.trim() == "<article><title>TestTitle</title><text>TestText</text></article>"
     }
 }

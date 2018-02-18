@@ -23,4 +23,9 @@ class WebConfiguration {
     CoroutineController coroutineController() {
         return new CoroutineController()
     }
+
+    @Bean
+    HtmlController htmlController() {
+        return new HtmlController()
+    }
 }

@@ -22,7 +22,6 @@ import kotlinx.coroutines.experimental.reactive.asPublisher
 import org.reactivestreams.Publisher
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.ReactiveAdapterRegistry
-import org.springframework.kotlin.experimental.coroutine.isCoroutineCollection
 import org.springframework.kotlin.experimental.coroutine.returnTypeMetadata
 import org.springframework.util.ClassUtils
 import org.springframework.web.method.HandlerMethod
@@ -31,12 +30,11 @@ import org.springframework.web.reactive.HandlerResult
 import org.springframework.web.reactive.result.method.InvocableHandlerMethod
 import org.springframework.web.reactive.result.method.SyncInvocableHandlerMethod
 import org.springframework.web.server.ServerWebExchange
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.lang.reflect.Proxy
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
-import kotlin.reflect.jvm.kotlinFunction
 
 private class CustomControllerMethodResolver(
         private val delegate: ControllerMethodResolver
@@ -78,7 +76,7 @@ private class CoroutineInvocableHandlerMethod(private val handlerMethod: Handler
             super.invoke(exchange, bindingContext, *providedArgs)
                     .map { result ->
                         if (result.returnValue === COROUTINE_SUSPENDED) {
-                            val future = bindingContext.model.asMap()["continuation"] as CompletableFuture<*>
+                            val future = (bindingContext.model.asMap()["__continuation"] as AtomicReference<CompletableFuture<*>>).get()
                             val metaData = handlerMethod.method.returnTypeMetadata
                             val value = Mono.fromFuture(future).let { mono ->
                                     if (ClassUtils.isAssignable(ReceiveChannel::class.java, metaData.clazz)) {

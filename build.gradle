@@ -285,6 +285,7 @@ project(":spring-webflux-kotlin-coroutine") {
         testCompile "org.springframework.boot:spring-boot-autoconfigure:$spring_boot_version"
         testCompile "org.springframework.boot:spring-boot-starter-test:$spring_boot_version"
         testCompile "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version"
+        testCompile "org.springframework.boot:spring-boot-starter-mustache:$spring_boot_version"
         testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.0.0"
     }
 

@@ -35,6 +35,7 @@ import org.springframework.web.reactive.result.method.annotation.injectCustomCon
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.experimental.Continuation
 import kotlin.coroutines.experimental.CoroutineContext
 import kotlin.coroutines.experimental.EmptyCoroutineContext
@@ -57,7 +58,7 @@ open class CoroutinesWebFluxConfigurer(
             override fun resolveArgument(parameter: MethodParameter, bindingContext: BindingContext,
                                          exchange: ServerWebExchange): Mono<Any> =
                 CompletableFutureContinuation().let {
-                    bindingContext.model.addAttribute("continuation", it)
+                    bindingContext.model.addAttribute("__continuation", AtomicReference(it))
 
                     Mono.just(it)
                 }
