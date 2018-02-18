@@ -1,3 +1,7 @@
+## 0.3.3
+* Initial support for reactive views (related to solving #10).
+* Reactive adapter for ReceiveChannel.
+
 ## 0.3.2
 * Support for Kotlin 1.2.21, kotlinx-coroutines 0.22.1, Spring 5.0.3.RELEASE, Spring Data 2.0.3.RELEASE, Spring Boot 2.0.0.RC1, Gradle 4.5.
 * Support for header methods in `CoroutineWebClient` (#13).
