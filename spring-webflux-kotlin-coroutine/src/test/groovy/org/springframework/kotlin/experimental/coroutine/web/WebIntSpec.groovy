@@ -101,7 +101,6 @@ data:4"""
         result.body.trim() == "<article><title>TestTitle</title><text>TestText</text></article>"
     }
 
-    @Ignore("Waiting for the fix in Spring 5")
     def "should handle suspending controller functions which return view name different from endpoint path"() {
         when:
         def result = restTemplate.getForEntity("http://localhost:$port/blogEndpoint", String)
