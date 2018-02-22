@@ -22,6 +22,7 @@ import org.springframework.kotlin.experimental.coroutine.proxy.CoroutineProxyCon
 import org.springframework.kotlin.experimental.coroutine.proxy.DeferredCoroutineProxyConfig
 import org.springframework.kotlin.experimental.coroutine.proxy.MethodInvoker
 import org.springframework.kotlin.experimental.coroutine.proxy.MethodInvokerProvider
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 object DeferredFromRegularMethodInvokerProvider : MethodInvokerProvider {
@@ -46,7 +47,11 @@ object DeferredFromRegularMethodInvokerProvider : MethodInvokerProvider {
     private fun createDeferredFromRegularMethodInvoker(proxyConfig: DeferredCoroutineProxyConfig, regularMethod: Method, obj: Any) =
         object : MethodInvoker {
             override fun invoke(vararg args: Any): Any? = async(proxyConfig.coroutineContext, proxyConfig.start) {
-                regularMethod.invoke(obj, *args)
+                try {
+                    regularMethod.invoke(obj, *args)
+                } catch (ex: InvocationTargetException) {
+                    throw ex.targetException
+                }
             }
         }
 }
