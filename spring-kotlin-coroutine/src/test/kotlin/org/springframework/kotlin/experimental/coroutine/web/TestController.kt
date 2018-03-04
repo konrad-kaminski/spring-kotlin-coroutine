@@ -1,6 +1,5 @@
 package org.springframework.kotlin.experimental.coroutine.web
 
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -12,5 +11,5 @@ open class TestController {
     open fun multiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int = a*b
 
     @GetMapping("/notfound")
-    open fun notfound() = ResponseEntity<Any?>(HttpStatus.NOT_FOUND)
+    open fun notfound(): ResponseEntity<Int> = ResponseEntity.notFound().build()
 }
