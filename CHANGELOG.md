@@ -1,3 +1,7 @@
+## 0.3.4
+* Support for Kotlin 1.2.30, kotlinx-coroutines 0.22.5, Spring 5.0.4.RELEASE, Spring Data 2.0.5.RELEASE, Spring Boot 2.0.0.RELEASE.
+* Fix for unwrapping InvocationTargetException (#16, thanks to @Krotki).
+
 ## 0.3.3
 * Initial support for reactive views (related to solving #10).
 * Reactive adapter for ReceiveChannel.

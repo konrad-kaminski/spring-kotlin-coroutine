@@ -346,7 +346,7 @@ repositories {
 Add dependencies:
 
 ```groovy
-compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.3.3'
+compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.3.4'
 ```
 
 > Note that some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
@@ -355,16 +355,16 @@ details:
 >
 > | Feature                                                                                                                                | Dependency                                                |
 > |----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
-> | Web methods                                                                                                                            | `org.springframework:spring-webmvc:5.0.3.RELEASE`         |
-> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.22.1`     |
-> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.22.1`     |
-> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.22.1` |
+> | Web methods                                                                                                                            | `org.springframework:spring-webmvc:5.0.4.RELEASE`         |
+> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.22.5`     |
+> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.22.5`     |
+> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.22.5` |
 
 And make sure that you use the right Kotlin version:
 
 ```groovy
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
 }
 ```
 
