@@ -27,6 +27,6 @@ public abstract class CoroutineUtils {
     }
 
     static public <T> Object runCoroutine(final CoroutineContext context, final Function1<Continuation<? super T>, ? super T> fun, final Continuation<? super T> continuation) {
-        return BuildersKt.run(context, CoroutineStart.DEFAULT, fun, continuation);
+        return BuildersKt.withContext(context, CoroutineStart.DEFAULT, fun, continuation);
     }
 }

@@ -18,7 +18,7 @@ package org.springframework.web.coroutine.function.server
 
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.reactive.awaitFirstOrDefault
-import kotlinx.coroutines.experimental.reactive.open
+import kotlinx.coroutines.experimental.reactive.openSubscription
 import org.springframework.http.server.coroutine.CoroutineServerHttpRequest
 import org.springframework.web.server.CoroutineWebSession
 import org.springframework.web.coroutine.function.CoroutineBodyExtractor
@@ -61,7 +61,7 @@ class DefaultCoroutineServerRequest(val req: ServerRequest): CoroutineServerRequ
             req.bodyToMono(elementClass).awaitFirstOrDefault(null)
 
     override fun <T> bodyToReceiveChannel(elementClass: Class<out T>): ReceiveChannel<T> =
-            req.bodyToFlux(elementClass).open()
+            req.bodyToFlux(elementClass).openSubscription()
 
     override fun headers(): ServerRequest.Headers = req.headers()
 

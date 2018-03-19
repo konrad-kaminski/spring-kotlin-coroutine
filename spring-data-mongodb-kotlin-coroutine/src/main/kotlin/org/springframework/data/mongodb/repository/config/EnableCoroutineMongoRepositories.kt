@@ -25,13 +25,12 @@ import org.springframework.data.mongodb.repository.support.MongoRepositoryFactor
 import org.springframework.data.repository.config.DefaultRepositoryBaseClass
 import org.springframework.data.repository.query.QueryLookupStrategy
 import org.springframework.data.repository.query.QueryLookupStrategy.Key
-import java.lang.annotation.Documented
 import java.lang.annotation.Inherited
 import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FILE)
 @Retention(AnnotationRetention.RUNTIME)
-@Documented
+@MustBeDocumented
 @Inherited
 @Import(CoroutineMongoRepositoriesRegistrar::class)
 annotation class EnableCoroutineMongoRepositories(

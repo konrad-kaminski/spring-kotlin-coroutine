@@ -17,7 +17,7 @@
 package org.springframework.http.server.coroutine
 
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.reactive.open
+import kotlinx.coroutines.experimental.reactive.openSubscription
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -26,7 +26,7 @@ import java.net.URI
 
 class DefaultCoroutineServerHttpRequest(val request: ServerHttpRequest): CoroutineServerHttpRequest {
     override val body: ReceiveChannel<DataBuffer>
-        get() = request.body.open()
+        get() = request.body.openSubscription()
 
     override fun getHeaders(): HttpHeaders = request.headers
 

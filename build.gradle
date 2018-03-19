@@ -1,10 +1,10 @@
 buildscript {
-    ext.kotlin_version = "1.2.21"
-    ext.kotlin_coroutines_version = "0.22.1"
+    ext.kotlin_version = "1.2.30"
+    ext.kotlin_coroutines_version = "0.22.5"
     ext.spock_version = '1.1-groovy-2.4'
-    ext.spring_version = "5.0.3.RELEASE"
-    ext.spring_data_version = "2.0.3.RELEASE"
-    ext.spring_boot_version = "2.0.0.RC1"
+    ext.spring_version = "5.0.4.RELEASE"
+    ext.spring_data_version = "2.0.5.RELEASE"
+    ext.spring_boot_version = "2.0.0.RELEASE"
 
     repositories {
         jcenter()
