@@ -1,11 +1,12 @@
 package org.springframework.kotlin.experimental.coroutine.web.client
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.kotlin.experimental.coroutine.IntSpecConfiguration
 import org.springframework.kotlin.experimental.coroutine.web.TestWebConfiguration
+import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -29,6 +30,17 @@ class DeferredRestOperationsIntSpec extends Specification {
 
         then:
         result.statusCode == HttpStatus.OK
-        result.body == 5*7
+        result.body == 5 * 7
+    }
+
+    def "should handle 404 error from REST controller with DeferredRestOperations"() {
+        when:
+        runBlocking { cont ->
+            deferredRestOperations.getForEntity("http://localhost:$port/notfound", Integer.TYPE).await(cont)
+        }
+
+        then:
+        def exception = thrown(HttpClientErrorException.class)
+        exception.statusCode == HttpStatus.NOT_FOUND
     }
 }

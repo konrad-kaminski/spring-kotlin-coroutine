@@ -23,6 +23,7 @@ import org.springframework.kotlin.experimental.coroutine.proxy.MethodInvoker
 import org.springframework.kotlin.experimental.coroutine.proxy.MethodInvokerProvider
 import org.springframework.kotlin.experimental.coroutine.removeLastValue
 import org.springframework.kotlin.experimental.coroutine.util.CoroutineUtils.runCoroutine
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import kotlin.coroutines.experimental.Continuation
 import kotlin.reflect.jvm.javaType
@@ -46,13 +47,22 @@ object CoroutineFromRegularMethodInvokerProvider: MethodInvokerProvider {
                 if (proxyConfig.coroutineContext == null) {
                     object : MethodInvoker {
                         override fun invoke(vararg args: Any): Any? =
-                            regularMethod.invoke(obj, *args.removeLastValue())
+                            try {
+                                regularMethod.invoke(obj, *args.removeLastValue())
+                            } catch (ex: InvocationTargetException) {
+                                throw ex.targetException
+                            }
                     }
                 } else {
                     object : MethodInvoker {
                         override fun invoke(vararg args: Any): Any? =
                             runCoroutine(proxyConfig.coroutineContext, {
-                                regularMethod.invoke(obj, *args.removeLastValue()) },
+                                    try {
+                                        regularMethod.invoke(obj, *args.removeLastValue())
+                                    } catch (ex: InvocationTargetException) {
+                                        throw ex.targetException
+                                    }
+                                },
                                 args.last() as Continuation<Any?>
                             )
                     }

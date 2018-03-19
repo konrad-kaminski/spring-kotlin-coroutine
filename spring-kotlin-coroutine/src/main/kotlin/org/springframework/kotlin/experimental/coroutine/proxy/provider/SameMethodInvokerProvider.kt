@@ -19,6 +19,7 @@ package org.springframework.kotlin.experimental.coroutine.proxy.provider
 import org.springframework.kotlin.experimental.coroutine.proxy.CoroutineProxyConfig
 import org.springframework.kotlin.experimental.coroutine.proxy.MethodInvoker
 import org.springframework.kotlin.experimental.coroutine.proxy.MethodInvokerProvider
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 object SameMethodInvokerProvider: MethodInvokerProvider {
@@ -33,7 +34,11 @@ object SameMethodInvokerProvider: MethodInvokerProvider {
         }?.let { regularMethod ->
             object : MethodInvoker {
                 override fun invoke(vararg args: Any): Any? =
-                        regularMethod.invoke(obj, *args)
+                        try {
+                            regularMethod.invoke(obj, *args)
+                        } catch (ex: InvocationTargetException) {
+                            throw ex.targetException
+                        }
             }
         }
 }
