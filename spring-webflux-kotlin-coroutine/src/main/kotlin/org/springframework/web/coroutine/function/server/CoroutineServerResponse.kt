@@ -20,17 +20,23 @@ import kotlinx.coroutines.experimental.Unconfined
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.reactive.asPublisher
 import kotlinx.coroutines.experimental.reactive.awaitFirst
+import org.springframework.http.CacheControl
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.kotlin.experimental.coroutine.web.awaitFirstOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseCookie
 import org.springframework.http.server.CoroutineServerHttpResponse
 import org.springframework.http.server.reactive.ServerHttpResponse
+import org.springframework.util.MultiValueMap
 import org.springframework.web.coroutine.function.CoroutineBodyInserter
 import org.springframework.web.reactive.function.BodyInserter
 import org.springframework.web.reactive.function.server.RenderingResponse
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 import java.net.URI
+import java.time.ZonedDateTime
 
 interface CoroutineServerResponse {
     fun extractServerResponse(): ServerResponse
@@ -38,21 +44,62 @@ interface CoroutineServerResponse {
     companion object {
         operator fun invoke(resp: ServerResponse): CoroutineServerResponse = DefaultCoroutineServerResponse(resp)
 
-        fun created(location: URI): CoroutineBodyBuilder = CoroutineBodyBuilder(ServerResponse.created(location))
+        fun accepted(): CoroutineBodyBuilder = ServerResponse.accepted().asCoroutineBodyBuilder()
 
-        fun ok(): CoroutineBodyBuilder = status(HttpStatus.OK)
+        fun badRequest(): CoroutineBodyBuilder = ServerResponse.badRequest().asCoroutineBodyBuilder()
 
-        fun permanentRedirect(location: URI): CoroutineBodyBuilder = ServerResponse.permanentRedirect(location).asCoroutineBodyBuilder()
+        fun created(location: URI): CoroutineBodyBuilder = ServerResponse.created(location).asCoroutineBodyBuilder()
 
-        fun seeOther(location: URI): CoroutineBodyBuilder =
-            ServerResponse.seeOther(location).asCoroutineBodyBuilder()
+        fun from(other: CoroutineServerResponse): CoroutineBodyBuilder =
+                ServerResponse.from(other.extractServerResponse()).asCoroutineBodyBuilder()
+
+        fun noContent(): CoroutineHeadersBuilder =
+                (ServerResponse.noContent() as ServerResponse.BodyBuilder).asCoroutineBodyBuilder()
+
+        fun notFound(): CoroutineHeadersBuilder =
+                (ServerResponse.notFound() as ServerResponse.BodyBuilder).asCoroutineBodyBuilder()
+
+        fun ok(): CoroutineBodyBuilder = ServerResponse.ok().asCoroutineBodyBuilder()
+
+        fun permanentRedirect(location: URI): CoroutineBodyBuilder =
+                ServerResponse.permanentRedirect(location).asCoroutineBodyBuilder()
+
+        fun seeOther(location: URI): CoroutineBodyBuilder = ServerResponse.seeOther(location).asCoroutineBodyBuilder()
+
+        fun status(status: Int): CoroutineBodyBuilder = ServerResponse.status(status).asCoroutineBodyBuilder()
 
         fun status(status: HttpStatus): CoroutineBodyBuilder = ServerResponse.status(status).asCoroutineBodyBuilder()
+
+        fun temporaryRedirect(location: URI): CoroutineBodyBuilder =
+                ServerResponse.temporaryRedirect(location).asCoroutineBodyBuilder()
+
+        fun unprocessableEntity(): CoroutineBodyBuilder =
+                ServerResponse.unprocessableEntity().asCoroutineBodyBuilder()
     }
 }
 
 interface CoroutineHeadersBuilder {
+    fun allow(vararg allowedMethods: HttpMethod): CoroutineHeadersBuilder
+
+    fun allow(allowedMethods: Set<HttpMethod>): CoroutineHeadersBuilder
+
+    fun cacheControl(cacheControl: CacheControl): CoroutineHeadersBuilder
+
+    fun cookie(cookie: ResponseCookie): CoroutineHeadersBuilder
+
+    fun cookies(cookiesConsumer: (MultiValueMap<String, ResponseCookie>) -> Unit): CoroutineHeadersBuilder
+
+    fun eTag(eTag: String): CoroutineHeadersBuilder
+
+    fun header(headerName: String, vararg headerValues: String): CoroutineHeadersBuilder
+
+    fun headers(headersConsumer: (HttpHeaders) -> Unit): CoroutineHeadersBuilder
+
+    fun lastModified(lastModified: ZonedDateTime): CoroutineHeadersBuilder
+
     fun location(location: URI): CoroutineHeadersBuilder
+
+    fun varyBy(vararg requestHeaders: String): CoroutineHeadersBuilder
 }
 
 interface CoroutineBodyBuilder: CoroutineHeadersBuilder {
@@ -82,8 +129,48 @@ internal open class DefaultCoroutineServerResponse(val resp: ServerResponse): Co
 }
 
 internal open class DefaultCoroutineHeadersBuilder<T: ServerResponse.HeadersBuilder<T>>(var builder: T): CoroutineHeadersBuilder {
+    override fun allow(vararg allowedMethods: HttpMethod): CoroutineHeadersBuilder = apply {
+        builder.allow(*allowedMethods)
+    }
+
+    override fun allow(allowedMethods: Set<HttpMethod>): CoroutineHeadersBuilder = apply {
+        builder.allow(allowedMethods)
+    }
+
+    override fun cacheControl(cacheControl: CacheControl): CoroutineHeadersBuilder = apply {
+        builder.cacheControl(cacheControl)
+    }
+
+    override fun cookie(cookie: ResponseCookie): CoroutineHeadersBuilder = apply {
+        builder.cookie(cookie)
+    }
+
+    override fun cookies(cookiesConsumer: (MultiValueMap<String, ResponseCookie>) -> Unit): CoroutineHeadersBuilder = apply {
+        builder.cookies(cookiesConsumer)
+    }
+
+    override fun eTag(eTag: String): CoroutineHeadersBuilder = apply {
+        builder.eTag(eTag)
+    }
+
+    override fun header(headerName: String, vararg headerValues: String): CoroutineHeadersBuilder = apply {
+        builder.header(headerName, *headerValues)
+    }
+
+    override fun headers(headersConsumer: (HttpHeaders) -> Unit): CoroutineHeadersBuilder = apply {
+        builder.headers(headersConsumer)
+    }
+
+    override fun lastModified(lastModified: ZonedDateTime): CoroutineHeadersBuilder = apply {
+        builder.lastModified(lastModified)
+    }
+
     override fun location(location: URI): CoroutineHeadersBuilder = apply {
         builder.location(location)
+    }
+
+    override fun varyBy(vararg requestHeaders: String): CoroutineHeadersBuilder = apply {
+        builder.varyBy(*requestHeaders)
     }
 }
 
