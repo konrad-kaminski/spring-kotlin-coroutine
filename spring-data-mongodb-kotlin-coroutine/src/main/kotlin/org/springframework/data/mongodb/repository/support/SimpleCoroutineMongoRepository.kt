@@ -30,43 +30,43 @@ open class SimpleCoroutineMongoRepository<T, ID: Serializable>(
 ): CoroutineMongoRepository<T, ID> {
     private val reactiveRepo = SimpleReactiveMongoRepository<T, ID>(entityInformation, (mongoOperations as CoroutineMongoTemplate).reactiveMongoOperations)
 
-    suspend override fun <S : T> save(entity: S): S =
+    override suspend fun <S : T> save(entity: S): S =
         reactiveRepo.save(entity).awaitSingle()
 
-    suspend override fun <S : T> saveAll(entities: Iterable<S>): List<S> =
+    override suspend fun <S : T> saveAll(entities: Iterable<S>): List<S> =
         reactiveRepo.saveAll(entities).collectList().awaitSingle()
 
-    suspend override fun findById(id: ID): T? =
+    override suspend fun findById(id: ID): T? =
         reactiveRepo.findById(id).awaitFirstOrDefault(null)
 
-    suspend override fun existsById(id: ID): Boolean =
+    override suspend fun existsById(id: ID): Boolean =
         reactiveRepo.existsById(id).awaitSingle()
 
-    suspend override fun findAll(): List<T> =
+    override suspend fun findAll(): List<T> =
         reactiveRepo.findAll().collectList().awaitSingle()
 
-    suspend override fun findAllById(ids: Iterable<ID>): List<T> =
+    override suspend fun findAllById(ids: Iterable<ID>): List<T> =
         reactiveRepo.findAllById(ids).collectList().awaitSingle()
 
-    suspend override fun count(): Long =
+    override suspend fun count(): Long =
         reactiveRepo.count().awaitSingle()
 
-    suspend override fun deleteById(id: ID) {
+    override suspend fun deleteById(id: ID) {
         reactiveRepo.deleteById(id).awaitFirstOrDefault(null)
     }
 
-    suspend override fun delete(entity: T) {
+    override suspend fun delete(entity: T) {
         reactiveRepo.delete(entity).awaitFirstOrDefault(null)
     }
 
-    suspend override fun deleteAll(entities: Iterable<T>) {
+    override suspend fun deleteAll(entities: Iterable<T>) {
         reactiveRepo.deleteAll().awaitFirstOrDefault(null)
     }
 
-    suspend override fun <S : T> insert(entity: S): S? =
+    override suspend fun <S : T> insert(entity: S): S? =
         reactiveRepo.insert(entity).awaitFirstOrDefault(null)
 
-    suspend override fun deleteAll() {
+    override suspend fun deleteAll() {
         reactiveRepo.deleteAll().awaitFirstOrDefault(null)
     }
 }

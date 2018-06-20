@@ -57,7 +57,7 @@ class DefaultCoroutineServerRequest(val req: ServerRequest): CoroutineServerRequ
     override fun <T> body(extractor: CoroutineBodyExtractor<T, CoroutineServerHttpRequest>, hints: Map<String, Any>): T =
             req.body(extractor.asBodyExtractor(), hints)
 
-    suspend override fun <T> body(elementClass: Class<out T>): T? =
+    override suspend fun <T> body(elementClass: Class<out T>): T? =
             req.bodyToMono(elementClass).awaitFirstOrDefault(null)
 
     override fun <T> bodyToReceiveChannel(elementClass: Class<out T>): ReceiveChannel<T> =
@@ -67,7 +67,7 @@ class DefaultCoroutineServerRequest(val req: ServerRequest): CoroutineServerRequ
 
     override fun pathVariable(name: String): String? = req.pathVariable(name)
 
-    suspend override fun session(): CoroutineWebSession? =  req.session().awaitFirstOrDefault(null)?.asCoroutineWebSession()
+    override suspend fun session(): CoroutineWebSession? =  req.session().awaitFirstOrDefault(null)?.asCoroutineWebSession()
 
     override fun uri(): URI = req.uri()
 

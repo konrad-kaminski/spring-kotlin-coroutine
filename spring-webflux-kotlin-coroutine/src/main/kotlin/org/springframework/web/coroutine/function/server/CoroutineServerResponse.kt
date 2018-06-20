@@ -177,26 +177,26 @@ internal open class DefaultCoroutineHeadersBuilder<T: ServerResponse.HeadersBuil
 internal open class DefaultCoroutineBodyBuilder(builder: ServerResponse.BodyBuilder): DefaultCoroutineHeadersBuilder<ServerResponse.BodyBuilder>(builder), CoroutineBodyBuilder {
     override suspend fun build(): CoroutineServerResponse? = builder.build().asCoroutineServerResponse()
 
-    suspend override fun body(inserter: CoroutineBodyInserter<*, in CoroutineServerHttpResponse>): CoroutineServerResponse? =
+    override suspend fun body(inserter: CoroutineBodyInserter<*, in CoroutineServerHttpResponse>): CoroutineServerResponse? =
             builder.body(inserter.asBodyInserter()).asCoroutineServerResponse()
 
-    suspend override fun <T> body(value: T?, elementClass: Class<T>): CoroutineServerResponse? =
+    override suspend fun <T> body(value: T?, elementClass: Class<T>): CoroutineServerResponse? =
             builder.body(Mono.justOrEmpty(value), elementClass as Class<T?>).asCoroutineServerResponse()
 
-    suspend override fun <T> body(channel: ReceiveChannel<T>, elementClass: Class<T>): CoroutineServerResponse? =
+    override suspend fun <T> body(channel: ReceiveChannel<T>, elementClass: Class<T>): CoroutineServerResponse? =
             builder.body(channel.asPublisher(Unconfined), elementClass).asCoroutineServerResponse()
 
     override fun contentType(contentType: MediaType): CoroutineBodyBuilder = apply {
         builder.contentType(contentType)
     }
 
-    suspend override fun render(name: String, vararg modelAttributes: Any): CoroutineServerResponse? =
+    override suspend fun render(name: String, vararg modelAttributes: Any): CoroutineServerResponse? =
             builder.render(name, modelAttributes).awaitFirstOrNull()?.asCoroutineServerResponse()
 
-    suspend override fun render(name: String, model: Map<String, *>): CoroutineServerResponse? =
+    override suspend fun render(name: String, model: Map<String, *>): CoroutineServerResponse? =
             builder.render(name, model).awaitFirstOrNull()?.asCoroutineServerResponse()
 
-    suspend override fun syncBody(body: Any): CoroutineServerResponse? =
+    override suspend fun syncBody(body: Any): CoroutineServerResponse? =
             builder.syncBody(body).asCoroutineServerResponse()
 
     suspend fun Mono<ServerResponse>.asCoroutineServerResponse(): CoroutineServerResponse? =
@@ -207,7 +207,7 @@ internal open class DefaultCoroutineRenderingResponse(resp: RenderingResponse): 
 }
 
 class DefaultCoroutineRenderingResponseBuilder(val builder: RenderingResponse.Builder): CoroutineRenderingResponse.Builder {
-    suspend override fun build(): CoroutineRenderingResponse =
+    override suspend fun build(): CoroutineRenderingResponse =
             CoroutineRenderingResponse(builder.build().awaitFirst())
 
     override fun modelAttributes(attributes: Map<String, *>): CoroutineRenderingResponse.Builder = apply {

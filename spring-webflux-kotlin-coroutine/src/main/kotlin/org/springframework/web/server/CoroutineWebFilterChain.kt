@@ -27,7 +27,7 @@ interface CoroutineWebFilterChain {
 }
 
 class DefaultCoroutineWebFilterChain(val chain: WebFilterChain): CoroutineWebFilterChain {
-    suspend override fun filter(exchange: CoroutineServerWebExchange) {
+    override suspend fun filter(exchange: CoroutineServerWebExchange) {
         chain.filter(exchange.extractServerWebExchange()).awaitFirstOrNull()
     }
 }

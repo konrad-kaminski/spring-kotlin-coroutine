@@ -35,7 +35,7 @@ internal open class SimpleCoroutineApplicationListenerMethodAdapter(beanName: St
         processApplicationEvent(event)
     }
 
-    suspend override fun onCoroutineApplicationEvent(event: CoroutineEvent<ApplicationEvent>) =
+    override suspend fun onCoroutineApplicationEvent(event: CoroutineEvent<ApplicationEvent>) =
             processApplicationEvent(event.payload)
 
     /**

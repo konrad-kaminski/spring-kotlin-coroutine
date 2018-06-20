@@ -26,7 +26,7 @@ class DefaultCoroutineWebSession(val session: WebSession): CoroutineWebSession {
 
     override fun <T> getAttribute(name: String): T? = session.getAttribute<T>(name)
 
-    suspend override fun save(): Unit {
+    override suspend fun save(): Unit {
         session.save().awaitFirstOrNull()
     }
 }

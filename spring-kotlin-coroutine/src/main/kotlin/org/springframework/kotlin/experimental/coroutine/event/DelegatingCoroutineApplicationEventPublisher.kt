@@ -23,9 +23,9 @@ import org.springframework.context.PayloadApplicationEvent
 internal open class DelegatingCoroutineApplicationEventPublisher(
         private val delegate: ApplicationEventPublisher
 ) : CoroutineApplicationEventPublisher {
-    suspend override fun publishEvent(event: ApplicationEvent) = doPublishEvent(event)
+    override suspend fun publishEvent(event: ApplicationEvent) = doPublishEvent(event)
 
-    suspend override fun publishEvent(event: Any) = doPublishEvent(PayloadApplicationEvent(this, event))
+    override suspend fun publishEvent(event: Any) = doPublishEvent(PayloadApplicationEvent(this, event))
 
     suspend private fun doPublishEvent(event: ApplicationEvent): Unit = doPublishEvents(listOf(event))
 
