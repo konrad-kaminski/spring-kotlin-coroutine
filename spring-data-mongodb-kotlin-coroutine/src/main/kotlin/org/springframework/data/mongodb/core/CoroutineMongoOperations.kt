@@ -200,7 +200,7 @@ interface CoroutineMongoOperations {
      *
      * @param entityClass class that determines the collection to drop/delete.
      */
-    suspend fun <T> dropCollection(entityClass: Class<T>): Unit
+    suspend fun <T> dropCollection(entityClass: Class<T>)
 
     /**
      * Drop the collection with the given name.
@@ -210,10 +210,10 @@ interface CoroutineMongoOperations {
      *
      * @param collectionName name of the collection to drop/delete.
      */
-    suspend fun dropCollection(collectionName: String): Unit
+    suspend fun dropCollection(collectionName: String)
 
     /**
-     * Query for a [ReceiveChannel] of objects of type T from the collection used by the entity class.
+     * Query for a [List] of objects of type T from the collection used by the entity class.
      *
      *
      * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
@@ -223,13 +223,13 @@ interface CoroutineMongoOperations {
      * If your collection does not contain a homogeneous collection of types, this operation will not be an efficient way
      * to map objects since the test for class type is done in the client and not on the server.
      *
-     * @param entityClass the parametrized type of the returned [ReceiveChannel].
+     * @param entityClass the parametrized type of the returned [List].
      * @return the converted collection
      */
     suspend fun <T> findAll(entityClass: Class<T>): List<T>
 
     /**
-     * Query for a [ReceiveChannel] of objects of type T from the specified collection.
+     * Query for a [List] of objects of type T from the specified collection.
      *
      *
      * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
@@ -239,7 +239,7 @@ interface CoroutineMongoOperations {
      * If your collection does not contain a homogeneous collection of types, this operation will not be an efficient way
      * to map objects since the test for class type is done in the client and not on the server.
      *
-     * @param entityClass the parametrized type of the returned [ReceiveChannel].
+     * @param entityClass the parametrized type of the returned [List].
      * @param collectionName name of the collection to retrieve the objects from
      * @return the converted collection
      */
@@ -1071,3 +1071,650 @@ interface CoroutineMongoOperations {
 
     val reactiveMongoOperations: ReactiveMongoOperations
 }
+
+/**
+ * Returns the coroutine operations that can be performed on indexes
+ *
+ * @return index operations on the named collection associated with the given entity class
+ */
+inline fun <reified T: Any> CoroutineMongoOperations.indexOps(): CoroutineIndexOperations = indexOps(T::class.java)
+
+/**
+ * Executes the given [CoroutineCollectionCallback] on the entity collection of the specified class.
+ *
+ *
+ * Allows for returning a result object, that is a domain object or a collection of domain objects.
+ *
+ * @param <T> return type
+ * @param action callback object that specifies the MongoDB action
+ * @return a result object returned by the action or <tt>null</tt>
+</T> */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.execute(action: CoroutineCollectionCallback<T>): List<T> =
+    execute(T::class.java, action)
+
+/**
+ * Create an uncapped collection with a name based on the provided entity class.
+ *
+ * @return the created collection
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.createCollection(): CoroutineMongoCollection<Document> =
+    createCollection(T::class.java)
+
+
+/**
+ * Create a collection with a name based on the provided entity class using the options.
+ *
+ * @param collectionOptions options to use when creating the collection.
+ * @return the created collection
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.createCollection(collectionOptions: CollectionOptions): CoroutineMongoCollection<Document> =
+    createCollection(T::class.java, collectionOptions)
+
+/**
+ * Check to see if a collection with a name indicated by the entity class exists.
+ *
+ *
+ * Translate any exceptions as necessary.
+ *
+ * @return true if a collection with the given name is found, false otherwise.
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.collectionExists(): Boolean =
+    collectionExists(T::class.java)
+
+
+/**
+ * Drop the collection with the name indicated by the entity class.
+ *
+ *
+ * Translate any exceptions as necessary.
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.dropCollection(): Unit =
+    dropCollection(T::class.java)
+
+
+/**
+ * Query for a [List] of objects of type T from the collection used by the entity class.
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * If your collection does not contain a homogeneous collection of types, this operation will not be an efficient way
+ * to map objects since the test for class type is done in the client and not on the server.
+ *
+ * @param T the parametrized type of the returned [List].
+ * @return the converted collection
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAll(): List<T> = findAll(T::class.java)
+
+/**
+ * Query for a [List] of objects of type T from the specified collection.
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * If your collection does not contain a homogeneous collection of types, this operation will not be an efficient way
+ * to map objects since the test for class type is done in the client and not on the server.
+ *
+ * @param T the parametrized type of the returned [List].
+ * @param collectionName name of the collection to retrieve the objects from
+ * @return the converted collection
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAll(collectionName: String): List<T> =
+    findAll(T::class.java, collectionName)
+
+/**
+ * Map the results of an ad-hoc query on the collection for the entity class to a single instance of an object of the
+ * specified type.
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * The query is specified as a [Query] which can be created either using the [BasicQuery] or the more
+ * feature rich [Query].
+ *
+ * @param query the query class that specifies the criteria used to find a record and also an optional fields
+ * specification
+ * @param T the parametrized type of the returned object.
+ * @return the converted object
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findOne(query: Query): T? =
+    findOne(query, T::class.java)
+
+/**
+ * Map the results of an ad-hoc query on the specified collection to a single instance of an object of the specified
+ * type.
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * The query is specified as a [Query] which can be created either using the [BasicQuery] or the more
+ * feature rich [Query].
+ *
+ * @param query the query class that specifies the criteria used to find a record and also an optional fields
+ * specification
+ * @param T the parametrized type of the returned object.
+ * @param collectionName name of the collection to retrieve the objects from
+ * @return the converted object
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findOne(query: Query, collectionName: String): T? =
+    findOne(query, T::class.java, collectionName)
+
+
+/**
+ * Determine result of given [Query] contains at least one element.
+ *
+ * @param query the [Query] class that specifies the criteria used to find a record.
+ * @param T the parametrized type.
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.exists(query: Query): Boolean =
+    exists(query, T::class.java)
+
+/**
+ * Determine result of given [Query] contains at least one element.
+ *
+ * @param query the [Query] class that specifies the criteria used to find a record.
+ * @param T the parametrized type.
+ * @param collectionName name of the collection to check for objects.
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.exists(query: Query, collectionName: String): Boolean =
+    exists(query, T::class.java, collectionName)
+
+/**
+ * Map the results of an ad-hoc query on the collection for the entity class to a [List] of the specified type.
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * The query is specified as a [Query] which can be created either using the [BasicQuery] or the more
+ * feature rich [Query].
+ *
+ * @param query the query class that specifies the criteria used to find a record and also an optional fields
+ * specification
+ * @param T the parametrized type of the returned [List].
+ * @return the [List] of converted objects
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.find(query: Query): List<T> =
+    find(query, T::class.java)
+
+/**
+ * Map the results of an ad-hoc query on the specified collection to a [List] of the specified type.
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * The query is specified as a [Query] which can be created either using the [BasicQuery] or the more
+ * feature rich [Query].
+ *
+ * @param query the query class that specifies the criteria used to find a record and also an optional fields
+ * specification
+ * @param T the parametrized type of the returned [List].
+ * @param collectionName name of the collection to retrieve the objects from
+ * @return the [List] of converted objects
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.find(query: Query, collectionName: String): List<T> =
+    find(query, T::class.java, collectionName)
+
+/**
+ * Returns a document with the given id mapped onto the given class. The collection the query is ran against will be
+ * derived from the given target class as well.
+ *
+ * @param id the id of the document to return.
+ * @param T the type the document shall be converted into.
+ * @return the document with the given id mapped onto the given target class.
+</T> */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findById(id: Any): T? =
+    findById(id, T::class.java)
+
+/**
+ * Returns the document with the given id from the given collection mapped onto the given target class.
+ *
+ * @param id the id of the document to return
+ * @param T the type to convert the document to
+ * @param collectionName the collection to query for the document
+ * @return
+</T> */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findById(id: Any, collectionName: String): T? =
+    findById(id, T::class.java, collectionName)
+
+/**
+ * Execute an aggregation operation.
+ *
+ *
+ * The raw results will be mapped to the given entity class.
+ *
+ *
+ * Aggregation streaming cannot be used with [aggregation explain][AggregationOptions.isExplain] nor with
+ * [AggregationOptions.getCursorBatchSize]. Enabling explanation mode or setting batch size cause
+ * [IllegalArgumentException].
+ *
+ * @param aggregation The [TypedAggregation] specification holding the aggregation operations. Must not be
+ * null.
+ * @param collectionName The name of the input collection to use for the aggregation. Must not be null.
+ * @param O The parametrized type of the returned [List]. Must not be null.
+ * @return The results of the aggregation operation.
+ * @throws IllegalArgumentException if `aggregation`, `collectionName` or `outputType` is
+ * null.
+ */
+suspend inline fun <reified O: Any> CoroutineMongoOperations.aggregate(aggregation: TypedAggregation<*>, collectionName: String): List<O> =
+    aggregate(aggregation, collectionName, O::class.java)
+
+/**
+ * Execute an aggregation operation.
+ *
+ *
+ * The raw results will be mapped to the given entity class and are returned as stream. The name of the
+ * inputCollection is derived from the [aggregation input type][TypedAggregation.getInputType].
+ *
+ *
+ * Aggregation streaming cannot be used with [aggregation explain][AggregationOptions.isExplain] nor with
+ * [AggregationOptions.getCursorBatchSize]. Enabling explanation mode or setting batch size cause
+ * [IllegalArgumentException].
+ *
+ * @param aggregation The [TypedAggregation] specification holding the aggregation operations. Must not be
+ * null.
+ * @param O The parametrized type of the returned [List]. Must not be null.
+ * @return The results of the aggregation operation.
+ * @throws IllegalArgumentException if `aggregation` or `outputType` is null.
+ */
+suspend inline fun <reified O: Any> CoroutineMongoOperations.aggregate(aggregation: TypedAggregation<*>): List<O> =
+    aggregate(aggregation, O::class.java)
+
+
+/**
+ * Execute an aggregation operation.
+ *
+ *
+ * The raw results will be mapped to the given `ouputType`. The name of the inputCollection is derived from the
+ * `inputType`.
+ *
+ *
+ * Aggregation streaming cannot be used with [aggregation explain][AggregationOptions.isExplain] nor with
+ * [AggregationOptions.getCursorBatchSize]. Enabling explanation mode or setting batch size cause
+ * [IllegalArgumentException].
+ *
+ * @param aggregation The [Aggregation] specification holding the aggregation operations. Must not be
+ * null.
+ * @param inputType the inputType where the aggregation operation will read from. Must not be null.
+ * @param O The parametrized type of the returned [List]. Must not be null.
+ * @return The results of the aggregation operation.
+ * @throws IllegalArgumentException if `aggregation`, `inputType` or `outputType` is
+ * null.
+ */
+suspend inline fun <reified O: Any> CoroutineMongoOperations.aggregate(aggregation: Aggregation, inputType: Class<*>): List<O> =
+    aggregate(aggregation, inputType, O::class.java)
+
+/**
+ * Execute an aggregation operation.
+ *
+ *
+ * The raw results will be mapped to the given entity class.
+ *
+ *
+ * Aggregation streaming cannot be used with [aggregation explain][AggregationOptions.isExplain] nor with
+ * [AggregationOptions.getCursorBatchSize]. Enabling explanation mode or setting batch size cause
+ * [IllegalArgumentException].
+ *
+ * @param aggregation The [Aggregation] specification holding the aggregation operations. Must not be
+ * null.
+ * @param collectionName the collection where the aggregation operation will read from. Must not be null or
+ * empty.
+ * @param O The parametrized type of the returned [List]. Must not be null.
+ * @return The results of the aggregation operation.
+ * @throws IllegalArgumentException if `aggregation`, `collectionName` or `outputType` is
+ * null.
+ */
+suspend inline fun <reified O: Any> CoroutineMongoOperations.aggregate(aggregation: Aggregation, collectionName: String): List<O> =
+    aggregate(aggregation, collectionName, O::class.java)
+
+/**
+ * Returns [ReceiveChannel] of [GeoResult] for all entities matching the given [NearQuery]. Will consider
+ * entity mapping information to determine the collection the query is ran against. Note, that MongoDB limits the
+ * number of results by default. Make sure to add an explicit limit to the [NearQuery] if you expect a
+ * particular number of results.
+ *
+ * @param near must not be null.
+ * @param T must not be null.
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.geoNear(near: NearQuery): List<GeoResult<T>> =
+    geoNear(near, T::class.java)
+
+/**
+ * Returns [List] of [GeoResult] for all entities matching the given [NearQuery]. Note, that MongoDB
+ * limits the number of results by default. Make sure to add an explicit limit to the [NearQuery] if you expect
+ * a particular number of results.
+ *
+ * @param near must not be null.
+ * @param T must not be null.
+ * @param collectionName the collection to trigger the query against. If no collection name is given the entity class
+ * will be inspected.
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.geoNear(near: NearQuery, collectionName: String): List<GeoResult<T>> =
+    geoNear(near, T::class.java, collectionName)
+
+/**
+ * Triggers [findAndModify <a></a>
+ * to apply provided [Update] on documents matching [Criteria] of given [Query].
+ *
+ * @param query the [Query] class that specifies the [Criteria] used to find a record and also an optional
+ * fields specification.
+ * @param update the [Update] to apply on matching documents.
+ * @param T the parametrized type.
+ * @return
+](https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/) */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAndModify(query: Query, update: Update): T? =
+    findAndModify(query, update, T::class.java)
+
+/**
+ * Triggers [findAndModify <a></a>
+ * to apply provided [Update] on documents matching [Criteria] of given [Query].
+ *
+ * @param query the [Query] class that specifies the [Criteria] used to find a record and also an optional
+ * fields specification.
+ * @param update the [Update] to apply on matching documents.
+ * @param T the parametrized type.
+ * @param collectionName the collection to query.
+ * @return
+](https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/) */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAndModify(query: Query, update: Update, collectionName: String): T? =
+    findAndModify(query, update, T::class.java, collectionName)
+
+/**
+ * Triggers [findAndModify <a></a>
+ * to apply provided [Update] on documents matching [Criteria] of given [Query] taking
+ * [FindAndModifyOptions] into account.
+ *
+ * @param query the [Query] class that specifies the [Criteria] used to find a record and also an optional
+ * fields specification.
+ * @param update the [Update] to apply on matching documents.
+ * @param options the [FindAndModifyOptions] holding additional information.
+ * @param T the parametrized type.
+ * @return
+](https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/) */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAndModify(query: Query, update: Update, options: FindAndModifyOptions): T? =
+    findAndModify(query, update, options, T::class.java)
+
+/**
+ * Triggers [findAndModify <a></a>
+ * to apply provided [Update] on documents matching [Criteria] of given [Query] taking
+ * [FindAndModifyOptions] into account.
+ *
+ * @param query the [Query] class that specifies the [Criteria] used to find a record and also an optional
+ * fields specification.
+ * @param update the [Update] to apply on matching documents.
+ * @param options the [FindAndModifyOptions] holding additional information.
+ * @param T the parametrized type.
+ * @param collectionName the collection to query.
+ * @return
+](https://docs.mongodb.org/manual/reference/method/db.collection.findAndModify/) */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAndModify(query: Query, update: Update, options: FindAndModifyOptions, collectionName: String): T? =
+    findAndModify(query, update, options, T::class.java, collectionName)
+
+/**
+ * Map the results of an ad-hoc query on the collection for the entity type to a single instance of an object of the
+ * specified type. The first document that matches the query is returned and also removed from the collection in the
+ * database.
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}.
+ *
+ *
+ * The query is specified as a [Query] which can be created either using the [BasicQuery] or the more
+ * feature rich [Query].
+ *
+ * @param query the query class that specifies the criteria used to find a record and also an optional fields
+ * specification
+ * @param T the parametrized type of the returned object.
+ * @return the converted object
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAndRemove(query: Query): T? =
+    findAndRemove(query, T::class.java)
+
+/**
+ * Map the results of an ad-hoc query on the specified collection to a single instance of an object of the specified
+ * type. The first document that matches the query is returned and also removed from the collection in the database.
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * The query is specified as a [Query] which can be created either using the [BasicQuery] or the more
+ * feature rich [Query].
+ *
+ * @param query the query class that specifies the criteria used to find a record and also an optional fields
+ * specification
+ * @param T the parametrized type of the returned object.
+ * @param collectionName name of the collection to retrieve the objects from.
+ * @return the converted object
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAndRemove(query: Query, collectionName: String): T? =
+    findAndRemove(query, T::class.java, collectionName)
+
+/**
+ * Returns the number of documents for the given [Query] by querying the collection of the given entity class.
+ *
+ * @param query
+ * @param T must not be null.
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.count(query: Query): Long = count(query, T::class.java)
+
+/**
+ * Returns the number of documents for the given [Query] by querying the given collection using the given entity
+ * class to map the given [Query].
+ *
+ * @param query
+ * @param T must not be null.
+ * @param collectionName must not be null or empty.
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.count(query: Query, collectionName: String): Long =
+    count(query, T::class.java, collectionName)
+
+/**
+ * Insert a Collection of objects into a collection in a single batch write to the database.
+ *
+ * @param batchToSave the batch of objects to save.
+ * @param T class that determines the collection to use
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.insert(batchToSave: Collection<T>): List<T> =
+    insert(batchToSave, T::class.java)
+
+/**
+ * Insert a Collection of objects into a collection in a single batch write to the database.
+ *
+ * @param batchToSave the publisher which provides objects to save.
+ * @param T class that determines the collection to use
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.insertAll(noinline batchToSave: suspend () -> Collection<T>): List<T> =
+    insertAll(batchToSave, T::class.java)
+
+/**
+ * Performs an upsert. If no document is found that matches the query, a new document is created and inserted by
+ * combining the query document and the update document.
+ *
+ * @param query the query document that specifies the criteria used to select a record to be upserted
+ * @param update the update document that contains the updated object or $ operators to manipulate the existing object
+ * @param T class that determines the collection to use
+ * @return the WriteResult which lets you access the results of the previous write.
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.upsert(query: Query, update: Update): UpdateResult? =
+    upsert(query, update, T::class.java)
+
+/**
+ * Performs an upsert. If no document is found that matches the query, a new document is created and inserted by
+ * combining the query document and the update document.
+ *
+ * @param query the query document that specifies the criteria used to select a record to be upserted
+ * @param update the update document that contains the updated object or $ operators to manipulate the existing object
+ * @param T class of the pojo to be operated on
+ * @param collectionName name of the collection to update the object in
+ * @return the WriteResult which lets you access the results of the previous write.
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.upsert(query: Query, update: Update, collectionName: String): UpdateResult? =
+    upsert(query, update, T::class.java, collectionName)
+
+/**
+ * Updates the first object that is found in the collection of the entity class that matches the query document with
+ * the provided update document.
+ *
+ * @param query the query document that specifies the criteria used to select a record to be updated
+ * @param update the update document that contains the updated object or $ operators to manipulate the existing
+ * object.
+ * @param T class that determines the collection to use
+ * @return the WriteResult which lets you access the results of the previous write.
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.updateFirst(query: Query, update: Update): UpdateResult? =
+    updateFirst(query, update, T::class.java)
+
+/**
+ * Updates the first object that is found in the specified collection that matches the query document criteria with
+ * the provided updated document. <br></br>
+ * **NOTE:** Any additional support for field mapping, versions, etc. is not available due to the lack of
+ * domain type information. Use [.updateFirst] to get full type specific support.
+ *
+ * @param query the query document that specifies the criteria used to select a record to be updated
+ * @param update the update document that contains the updated object or $ operators to manipulate the existing
+ * object.
+ * @param T class of the pojo to be operated on
+ * @param collectionName name of the collection to update the object in
+ * @return the WriteResult which lets you access the results of the previous write.
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.updateFirst(query: Query, update: Update, collectionName: String): UpdateResult? =
+    updateFirst(query, update, T::class.java, collectionName)
+
+/**
+ * Updates all objects that are found in the collection for the entity class that matches the query document criteria
+ * with the provided updated document.
+ *
+ * @param query the query document that specifies the criteria used to select a record to be updated
+ * @param update the update document that contains the updated object or $ operators to manipulate the existing
+ * object.
+ * @param T class that determines the collection to use
+ * @return the WriteResult which lets you access the results of the previous write.
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.updateMulti(query: Query, update: Update): UpdateResult? =
+    updateMulti(query, update, T::class.java)
+
+/**
+ * Updates all objects that are found in the collection for the entity class that matches the query document criteria
+ * with the provided updated document.
+ *
+ * @param query the query document that specifies the criteria used to select a record to be updated
+ * @param update the update document that contains the updated object or $ operators to manipulate the existing
+ * object.
+ * @param T class of the pojo to be operated on
+ * @param collectionName name of the collection to update the object in
+ * @return the WriteResult which lets you access the results of the previous write.
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.updateMulti(query: Query, update: Update, collectionName: String): UpdateResult? =
+    updateMulti(query, update, T::class.java, collectionName)
+
+/**
+ * Remove all documents that match the provided query document criteria from the the collection used to store the
+ * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
+ *
+ * @param query
+ * @param T
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.remove(query: Query): DeleteResult? =
+    remove(query, T::class.java)
+
+/**
+ * Remove all documents that match the provided query document criteria from the the collection used to store the
+ * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
+ *
+ * @param query
+ * @param T
+ * @param collectionName
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.remove(query: Query, collectionName: String): DeleteResult? =
+    remove(query, T::class.java, collectionName)
+
+/**
+ * Returns and removes all documents matching the given query form the collection used to store the entityClass.
+ *
+ * @param query
+ * @param T
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAllAndRemove(query: Query): List<T> =
+    findAllAndRemove(query, T::class.java)
+
+/**
+ * Returns and removes all documents that match the provided query document criteria from the the collection used to
+ * store the entityClass. The Class parameter is also used to help convert the Id of the object if it is present in
+ * the query.
+ *
+ * @param query
+ * @param T
+ * @param collectionName
+ * @return
+ */
+suspend inline fun <reified T: Any> CoroutineMongoOperations.findAllAndRemove(query: Query, collectionName: String): List<T> =
+    findAllAndRemove(query, T::class.java, collectionName)
+
+/**
+ * Map the results of an ad-hoc query on the collection for the entity class to a stream of objects of the specified
+ * type. The stream uses a [tailable][com.mongodb.CursorType.TailableAwait] cursor that may be an infinite
+ * stream. The stream will not be completed unless the [org.reactivestreams.Subscription] is
+ * [canceled][Subscription.cancel].
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * The query is specified as a [Query] which can be created either using the [BasicQuery] or the more
+ * feature rich [Query].
+ *
+ * @param query the query class that specifies the criteria used to find a record and also an optional fields
+ * specification
+ * @param T the parametrized type of the returned [ReceiveChannel].
+ * @return the [ReceiveChannel] of converted objects
+ */
+inline fun <reified T: Any> CoroutineMongoOperations.tail(query: Query): ReceiveChannel<T> =
+    tail(query, T::class.java)
+
+/**
+ * Map the results of an ad-hoc query on the collection for the entity class to a stream of objects of the specified
+ * type. The stream uses a [tailable][com.mongodb.CursorType.TailableAwait] cursor that may be an infinite
+ * stream. The stream will not be completed unless the [org.reactivestreams.Subscription] is
+ * [canceled][Subscription.cancel].
+ *
+ *
+ * The object is converted from the MongoDB native representation using an instance of {@see MongoConverter}. Unless
+ * configured otherwise, an instance of [MappingMongoConverter] will be used.
+ *
+ *
+ * The query is specified as a [Query] which can be created either using the [BasicQuery] or the more
+ * feature rich [Query].
+ *
+ * @param query the query class that specifies the criteria used to find a record and also an optional fields
+ * specification
+ * @param T the parametrized type of the returned [ReceiveChannel].
+ * @param collectionName name of the collection to retrieve the objects from
+ * @return the [ReceiveChannel] of converted objects
+ */
+inline fun <reified T: Any> CoroutineMongoOperations.tail(query: Query, collectionName: String): ReceiveChannel<T> =
+    tail(query, T::class.java, collectionName)
