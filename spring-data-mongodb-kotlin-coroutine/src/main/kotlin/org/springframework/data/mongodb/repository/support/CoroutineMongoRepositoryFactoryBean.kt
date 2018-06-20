@@ -18,7 +18,6 @@ package org.springframework.data.mongodb.repository.support
 
 import org.springframework.data.mapping.context.MappingContext
 import org.springframework.data.mongodb.core.CoroutineMongoOperations
-import org.springframework.data.mongodb.core.index.IndexOperationsAdapter
 import org.springframework.data.repository.Repository
 import org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport
 import org.springframework.data.repository.core.support.RepositoryFactorySupport
@@ -80,7 +79,7 @@ open class CoroutineMongoRepositoryFactoryBean<T: Repository<S, ID>, S, ID: Seri
      * @param operations
      * @return
      */
-    protected fun getFactoryInstance(operations: CoroutineMongoOperations): RepositoryFactorySupport =
+    private fun getFactoryInstance(operations: CoroutineMongoOperations): RepositoryFactorySupport =
         CoroutineMongoRepositoryFactory(operations)
 
     /*
@@ -95,7 +94,7 @@ open class CoroutineMongoRepositoryFactoryBean<T: Repository<S, ID>, S, ID: Seri
         Assert.notNull(operations, "ReactiveMongoOperations must not be null!")
 
         if (!mappingContextConfigured) {
-            setMappingContext(operations!!.converter.mappingContext)
+            setMappingContext(operations.converter.mappingContext)
         }
     }
 }

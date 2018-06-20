@@ -39,7 +39,7 @@ import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
 private class CustomControllerMethodResolver(
         private val delegate: ControllerMethodResolver
 ) : ControllerMethodResolver(
-        ArgumentResolverConfigurer(), emptyList(), ReactiveAdapterRegistry(), nullContext
+        ArgumentResolverConfigurer(), ReactiveAdapterRegistry(), nullContext, emptyList()
 ) {
     override fun getRequestMappingMethod(handlerMethod: HandlerMethod): InvocableHandlerMethod? =
         delegate.getRequestMappingMethod(handlerMethod)?.let { requestMappingMethod ->

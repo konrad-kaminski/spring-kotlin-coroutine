@@ -1,10 +1,10 @@
 buildscript {
-    ext.kotlin_version = "1.2.30"
-    ext.kotlin_coroutines_version = "0.22.5"
+    ext.kotlin_version = "1.2.50"
+    ext.kotlin_coroutines_version = "0.23.3"
     ext.spock_version = '1.1-groovy-2.4'
-    ext.spring_version = "5.0.4.RELEASE"
-    ext.spring_data_version = "2.0.5.RELEASE"
-    ext.spring_boot_version = "2.0.0.RELEASE"
+    ext.spring_version = "5.0.7.RELEASE"
+    ext.spring_data_version = "2.0.8.RELEASE"
+    ext.spring_boot_version = "2.0.3.RELEASE"
 
     repositories {
         jcenter()
@@ -44,7 +44,7 @@ subprojects {
     }
 
     dependencies {
-        compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     }
 
     kotlin {

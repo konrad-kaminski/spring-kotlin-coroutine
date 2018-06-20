@@ -26,7 +26,6 @@ import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.Order;
-import org.springframework.expression.EvaluationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -192,9 +191,7 @@ public abstract class AbstractCoroutineApplicationListenerMethodAdapter implemen
         String condition = getCondition();
         if (StringUtils.hasText(condition)) {
             Assert.notNull(this.evaluator, "EventExpressionEvaluator must no be null");
-            EvaluationContext evaluationContext = this.evaluator.createEvaluationContext(
-                    event, this.targetClass, this.method, args, this.applicationContext);
-            return this.evaluator.condition(condition, this.methodKey, evaluationContext);
+            return this.evaluator.condition(condition, event, this.method, this.methodKey, args, this.applicationContext);
         }
         return true;
     }
