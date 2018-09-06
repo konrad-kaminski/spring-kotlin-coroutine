@@ -18,10 +18,16 @@ package org.springframework.web.coroutine.function.client
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.kotlin.experimental.coroutine.web.awaitFirstOrNull
 import org.springframework.util.MultiValueMap
+import org.springframework.web.coroutine.function.client.CoroutineWebClient.CoroutineResponseSpec
+import org.springframework.web.coroutine.function.client.CoroutineWebClient.RequestBodySpec
+import org.springframework.web.coroutine.function.client.CoroutineWebClient.RequestHeadersSpec
+import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 import java.net.URI
 import java.nio.charset.Charset
 import java.time.ZonedDateTime
@@ -46,6 +52,15 @@ interface CoroutineWebClient {
     interface RequestBodyUriSpec: RequestBodySpec, RequestHeadersUriSpec<RequestBodySpec>
 
     interface RequestBodySpec: RequestHeadersSpec<RequestBodySpec>  {
+
+        fun contentLength(contentLength: Long): RequestBodySpec
+
+        fun contentType(contentType: MediaType): RequestBodySpec
+
+        fun <T> body(body: T, elementClass: Class<T>): RequestHeadersSpec<*>
+
+        fun syncBody(body: Any): RequestHeadersSpec<*>
+
     }
 
     interface RequestHeadersUriSpec<T: RequestHeadersSpec<T>>: UriSpec<T>, RequestHeadersSpec<T> {
@@ -80,13 +95,18 @@ interface CoroutineWebClient {
 
         fun attributes(attributesConsumer: (Map<String, Any>) -> Unit): T
 
-        suspend fun retrieve(): CoroutineResponseSpec
+        fun retrieve(): CoroutineResponseSpec
 
         suspend fun exchange(): CoroutineClientResponse?
     }
 
     interface CoroutineResponseSpec {
         suspend fun <T> body(clazz: Class<T>): T?
+
+        fun onStatus(
+            statusPredicate: (HttpStatus) -> Boolean,
+            exceptionFunction: (ClientResponse) -> Mono<out Throwable>
+        ): CoroutineResponseSpec
     }
 
     companion object {
@@ -96,6 +116,8 @@ interface CoroutineWebClient {
 }
 
 suspend inline fun <reified T : Any> CoroutineWebClient.CoroutineResponseSpec.body(): T? = body(T::class.java)
+
+inline fun <reified T : Any> CoroutineWebClient.RequestBodySpec.body(body: T): RequestHeadersSpec<*> = body(body, T::class.java)
 
 open class DefaultCoroutineWebClient(
     private val client: WebClient
@@ -121,18 +143,26 @@ open class DefaultCoroutineWebClient(
 }
 
 private fun WebClient.ResponseSpec.asCoroutineResponseSpec(): CoroutineWebClient.CoroutineResponseSpec =
-        DefaultCoroutineResponseSpec(this)
+    DefaultCoroutineResponseSpec(this)
 
 open class DefaultCoroutineResponseSpec(
     private val spec: WebClient.ResponseSpec
 ): CoroutineWebClient.CoroutineResponseSpec {
-    override suspend fun <T> body(clazz: Class<T>): T? =
-            spec.bodyToMono(clazz).awaitFirstOrNull()
+
+    override suspend fun <T> body(clazz: Class<T>): T? = spec.bodyToMono(clazz).awaitFirstOrNull()
+
+    override fun onStatus(
+        statusPredicate: (HttpStatus) -> Boolean,
+        exceptionFunction: (ClientResponse) -> Mono<out Throwable>
+    ): CoroutineResponseSpec = apply {
+        spec.onStatus(statusPredicate, exceptionFunction)
+    }
 }
 
 open class DefaultRequestBodyUriSpec(
     private val spec: WebClient.RequestBodyUriSpec
 ): CoroutineWebClient.RequestBodyUriSpec {
+
     override fun uri(uri: String, vararg uriVariables: Any): CoroutineWebClient.RequestBodySpec = apply {
         spec.uri(uri, *uriVariables)
     }
@@ -189,6 +219,22 @@ open class DefaultRequestBodyUriSpec(
         DefaultCoroutineClientResponse(it)
     }
 
-    override suspend fun retrieve(): CoroutineWebClient.CoroutineResponseSpec =
+    override fun retrieve(): CoroutineWebClient.CoroutineResponseSpec =
         spec.retrieve().asCoroutineResponseSpec()
+
+    override fun contentLength(contentLength: Long): RequestBodySpec = apply {
+        spec.contentLength(contentLength)
+    }
+
+    override fun contentType(contentType: MediaType): RequestBodySpec = apply {
+        spec.contentType(contentType)
+    }
+
+    override fun <T> body(body: T, elementClass: Class<T>): RequestHeadersSpec<*> = apply {
+        spec.body(Mono.justOrEmpty(body), elementClass)
+    }
+
+    override fun syncBody(body: Any): RequestHeadersSpec<*> = apply {
+        spec.syncBody(body)
+    }
 }
