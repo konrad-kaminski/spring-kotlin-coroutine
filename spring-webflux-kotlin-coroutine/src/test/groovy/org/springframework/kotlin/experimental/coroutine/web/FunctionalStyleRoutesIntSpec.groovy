@@ -16,16 +16,19 @@
 
 package org.springframework.kotlin.experimental.coroutine.web
 
+import org.json.JSONObject
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
+import org.springframework.http.RequestEntity
 import org.springframework.kotlin.experimental.coroutine.IntSpecConfiguration
 import org.springframework.web.client.RestOperations
 import org.springframework.web.client.RestTemplate
 import spock.lang.Specification
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import static org.springframework.http.MediaType.APPLICATION_JSON
 
 @SpringBootTest(classes = [IntSpecConfiguration, FunctionalStyleRoutesConfiguration], webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
@@ -37,10 +40,45 @@ class FunctionalStyleRoutesIntSpec extends Specification {
 
     def "should handle functional style defined GET request"() {
         when:
-        def result = restTemplate.getForEntity("http://localhost:$port/test/simple/HelloWorld", String)
+        def result = restTemplate.getForEntity("http://localhost:$port/test-functional/simple/HelloWorld", String)
 
         then:
         result.statusCode == HttpStatus.OK
         result.body == "HelloWorld"
+    }
+
+    def "should handle functional style defined POST request"() {
+        when:
+        def body = new JSONObject().put("key", "ping").toString()
+        def request = RequestEntity.post(URI.create("http://localhost:$port/test-functional/simple")).contentType(APPLICATION_JSON).body(body)
+        def result = restTemplate.exchange(request, String)
+
+        then:
+        result.statusCode == HttpStatus.CREATED
+        result.headers.getLocation().toString() == "http://localhost:$port/test-functional/simple"
+        result.body == new JSONObject().put("ping", "pong").toString()
+    }
+
+    def "should handle functional style defined PUT request"() {
+        when:
+        def body = new JSONObject().put("key", "ping").toString()
+        def request = RequestEntity.put(URI.create("http://localhost:$port/test-functional/simple/1234"))
+                .contentType(APPLICATION_JSON)
+                .build()
+        def result = restTemplate.exchange(request, String)
+
+        then:
+        result.statusCode == HttpStatus.NO_CONTENT
+        result.body == null
+    }
+
+    def "should handle functional style defined DELETE request"() {
+        when:
+        def request = RequestEntity.delete(URI.create("http://localhost:$port/test-functional/simple/4321")).build()
+        def result = restTemplate.exchange(request, String)
+
+        then:
+        result.statusCode == HttpStatus.NO_CONTENT
+        result.body == null
     }
 }
