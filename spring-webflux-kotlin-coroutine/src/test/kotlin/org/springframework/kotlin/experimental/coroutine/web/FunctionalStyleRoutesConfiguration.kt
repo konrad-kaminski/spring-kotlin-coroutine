@@ -32,17 +32,32 @@ open class FunctionalStyleRoutesConfiguration {
 
     @Bean
     open fun apiRouter(handler: FunctionalHandler) = router {
-        (accept(MediaType.APPLICATION_JSON) and "/test").nest {
-            GET("/simple/{param}") { handler.simple(it) }
+        "/test-functional".nest {
+            (accept(MediaType.APPLICATION_JSON) and  "/").nest {
+                GET("/simple/{param}") { handler.simpleGet(it) }
+            }
+
+            ("/" and contentType(MediaType.APPLICATION_JSON)).nest {
+                POST("/simple") { handler.simplePost(it) }
+                PUT("/simple/{id}") { handler.simplePut(it) }
+            }
+
+            DELETE("/simple/{id}") { handler.simpleDelete(it) }
         }
     }
 }
 
 @Component
 open class FunctionalHandler {
-    suspend fun simple(req: CoroutineServerRequest) =
-        CoroutineServerResponse
-                .ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .body(req.pathVariable("param"))
+    suspend fun simpleGet(req: CoroutineServerRequest) =
+        CoroutineServerResponse.ok().contentType(MediaType.TEXT_PLAIN).body(req.pathVariable("param"))
+
+    suspend fun simplePost(req: CoroutineServerRequest) =
+        CoroutineServerResponse.created(req.uri()).body(mapOf(req.body<Map<String, String>>()!!["key"] to "pong"))
+
+    suspend fun simplePut(req: CoroutineServerRequest) =
+        CoroutineServerResponse.noContent().build()
+
+    suspend fun simpleDelete(req: CoroutineServerRequest) =
+        CoroutineServerResponse.noContent().build()
 }

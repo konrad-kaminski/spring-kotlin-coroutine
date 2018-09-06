@@ -18,6 +18,7 @@ package org.springframework.web.coroutine.function.server
 
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.reactive.awaitFirstOrDefault
+import kotlinx.coroutines.experimental.reactive.awaitFirstOrNull
 import kotlinx.coroutines.experimental.reactive.openSubscription
 import org.springframework.http.server.coroutine.CoroutineServerHttpRequest
 import org.springframework.web.server.CoroutineWebSession
@@ -25,6 +26,7 @@ import org.springframework.web.coroutine.function.CoroutineBodyExtractor
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.server.session.asCoroutineWebSession
 import java.net.URI
+import java.security.Principal
 
 interface CoroutineServerRequest {
     fun <T> body(extractor: CoroutineBodyExtractor<T, CoroutineServerHttpRequest>): T
@@ -45,6 +47,8 @@ interface CoroutineServerRequest {
 
     fun extractServerRequest(): ServerRequest
 
+    suspend fun principal(): Principal?
+
     companion object {
         operator fun invoke(req: ServerRequest) = DefaultCoroutineServerRequest(req)
     }
@@ -52,16 +56,16 @@ interface CoroutineServerRequest {
 
 class DefaultCoroutineServerRequest(val req: ServerRequest): CoroutineServerRequest {
     override fun <T> body(extractor: CoroutineBodyExtractor<T, CoroutineServerHttpRequest>): T =
-            req.body(extractor.asBodyExtractor())
+        req.body(extractor.asBodyExtractor())
 
     override fun <T> body(extractor: CoroutineBodyExtractor<T, CoroutineServerHttpRequest>, hints: Map<String, Any>): T =
-            req.body(extractor.asBodyExtractor(), hints)
+        req.body(extractor.asBodyExtractor(), hints)
 
     override suspend fun <T> body(elementClass: Class<out T>): T? =
-            req.bodyToMono(elementClass).awaitFirstOrDefault(null)
+        req.bodyToMono(elementClass).awaitFirstOrNull()
 
     override fun <T> bodyToReceiveChannel(elementClass: Class<out T>): ReceiveChannel<T> =
-            req.bodyToFlux(elementClass).openSubscription()
+        req.bodyToFlux(elementClass).openSubscription()
 
     override fun headers(): ServerRequest.Headers = req.headers()
 
@@ -72,6 +76,9 @@ class DefaultCoroutineServerRequest(val req: ServerRequest): CoroutineServerRequ
     override fun uri(): URI = req.uri()
 
     override fun extractServerRequest(): ServerRequest = req
+
+    override suspend fun principal(): Principal? =
+        req.principal().awaitFirstOrNull()
 }
 
 //fun CoroutineServerRequest.language() = TODO()
