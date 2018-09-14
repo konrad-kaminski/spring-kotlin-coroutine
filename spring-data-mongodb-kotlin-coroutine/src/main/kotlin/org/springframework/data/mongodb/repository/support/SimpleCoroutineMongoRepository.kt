@@ -60,7 +60,7 @@ open class SimpleCoroutineMongoRepository<T, ID: Serializable>(
     }
 
     override suspend fun deleteAll(entities: Iterable<T>) {
-        reactiveRepo.deleteAll().awaitFirstOrDefault(null)
+        reactiveRepo.deleteAll(entities).awaitFirstOrDefault(null)
     }
 
     override suspend fun <S : T> insert(entity: S): S? =
