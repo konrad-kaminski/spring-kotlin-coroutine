@@ -16,7 +16,7 @@
 
 package org.springframework.web.reactive.result.method.annotation
 
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.reactive.asPublisher
 import org.reactivestreams.Publisher
@@ -93,7 +93,7 @@ private class CoroutineInvocableHandlerMethod(private val handlerMethod: Handler
 
                             HandlerResult(this, value, returnType, bindingContext)
                         } else if (result.returnValue is ReceiveChannel<*>) {
-                            val value = (result.returnValue as ReceiveChannel<*>).asPublisher(Unconfined)
+                            val value = (result.returnValue as ReceiveChannel<*>).asPublisher(Dispatchers.Unconfined)
 
                             HandlerResult(this, value, returnType, bindingContext)
                         } else {

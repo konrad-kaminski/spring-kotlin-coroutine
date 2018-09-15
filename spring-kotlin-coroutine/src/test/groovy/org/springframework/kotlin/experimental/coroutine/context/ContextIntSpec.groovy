@@ -31,24 +31,24 @@ class ContextIntSpec extends Specification {
     @Autowired
     private TestReactorSchedulerService testReactorSchedulerService
 
-    def "should use ForkJoinPool within meta-annotated COMMON_POOL context"() {
+    def "should use ForkJoinPool within meta-annotated DEFAULT_DISPATCHER context"() {
         when:
         def thread = runBlocking { cont ->
-            customContextService.metaCommonPoolFun(cont)
+            customContextService.metaDefaultDispatcherFun(cont)
         }
 
         then:
         thread.name =~ /^ForkJoinPool\.commonPool-worker/
     }
 
-    def "should use ForkJoinPool within COMMON_POOL context"() {
+    def "should use Reactor scheduler when using component-level meta-annotated context from Reactor scheduler"() {
         when:
         def thread = runBlocking { cont ->
-            customContextService.commonPoolFun(cont)
+            customContextService.defaultContextFun(cont)
         }
 
         then:
-        thread.name =~ /^ForkJoinPool\.commonPool-worker/
+        thread.name =~ /^ReactorSingleTest/
     }
 
     def "should use same thread within UNCONFINED context"() {

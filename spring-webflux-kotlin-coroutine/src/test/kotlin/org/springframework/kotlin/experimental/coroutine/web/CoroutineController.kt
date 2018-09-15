@@ -16,13 +16,14 @@
 
 package org.springframework.kotlin.experimental.coroutine.web
 
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.delay
 import org.springframework.http.MediaType
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
-import org.springframework.kotlin.experimental.coroutine.context.COMMON_POOL
+import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -32,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 open class CoroutineController {
     @GetMapping("/suspendedMultiply/{a}/{b}")
-    @Coroutine(COMMON_POOL)
+    @Coroutine(DEFAULT_DISPATCHER)
     open suspend fun suspendedMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int =
         a*b
 
@@ -48,7 +49,7 @@ open class CoroutineController {
 
     @GetMapping("/channelMultiply/{a}/{b}")
     open fun channelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
-        produce {
+        GlobalScope.produce {
             send(a*b)
         }
 
@@ -56,7 +57,7 @@ open class CoroutineController {
     open suspend fun delayedChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): ReceiveChannel<Int> {
         delay(1L)
 
-        return produce {
+        return GlobalScope.produce {
             send(a * b)
         }
     }
@@ -66,7 +67,7 @@ open class CoroutineController {
 
     @GetMapping("/suspendChannelMultiply/{a}/{b}")
     open suspend fun suspendChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
-        produce {
+        GlobalScope.produce {
             send(a * b)
         }
 
@@ -87,7 +88,7 @@ open class CoroutineController {
             suspendChannelMultiply(a, b)
 
     @GetMapping("/test", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    open fun test() = produce(CommonPool) {
+    open fun test() = GlobalScope.produce(Dispatchers.Default) {
         repeat(5) {
             send(it)
             delay(500L)
@@ -95,7 +96,7 @@ open class CoroutineController {
     }
 
     @GetMapping("/delayedTest", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    open suspend fun delayedTest() = produce(CommonPool) {
+    open suspend fun delayedTest() = GlobalScope.produce(Dispatchers.Default) {
         repeat(5) {
             send(it)
             delay(500L)

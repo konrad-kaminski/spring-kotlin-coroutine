@@ -21,7 +21,7 @@ import demo.app.util.logger
 import org.springframework.context.ApplicationEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
-import org.springframework.kotlin.experimental.coroutine.context.COMMON_POOL
+import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.kotlin.experimental.coroutine.event.CoroutineApplicationEventPublisher
 import org.springframework.kotlin.experimental.coroutine.web.client.CoroutineRestOperations
 import org.springframework.web.bind.annotation.GetMapping
@@ -45,11 +45,11 @@ open class DemoController(
         return result
     }
 
-    @GetMapping("/commmonPool")
-    suspend open fun commmonPoolReturn(): String {
-        logger.info ("Before call to [demoService.commmonPoolReturn]")
-        val result = demoService.commmonPoolReturn("commonPool")
-        logger.info ("After call to [demoService.commmonPoolReturn]")
+    @GetMapping("/defaultDispatcher")
+    suspend open fun defaultDispatcherReturn(): String {
+        logger.info ("Before call to [demoService.defaultDispatcherReturn]")
+        val result = demoService.defaultDispatcherReturn("defaultDispatcher")
+        logger.info ("After call to [demoService.defaultDispatcherReturn]")
 
         return result
     }
@@ -63,21 +63,21 @@ open class DemoController(
         return result
     }
 
-    @GetMapping("/cachedCommonPoolDelayed")
-    suspend open fun cachedCommonPoolDelayed(): String {
-        logger.info ("Before call to [demoService.cachedCommonPoolDelayedReturn]")
-        val result = demoService.cachedCommonPoolDelayedReturn("cachedCommonPoolDelayed", 1500)
-        logger.info ("After call to [demoService.cachedCommonPoolDelayedReturn]")
+    @GetMapping("/cachedDefaultDispatcherDelayed")
+    suspend open fun cachedDefaultDispatcherDelayed(): String {
+        logger.info ("Before call to [demoService.cachedDefaultDispatcherDelayedReturn]")
+        val result = demoService.cachedDefaultDispatcherDelayedReturn("cachedDefaultDsipatcherDelayed", 1500)
+        logger.info ("After call to [demoService.cachedDefaultDeispatcherDelayedReturn]")
 
         return result
     }
 
-    @GetMapping("/commonPoolController")
-    @Coroutine(COMMON_POOL)
-    suspend open fun commonPoolController(): String {
-        logger.info ("In [commonPoolController]")
+    @GetMapping("/defaultDispatcherController")
+    @Coroutine(DEFAULT_DISPATCHER)
+    suspend open fun defaultDispatcherController(): String {
+        logger.info ("In [defaultDispatcherController]")
 
-        return "commonPoolController"
+        return "defaultDispatcherController"
     }
 
     @GetMapping("/event")

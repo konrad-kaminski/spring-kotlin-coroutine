@@ -20,7 +20,7 @@ import demo.app.util.logger
 import kotlinx.coroutines.experimental.delay
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
-import org.springframework.kotlin.experimental.coroutine.context.COMMON_POOL
+import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
@@ -44,9 +44,9 @@ open class DemoService {
         return s
     }
 
-    @Coroutine(COMMON_POOL)
-    suspend open fun commmonPoolReturn(s: String): String {
-        logger.info ("In [commmonPoolReturn]")
+    @Coroutine(DEFAULT_DISPATCHER)
+    suspend open fun defaultDispatcherReturn(s: String): String {
+        logger.info ("In [defaultDispatcher]")
 
         return s
     }
@@ -61,11 +61,11 @@ open class DemoService {
     }
 
     @Cacheable("cache2")
-    @Coroutine(COMMON_POOL)
-    suspend open fun cachedCommonPoolDelayedReturn(s: String, delayMillis: Long): String {
-        logger.info ("Before delay in [cachedCommonPoolDelayedReturn]")
+    @Coroutine(DEFAULT_DISPATCHER)
+    suspend open fun cachedDefaultDispatcherDelayedReturn(s: String, delayMillis: Long): String {
+        logger.info ("Before delay in [cachedDefaultDispatcherDelayedReturn]")
         delay(delayMillis)
-        logger.info ("After delay in [cachedCommonPoolDelayedReturn]")
+        logger.info ("After delay in [cachedDefaultDispatcherDelayedReturn]")
 
         return s
     }

@@ -45,7 +45,7 @@ internal open class CoroutineMethodInterceptor(
                 if (context.isPresent) {
                     val originalContinuation = invocation.arguments.last() as Continuation<*>
 
-                    CoroutineUtils.runCoroutine(context.get(), { cont ->
+                    CoroutineUtils.runCoroutine(context.get(), { _, cont ->
                         invocation.arguments[invocation.arguments.lastIndex] = cont
                         invocation.proceed()
                     }, originalContinuation)

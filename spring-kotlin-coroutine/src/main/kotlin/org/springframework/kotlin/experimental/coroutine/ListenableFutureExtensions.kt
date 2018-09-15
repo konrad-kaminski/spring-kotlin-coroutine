@@ -16,25 +16,26 @@
 
 package org.springframework.kotlin.experimental.coroutine
 
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutionException
-
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.startCoroutine
 import kotlinx.coroutines.experimental.CancellableContinuation
 import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.DefaultDispatcher
 import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.cancelFutureOnCancellation
 import kotlinx.coroutines.experimental.cancelFutureOnCompletion
 import kotlinx.coroutines.experimental.newCoroutineContext
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
-
 import org.springframework.util.concurrent.ListenableFuture
 import org.springframework.util.concurrent.ListenableFutureCallback
 import org.springframework.util.concurrent.SettableListenableFuture
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutionException
+import kotlin.coroutines.experimental.Continuation
+import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.experimental.startCoroutine
 
 /**
  * Starts new coroutine and returns its results an an implementation of [ListenableFuture].
@@ -55,8 +56,8 @@ import org.springframework.util.concurrent.SettableListenableFuture
  * @author Roman Elizarov
  * @since 5.0
  */
-fun <T> listenableFuture(context: CoroutineContext = DefaultDispatcher, block: suspend () -> T): ListenableFuture<T> {
-    val newContext = newCoroutineContext(DefaultDispatcher + context)
+fun <T> listenableFuture(context: CoroutineContext = Dispatchers.Default, block: suspend () -> T): ListenableFuture<T> {
+    val newContext = GlobalScope.newCoroutineContext(Dispatchers.Default + context)
     val job = Job(newContext[Job])
 
     return ListenableFutureCoroutine<T>(newContext + job).apply {
@@ -113,7 +114,7 @@ suspend fun <T> ListenableFuture<T>.await(): T =
                     override fun onFailure(exception: Throwable) = cont.resumeWithException(exception)
                     override fun onSuccess(result: T) = cont.resume(result)
                 })
-                cont.cancelFutureOnCompletion(this)
+                cont.cancelFutureOnCancellation(this)
             }
         }
 

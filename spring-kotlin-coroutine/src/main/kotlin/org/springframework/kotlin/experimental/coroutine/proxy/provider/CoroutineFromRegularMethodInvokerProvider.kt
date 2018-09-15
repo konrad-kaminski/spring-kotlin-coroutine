@@ -51,7 +51,7 @@ object CoroutineFromRegularMethodInvokerProvider: MethodInvokerProvider {
                 } else {
                     object : MethodInvoker {
                         override fun invoke(vararg args: Any): Any? =
-                            runCoroutine(proxyConfig.coroutineContext, {
+                            runCoroutine(proxyConfig.coroutineContext, { _, _ ->
                                 regularMethod.smartInvoke(obj, *args.removeLastValue()) },
                                 args.last() as Continuation<Any?>
                             )

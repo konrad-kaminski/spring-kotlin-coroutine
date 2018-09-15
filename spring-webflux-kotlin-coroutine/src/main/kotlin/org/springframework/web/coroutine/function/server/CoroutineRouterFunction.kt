@@ -16,7 +16,8 @@
 
 package org.springframework.web.coroutine.function.server
 
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.reactor.mono
 import kotlinx.coroutines.experimental.runBlocking
 import org.springframework.http.MediaType
@@ -80,7 +81,7 @@ class CoroutineRouterFunctionDsl {
     }
 
     private fun <T: CoroutineServerResponse> CoroutineHandlerFunction<T>.asHandlerFunction() = HandlerFunction {
-        mono(Unconfined) {
+        GlobalScope.mono(Dispatchers.Unconfined) {
             this@asHandlerFunction.invoke(org.springframework.web.coroutine.function.server.CoroutineServerRequest(it))?.extractServerResponse()
         }
     }

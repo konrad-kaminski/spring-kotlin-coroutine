@@ -16,12 +16,13 @@
 
 package org.springframework.web.server
 
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.reactor.mono
 import reactor.core.publisher.Mono
 
 interface CoroutineWebFilter: WebFilter {
-    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> = mono(Unconfined) {
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> = GlobalScope.mono(Dispatchers.Unconfined) {
         filter(CoroutineServerWebExchange(exchange), CoroutineWebFilterChain(chain))
     } as Mono<Void>
 

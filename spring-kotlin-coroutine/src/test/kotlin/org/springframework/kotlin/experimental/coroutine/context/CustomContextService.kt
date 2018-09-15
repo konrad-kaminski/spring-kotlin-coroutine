@@ -24,8 +24,8 @@ import java.lang.annotation.Inherited
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 @Inherited
-@Coroutine(COMMON_POOL)
-annotation class CommonPoolCoroutine
+@Coroutine(DEFAULT_DISPATCHER)
+annotation class DefaultDispatcherCoroutine
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
@@ -38,11 +38,8 @@ annotation class ReactorSchedulerCoroutine
 open class CustomContextService {
     suspend open fun defaultContextFun(): Thread = currentThread()
 
-    @CommonPoolCoroutine
-    suspend open fun metaCommonPoolFun(): Thread = currentThread()
-
-    @Coroutine(COMMON_POOL)
-    suspend open fun commonPoolFun(): Thread = currentThread()
+    @DefaultDispatcherCoroutine
+    suspend open fun metaDefaultDispatcherFun(): Thread = currentThread()
 
     @Coroutine(UNCONFINED)
     suspend open fun unconfinedPoolFun(): Thread = currentThread()
@@ -59,7 +56,7 @@ open class CustomContextService {
     @Coroutine("SingleTestExecutor")
     suspend open fun singleTestExecutorFun(): Thread = currentThread()
 
-    @Coroutine(COMMON_POOL, name = "customCoroutineName")
+    @Coroutine(DEFAULT_DISPATCHER, name = "customCoroutineName")
     suspend open fun customCoroutineNameFun(): String = currentThread().name
 }
 

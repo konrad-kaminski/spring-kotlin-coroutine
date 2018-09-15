@@ -16,9 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.context
 
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.Dispatchers
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,16 +25,12 @@ import org.springframework.context.annotation.Role
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 internal open class CoroutineContexts {
-    @Bean(COMMON_POOL)
-    open fun commonPool() = CommonPool
-
-    @Bean(DEFAULT_DISPATCHER)
-    open fun defaultDispatcher() = DefaultDispatcher
+    @Bean(DEFAULT_DISPATCHER, destroyMethod = "")
+    open fun defaultDispatcher() = Dispatchers.Default
 
     @Bean(UNCONFINED)
-    open fun unconfined() = Unconfined
+    open fun unconfined() = Dispatchers.Unconfined
 }
 
-const val COMMON_POOL = "CommonPool"
 const val DEFAULT_DISPATCHER = "DefaultDispatcher"
 const val UNCONFINED = "Unconfined"

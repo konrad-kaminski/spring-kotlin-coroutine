@@ -17,9 +17,11 @@
 package org.springframework.kotlin.experimental.coroutine.scheduler
 
 import kotlinx.coroutines.experimental.CoroutineStart
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.handleCoroutineException
+import kotlinx.coroutines.experimental.isActive
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import org.springframework.aop.support.AopUtils
@@ -54,7 +56,7 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
     private val taskSchedulerCoroutineContextResolver = TaskSchedulerCoroutineContextResolver()
     private var embeddedValueResolver: StringValueResolver? = null
     private val scheduledCoroutines = mutableListOf<ScheduledCoroutine>()
-    private val isActive = AtomicBoolean(true)
+    private val isAlive = AtomicBoolean(true)
     private val jobs = mutableSetOf<Job>()
     private val jobsLock = ReentrantLock()
 
@@ -83,7 +85,7 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
     }
 
     override fun destroy() {
-        isActive.set(false)
+        isAlive.set(false)
 
         jobsLock.withLock {
             jobs.forEach { it.cancel() }
@@ -98,7 +100,7 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
 
     private fun launchCoroutine(dispatcher: CoroutineContext, coroutine: ScheduledCoroutine,
                                 exceptionHandler: ScheduledCoroutineExceptionHandler): Job =
-            launch(dispatcher, CoroutineStart.DEFAULT) {
+            GlobalScope.launch(dispatcher, CoroutineStart.DEFAULT) {
                 var lastStart: Date? = null
                 var delayPeriod = coroutine.policy.getInitialDelay() ?: coroutine.policy.getDelayBeforeNextRun(null, Date())
 
@@ -110,7 +112,7 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
                         try {
                             coroutine.run()
                         } catch(e: Throwable) {
-                            exceptionHandler.invoke(coroutineContext, e)
+                            exceptionHandler.invoke(coroutineContext, e, null)
                         }
                     }
 
@@ -130,16 +132,16 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
                 }
             }
 
-    private fun unregisterCoroutineJob(job: Job) = doIfActiveWithJobsLock {
+    private fun unregisterCoroutineJob(job: Job) = doIfNotDestroyedWithJobsLock {
         jobs.remove(job)
     }
 
-    private fun registerCoroutineJob(job: Job): Boolean = doIfActiveWithJobsLock {
+    private fun registerCoroutineJob(job: Job): Boolean = doIfNotDestroyedWithJobsLock {
         jobs.add(job)
     }
 
-    private fun doIfActiveWithJobsLock(fn: () -> Unit) = jobsLock.withLock {
-        isActive.get().apply {
+    private fun doIfNotDestroyedWithJobsLock(fn: () -> Unit) = jobsLock.withLock {
+        isAlive.get().apply {
             if (this) { fn() }
         }
     }
@@ -187,11 +189,11 @@ data class ScheduledCoroutine(
     }
 }
 
-typealias ScheduledCoroutineExceptionHandler = (context: CoroutineContext, exception: Throwable) -> Unit
+typealias ScheduledCoroutineExceptionHandler = (context: CoroutineContext, exception: Throwable, caller: Job?) -> Unit
 
 private fun CoroutineContext.asScheduledCoroutineExceptionHandler(): ScheduledCoroutineExceptionHandler =
         when (this) {
-            is TaskSchedulerDispatcher -> { _, exception ->
+            is TaskSchedulerDispatcher -> { _, exception, _ ->
                 TaskUtils.getDefaultErrorHandler(true).handleError(exception)
             }
             else                       -> ::handleCoroutineException

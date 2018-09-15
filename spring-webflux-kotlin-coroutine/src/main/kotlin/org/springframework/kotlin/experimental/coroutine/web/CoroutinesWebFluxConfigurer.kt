@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.web
 
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.reactive.asPublisher
 import org.springframework.beans.factory.config.BeanDefinition
@@ -76,7 +76,7 @@ open class CompletableFutureContinuation(
 
     override fun resume(value: Any) {
         if (value is ReceiveChannel<*>) {
-            val trueValue = value.asPublisher(Unconfined)
+            val trueValue = value.asPublisher(Dispatchers.Unconfined)
 
             complete(trueValue)
         } else {

@@ -20,7 +20,7 @@ import kotlinx.coroutines.experimental.CancellableContinuation
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.Delay
 import kotlinx.coroutines.experimental.DisposableHandle
-import kotlinx.coroutines.experimental.disposeOnCompletion
+import kotlinx.coroutines.experimental.disposeOnCancellation
 import org.springframework.kotlin.experimental.coroutine.context.CoroutineContextResolver
 import org.springframework.scheduling.TaskScheduler
 import java.util.Date
@@ -47,7 +47,7 @@ internal class TaskSchedulerDispatcher(private val scheduler: TaskScheduler) : C
             with(continuation) { resumeUndispatched(Unit) }
         }, Date(System.currentTimeMillis() + unit.toMillis(time))).asDisposableHandle()
 
-        continuation.disposeOnCompletion(disposable)
+        continuation.disposeOnCancellation(disposable)
     }
 
     override fun invokeOnTimeout(time: Long, unit: TimeUnit, block: Runnable): DisposableHandle =

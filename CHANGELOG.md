@@ -1,3 +1,7 @@
+## 0.3.6
+* Support for Kotlin 1.2.70, kotlinx-coroutines 0.26.0, Spring 5.0.9.RELEASE, Spring Data 2.0.10.RELEASE, Spring Boot 2.0.5.RELEASE.
+* Removed support for CommonPool dispatcher.
+
 ## 0.3.5
 * Support for Kotlin 1.2.50, kotlinx-coroutines 0.23.3, Spring 5.0.7.RELEASE, Spring Data 2.0.8.RELEASE, Spring Boot 2.0.3.RELEASE.
 * Fixes for #23, #24 and #25.

@@ -17,6 +17,7 @@
 package org.springframework.kotlin.experimental.coroutine.proxy.provider
 
 import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
 import org.springframework.kotlin.experimental.coroutine.proxy.CoroutineProxyConfig
 import org.springframework.kotlin.experimental.coroutine.proxy.DeferredCoroutineProxyConfig
@@ -45,7 +46,7 @@ object DeferredFromRegularMethodInvokerProvider : MethodInvokerProvider {
 
     private fun createDeferredFromRegularMethodInvoker(proxyConfig: DeferredCoroutineProxyConfig, regularMethod: Method, obj: Any) =
         object : MethodInvoker {
-            override fun invoke(vararg args: Any): Any? = async(proxyConfig.coroutineContext, proxyConfig.start) {
+            override fun invoke(vararg args: Any): Any? = GlobalScope.async(proxyConfig.coroutineContext, proxyConfig.start) {
                 regularMethod.smartInvoke(obj, *args)
             }
         }

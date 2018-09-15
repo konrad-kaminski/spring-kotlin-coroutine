@@ -20,7 +20,7 @@ import kotlinx.coroutines.experimental.delay
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kotlin.experimental.coroutine.EnableCoroutine
-import org.springframework.kotlin.experimental.coroutine.context.COMMON_POOL
+import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import java.util.concurrent.atomic.AtomicInteger
@@ -43,17 +43,17 @@ open class FixedDelayConfiguration : DefaultDispatcherConfiguration() {
 }
 
 @Configuration
-@EnableCoroutine(schedulerDispatcher = COMMON_POOL)
-open class FixedDelayOnCommonPoolConfiguration : BaseConfiguration() {
+@EnableCoroutine(schedulerDispatcher = DEFAULT_DISPATCHER)
+open class FixedDelayOnDefaultDispatcherConfiguration : BaseConfiguration() {
     @Scheduled(fixedDelay = 100)
     suspend open fun task() {
-        if (COMMON_POOL_THREAD_NAME_REGEX.containsMatchIn (Thread.currentThread().name)) {
+        if (DEFAULT_DISPATCHER_THREAD_NAME_REGEX.containsMatchIn (Thread.currentThread().name)) {
             counter().incrementAndGet()
         }
     }
 
     companion object {
-        private val COMMON_POOL_THREAD_NAME_REGEX = Regex("^ForkJoinPool\\.commonPool-worker")
+        private val DEFAULT_DISPATCHER_THREAD_NAME_REGEX = Regex("^ForkJoinPool\\.commonPool-worker")
     }
 }
 

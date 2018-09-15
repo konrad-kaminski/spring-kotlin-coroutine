@@ -18,7 +18,7 @@ package org.springframework.kotlin.experimental.coroutine.web
 
 import kotlinx.coroutines.experimental.delay
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
-import org.springframework.kotlin.experimental.coroutine.context.COMMON_POOL
+import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 open class CoroutineController {
     @GetMapping("/suspendedMultiply/{a}/{b}")
-    @Coroutine(COMMON_POOL)
+    @Coroutine(DEFAULT_DISPATCHER)
     suspend open fun suspendedMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): Int =
         a*b
 

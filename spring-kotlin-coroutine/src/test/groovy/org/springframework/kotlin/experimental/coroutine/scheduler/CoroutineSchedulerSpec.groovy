@@ -46,7 +46,7 @@ class CoroutineSchedulerSpec extends Specification {
 
         where:
         configuration << [FixedDelayConfiguration, FixedDelayStringConfiguration,
-                          FixedDelayOnCommonPoolConfiguration, FixedDelayWithSuspensionPointConfiguration]
+                          FixedDelayOnDefaultDispatcherConfiguration, FixedDelayWithSuspensionPointConfiguration]
     }
 
     @Unroll

@@ -16,19 +16,19 @@
 
 package org.springframework.web.coroutine.function.server
 
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.reactive.asPublisher
 import kotlinx.coroutines.experimental.reactive.awaitFirst
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import org.springframework.kotlin.experimental.coroutine.web.awaitFirstOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseCookie
 import org.springframework.http.server.CoroutineServerHttpResponse
 import org.springframework.http.server.reactive.ServerHttpResponse
+import org.springframework.kotlin.experimental.coroutine.web.awaitFirstOrNull
 import org.springframework.util.MultiValueMap
 import org.springframework.web.coroutine.function.CoroutineBodyInserter
 import org.springframework.web.reactive.function.BodyInserter
@@ -184,7 +184,7 @@ internal open class DefaultCoroutineBodyBuilder(builder: ServerResponse.BodyBuil
             builder.body(Mono.justOrEmpty(value), elementClass as Class<T?>).asCoroutineServerResponse()
 
     override suspend fun <T> body(channel: ReceiveChannel<T>, elementClass: Class<T>): CoroutineServerResponse? =
-            builder.body(channel.asPublisher(Unconfined), elementClass).asCoroutineServerResponse()
+            builder.body(channel.asPublisher(Dispatchers.Unconfined), elementClass).asCoroutineServerResponse()
 
     override fun contentType(contentType: MediaType): CoroutineBodyBuilder = apply {
         builder.contentType(contentType)
