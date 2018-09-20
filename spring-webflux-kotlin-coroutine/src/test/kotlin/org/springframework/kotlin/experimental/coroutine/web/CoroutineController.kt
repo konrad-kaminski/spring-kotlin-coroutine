@@ -21,13 +21,16 @@ import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.delay
+import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.MediaType
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
 import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -73,19 +76,19 @@ open class CoroutineController {
 
     @GetMapping("/sseChannelMultiply/{a}/{b}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     open fun sseChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
-            channelMultiply(a, b)
+        channelMultiply(a, b)
 
     @GetMapping("/sseDelayedChannelMultiply/{a}/{b}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     open suspend fun sseDelayedChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int): ReceiveChannel<Int> =
-            delayedChannelMultiply(a, b)
+        delayedChannelMultiply(a, b)
 
     @GetMapping("/sseChannelMultiplyList/{a}/{b}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     open suspend fun sseChannelMultiplyList(@PathVariable("a") a: Int, @PathVariable("b") b: Int): List<Int> =
-            channelMultiplyList(a, b)
+        channelMultiplyList(a, b)
 
     @GetMapping("/sseSuspendChannelMultiply/{a}/{b}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     open suspend fun sseSuspendChannelMultiply(@PathVariable("a") a: Int, @PathVariable("b") b: Int) = //: ReceiveChannel<Int>
-            suspendChannelMultiply(a, b)
+        suspendChannelMultiply(a, b)
 
     @GetMapping("/test", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     open fun test() = GlobalScope.produce(Dispatchers.Default) {
@@ -106,6 +109,11 @@ open class CoroutineController {
     @PostMapping("/postTest")
     open suspend fun postTest(): Int = 123456
 
-    @PostMapping("/postWithHeaderTest")
-    open suspend fun postWithHeaderTest(@RequestHeader("X-Coroutine-Test") headerValue: String): String = headerValue
+    @ResponseStatus(CREATED)
+    @PostMapping("/postWithHeaderAndBodyTest", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    open suspend fun postWithHeaderAndBodyTest(
+        @RequestHeader("X-Coroutine-Test") headerValue: String,
+        @RequestBody body: Map<String, Any>
+    ): Map<String, Any> = mapOf("header" to headerValue, "body" to body)
+
 }

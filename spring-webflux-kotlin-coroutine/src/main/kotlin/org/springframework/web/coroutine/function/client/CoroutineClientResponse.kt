@@ -16,14 +16,50 @@
 
 package org.springframework.web.coroutine.function.client
 
+import kotlinx.coroutines.experimental.reactive.awaitFirstOrNull
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseCookie
+import org.springframework.http.ResponseEntity
+import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.client.ClientResponse
+import org.springframework.web.reactive.function.client.ClientResponse.Headers
+import org.springframework.web.reactive.function.client.ExchangeStrategies
 
 interface CoroutineClientResponse {
-//    fun <T> body(extractor: BodyExtractor<T, in ClientHttpResponse>): T
+
+    fun statusCode(): HttpStatus
+
+    fun headers(): Headers
+
+    fun cookies(): MultiValueMap<String, ResponseCookie>
+
+    fun strategies(): ExchangeStrategies
+
+    suspend fun <T> body(elementClass: Class<T>): T?
+
+    suspend fun <T> toEntity(bodyType: Class<T>): ResponseEntity<T?>
+
 }
 
 internal class DefaultCoroutineClientResponse(
     private val clientResponse: ClientResponse
-): CoroutineClientResponse {
+) : CoroutineClientResponse {
 
+    override fun statusCode(): HttpStatus = clientResponse.statusCode()
+
+    override fun headers(): Headers = clientResponse.headers()
+
+    override fun cookies(): MultiValueMap<String, ResponseCookie> = clientResponse.cookies()
+
+    override fun strategies(): ExchangeStrategies = clientResponse.strategies()
+
+    override suspend fun <T> body(elementClass: Class<T>): T? =
+        clientResponse.bodyToMono(elementClass).awaitFirstOrNull()
+
+    override suspend fun <T> toEntity(bodyType: Class<T>): ResponseEntity<T?> =
+        ResponseEntity(clientResponse.bodyToMono(bodyType).awaitFirstOrNull(), headers().asHttpHeaders(), statusCode())
 }
+
+suspend inline fun <reified T : Any> CoroutineClientResponse.body(): T? = body(T::class.java)
+
+suspend inline fun <reified T : Any> CoroutineClientResponse.toEntity(): ResponseEntity<T?> = toEntity(T::class.java)
