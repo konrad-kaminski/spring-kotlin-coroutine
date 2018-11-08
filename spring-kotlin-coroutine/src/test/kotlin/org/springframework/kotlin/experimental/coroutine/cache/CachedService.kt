@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.cache
 
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.delay
 import org.springframework.cache.annotation.Cacheable
 
 open class CachedService {

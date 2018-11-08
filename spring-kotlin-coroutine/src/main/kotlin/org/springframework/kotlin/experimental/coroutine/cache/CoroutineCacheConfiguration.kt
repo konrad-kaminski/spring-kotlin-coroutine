@@ -34,8 +34,9 @@ import org.springframework.kotlin.experimental.coroutine.removeLastValue
 import org.springframework.kotlin.experimental.coroutine.setLast
 import java.lang.reflect.Method
 import java.util.Optional
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.resumeWithException
 
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -140,11 +141,14 @@ private class CachingContinuation(
 ): Continuation<Any?> {
     override val context = delegate.context
 
-    override fun resume(value: Any?) {
+    override fun resumeWith(result: Result<Any?>) {
+        if (result.isFailure) {
+            delegate.resumeWith(result)
+            return
+        }
         var resumed = false
-
         try {
-            onResume(value)
+            onResume(result.getOrNull())
         }
         catch (ex: Throwable) {
             resumed = true
@@ -152,12 +156,9 @@ private class CachingContinuation(
         }
 
         if (!resumed) {
-            delegate.resume(value)
+            delegate.resumeWith(result)
         }
     }
-
-    override fun resumeWithException(exception: Throwable) =
-            delegate.resumeWithException(exception)
 }
 
 private class CoroutineSuspendedException: RuntimeException()

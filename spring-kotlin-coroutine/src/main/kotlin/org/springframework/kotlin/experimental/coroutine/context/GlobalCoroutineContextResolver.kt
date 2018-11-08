@@ -18,7 +18,7 @@ package org.springframework.kotlin.experimental.coroutine.context
 
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 interface GlobalCoroutineContextResolver {
     fun resolveContext(name: String): CoroutineContext?

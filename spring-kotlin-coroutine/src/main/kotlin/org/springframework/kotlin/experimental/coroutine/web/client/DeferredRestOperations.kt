@@ -16,8 +16,8 @@
 
 package org.springframework.kotlin.experimental.coroutine.web.client
 
-import kotlinx.coroutines.experimental.CoroutineStart
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -32,7 +32,7 @@ import org.springframework.web.client.ResponseExtractor
 import org.springframework.web.client.RestOperations
 import org.springframework.web.client.RestTemplate
 import java.net.URI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 interface DeferredRestOperations {
     fun <T : Any?> postForObject(url: String, request: Any?, responseType: Class<T>?, vararg uriVariables: Any?): Deferred<T>

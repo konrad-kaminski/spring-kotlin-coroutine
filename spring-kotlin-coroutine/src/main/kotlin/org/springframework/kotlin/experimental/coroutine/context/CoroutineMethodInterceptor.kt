@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.context
 
-import kotlinx.coroutines.experimental.CoroutineName
+import kotlinx.coroutines.CoroutineName
 import org.aopalliance.intercept.MethodInterceptor
 import org.aopalliance.intercept.MethodInvocation
 import org.springframework.core.annotation.AnnotatedElementUtils
@@ -25,8 +25,8 @@ import org.springframework.kotlin.experimental.coroutine.util.CoroutineUtils
 import java.lang.reflect.Method
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
 
 private typealias ContextKey = Pair<String, String>
 

@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.web
 
-import kotlinx.coroutines.experimental.reactive.awaitFirstOrDefault
+import kotlinx.coroutines.reactive.awaitFirstOrDefault
 import reactor.core.publisher.Mono
 
 suspend fun <T> Mono<T>.awaitFirstOrNull(): T? = awaitFirstOrDefault(null)

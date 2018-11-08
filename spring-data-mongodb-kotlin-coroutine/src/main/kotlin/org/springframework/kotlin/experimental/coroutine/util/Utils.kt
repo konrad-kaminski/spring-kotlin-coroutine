@@ -16,9 +16,9 @@
 
 package org.springframework.kotlin.experimental.coroutine.util
 
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.consumeEach
-import kotlin.coroutines.experimental.Continuation
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlin.coroutines.Continuation
 
 fun <T> executeSuspend(cont: Continuation<T>, lambda: suspend () -> T): Any? =
     DefaultSuspendExecutor.INSTANCE.execute(cont, lambda)

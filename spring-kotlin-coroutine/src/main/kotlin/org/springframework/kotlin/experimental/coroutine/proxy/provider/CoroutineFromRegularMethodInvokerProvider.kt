@@ -24,7 +24,8 @@ import org.springframework.kotlin.experimental.coroutine.proxy.MethodInvokerProv
 import org.springframework.kotlin.experimental.coroutine.removeLastValue
 import org.springframework.kotlin.experimental.coroutine.util.CoroutineUtils.runCoroutine
 import java.lang.reflect.Method
-import kotlin.coroutines.experimental.Continuation
+import java.lang.reflect.ParameterizedType
+import kotlin.coroutines.Continuation
 import kotlin.reflect.jvm.javaType
 import kotlin.reflect.jvm.kotlinFunction
 
@@ -35,7 +36,7 @@ object CoroutineFromRegularMethodInvokerProvider: MethodInvokerProvider {
                                          proxyConfig: CoroutineProxyConfig): MethodInvoker? =
 
         if (method.isSuspend &&
-            method.kotlinFunction!!.returnType.javaType == method.returnType &&
+            method.parameters.last().type == Continuation::class.java &&
             proxyConfig is DefaultCoroutineProxyConfig) {
             try {
                 obj.javaClass.getMethod(method.name, *method.parameterTypes.removeLastValue())

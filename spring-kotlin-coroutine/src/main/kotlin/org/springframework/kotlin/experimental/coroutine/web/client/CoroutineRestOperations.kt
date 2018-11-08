@@ -30,7 +30,7 @@ import org.springframework.web.client.ResponseExtractor
 import org.springframework.web.client.RestOperations
 import org.springframework.web.client.RestTemplate
 import java.net.URI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 interface CoroutineRestOperations {
     suspend fun <T : Any?> postForObject(url: String, request: Any?, responseType: Class<T>?, vararg uriVariables: Any?): T

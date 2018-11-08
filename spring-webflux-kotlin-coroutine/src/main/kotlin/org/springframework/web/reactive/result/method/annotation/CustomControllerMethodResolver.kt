@@ -16,9 +16,9 @@
 
 package org.springframework.web.reactive.result.method.annotation
 
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.reactive.asPublisher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.reactive.asPublisher
 import org.reactivestreams.Publisher
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.ReactiveAdapterRegistry
@@ -34,7 +34,7 @@ import reactor.core.publisher.Mono
 import java.lang.reflect.Proxy
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
 
 private class CustomControllerMethodResolver(
         private val delegate: ControllerMethodResolver

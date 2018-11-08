@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.proxy
 
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 data class DefaultCoroutineProxyConfig(
     val coroutineContext: CoroutineContext?

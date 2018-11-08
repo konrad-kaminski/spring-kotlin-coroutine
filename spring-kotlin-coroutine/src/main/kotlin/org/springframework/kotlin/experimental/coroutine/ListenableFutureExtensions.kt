@@ -16,26 +16,28 @@
 
 package org.springframework.kotlin.experimental.coroutine
 
-import kotlinx.coroutines.experimental.CancellableContinuation
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.cancelFutureOnCancellation
-import kotlinx.coroutines.experimental.cancelFutureOnCompletion
-import kotlinx.coroutines.experimental.newCoroutineContext
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelFutureOnCancellation
+import kotlinx.coroutines.cancelFutureOnCompletion
+import kotlinx.coroutines.newCoroutineContext
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.springframework.util.concurrent.ListenableFuture
 import org.springframework.util.concurrent.ListenableFutureCallback
 import org.springframework.util.concurrent.SettableListenableFuture
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.startCoroutine
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.startCoroutine
 
 /**
  * Starts new coroutine and returns its results an an implementation of [ListenableFuture].
@@ -56,6 +58,7 @@ import kotlin.coroutines.experimental.startCoroutine
  * @author Roman Elizarov
  * @since 5.0
  */
+@UseExperimental(InternalCoroutinesApi::class)
 fun <T> listenableFuture(context: CoroutineContext = Dispatchers.Default, block: suspend () -> T): ListenableFuture<T> {
     val newContext = GlobalScope.newCoroutineContext(Dispatchers.Default + context)
     val job = Job(newContext[Job])
@@ -122,12 +125,12 @@ private class ListenableFutureCoroutine<T>(
         override val context: CoroutineContext
 ): SettableListenableFuture<T>(), Continuation<T> {
 
-    override fun resume(value: T) {
-        set(value)
-    }
-
-    override fun resumeWithException(exception: Throwable) {
-        setException(exception)
+    override fun resumeWith(result: Result<T>) {
+        if (result.isSuccess) {
+            set(result.getOrNull())
+        } else {
+            setException(result.exceptionOrNull()!!)
+        }
     }
 }
 

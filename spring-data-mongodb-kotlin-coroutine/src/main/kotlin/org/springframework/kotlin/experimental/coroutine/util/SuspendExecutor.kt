@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.util
 
-import kotlin.coroutines.experimental.Continuation
+import kotlin.coroutines.Continuation
 
 interface SuspendExecutor {
     fun <T> execute(cont: Continuation<T>, lambda: suspend () -> T): Any?

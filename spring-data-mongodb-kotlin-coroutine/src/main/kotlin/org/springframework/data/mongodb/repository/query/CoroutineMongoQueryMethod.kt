@@ -35,7 +35,7 @@ import org.springframework.kotlin.experimental.coroutine.isCoroutineCollection
 import org.springframework.kotlin.experimental.coroutine.returnTypeMetadata
 import org.springframework.util.ClassUtils
 import java.lang.reflect.Method
-import kotlin.coroutines.experimental.Continuation
+import kotlin.coroutines.Continuation
 
 open class CoroutineMongoQueryMethod(
         val method: Method,

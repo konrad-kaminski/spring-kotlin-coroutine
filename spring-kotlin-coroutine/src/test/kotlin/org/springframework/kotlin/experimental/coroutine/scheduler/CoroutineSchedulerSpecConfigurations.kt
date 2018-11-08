@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.scheduler
 
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.delay
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kotlin.experimental.coroutine.EnableCoroutine
@@ -53,7 +53,7 @@ open class FixedDelayOnDefaultDispatcherConfiguration : BaseConfiguration() {
     }
 
     companion object {
-        private val DEFAULT_DISPATCHER_THREAD_NAME_REGEX = Regex("^ForkJoinPool\\.commonPool-worker")
+        private val DEFAULT_DISPATCHER_THREAD_NAME_REGEX = Regex("^DefaultDispatcher-worker-.+")
     }
 }
 

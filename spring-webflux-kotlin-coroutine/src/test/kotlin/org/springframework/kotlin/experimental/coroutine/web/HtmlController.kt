@@ -1,6 +1,6 @@
 package org.springframework.kotlin.experimental.coroutine.web
 
-import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.channels.Channel
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set

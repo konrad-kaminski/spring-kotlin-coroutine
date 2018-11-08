@@ -16,11 +16,11 @@
 
 package org.springframework.kotlin.experimental.coroutine
 
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.channels.ReceiveChannel
 import org.springframework.util.ClassUtils
 import java.lang.reflect.Method
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.kotlinFunction
 

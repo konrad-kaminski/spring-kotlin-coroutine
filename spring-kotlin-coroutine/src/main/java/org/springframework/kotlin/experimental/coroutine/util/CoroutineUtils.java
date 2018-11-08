@@ -16,18 +16,18 @@
 
 package org.springframework.kotlin.experimental.coroutine.util;
 
-import kotlin.coroutines.experimental.Continuation;
-import kotlin.coroutines.experimental.CoroutineContext;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
 import kotlin.jvm.functions.Function2;
-import kotlinx.coroutines.experimental.BuildersKt;
-import kotlinx.coroutines.experimental.CoroutineScope;
-import kotlinx.coroutines.experimental.CoroutineStart;
+import kotlinx.coroutines.BuildersKt;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.CoroutineStart;
 
 public abstract class CoroutineUtils {
     private CoroutineUtils() {
     }
 
     static public <T> Object runCoroutine(final CoroutineContext context, final Function2<CoroutineScope, Continuation<? super T>, ? super T> fun, final Continuation<? super T> continuation) {
-        return BuildersKt.withContext(context, CoroutineStart.DEFAULT, fun, continuation);
+        return BuildersKt.withContext(context, fun, continuation);
     }
 }

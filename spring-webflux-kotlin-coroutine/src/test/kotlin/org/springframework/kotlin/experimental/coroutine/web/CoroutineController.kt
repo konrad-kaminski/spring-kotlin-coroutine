@@ -16,11 +16,11 @@
 
 package org.springframework.kotlin.experimental.coroutine.web
 
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.produce
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.delay
 import org.springframework.http.MediaType
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
 import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER

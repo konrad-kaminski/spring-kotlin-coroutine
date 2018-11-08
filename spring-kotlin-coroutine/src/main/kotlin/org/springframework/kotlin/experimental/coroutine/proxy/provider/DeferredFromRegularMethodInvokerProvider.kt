@@ -16,9 +16,9 @@
 
 package org.springframework.kotlin.experimental.coroutine.proxy.provider
 
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.springframework.kotlin.experimental.coroutine.proxy.CoroutineProxyConfig
 import org.springframework.kotlin.experimental.coroutine.proxy.DeferredCoroutineProxyConfig
 import org.springframework.kotlin.experimental.coroutine.proxy.MethodInvoker

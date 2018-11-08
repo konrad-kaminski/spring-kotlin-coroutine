@@ -16,10 +16,10 @@
 
 package org.springframework.kotlin.experimental.coroutine.context.resolver
 
-import kotlinx.coroutines.experimental.asCoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
 import org.springframework.kotlin.experimental.coroutine.context.CoroutineContextResolver
 import java.util.concurrent.Executor
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 internal open class ExecutorCoroutineContextResolver : CoroutineContextResolver {
     override fun resolveContext(beanName: String, bean: Any?): CoroutineContext? =

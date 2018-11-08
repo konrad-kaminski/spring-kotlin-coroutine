@@ -16,14 +16,10 @@
 
 package org.springframework.kotlin.experimental.coroutine.context
 
-import kotlinx.coroutines.experimental.CoroutineContextKt
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.kotlin.experimental.coroutine.IntSpecConfiguration
 import spock.lang.Specification
-
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
 import static org.springframework.kotlin.experimental.coroutine.TestUtilsKt.runBlocking
 
@@ -31,14 +27,6 @@ import static org.springframework.kotlin.experimental.coroutine.TestUtilsKt.runB
 class ContextDebugIntSpec extends Specification {
     @Autowired
     private CustomContextService customContextService
-
-    def setup() {
-        setCoroutineDebug(true)
-    }
-
-    def cleanup() {
-        setCoroutineDebug(false)
-    }
 
     def "should include coroutine name in the thread name"() {
         when:
@@ -48,17 +36,5 @@ class ContextDebugIntSpec extends Specification {
 
         then:
         threadName =~ /@customCoroutineName#/
-    }
-
-
-    private def setCoroutineDebug(boolean value) {
-        def debugField = CoroutineContextKt.class.getDeclaredField("DEBUG")
-        debugField.setAccessible(true)
-
-        def modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(debugField, debugField.getModifiers() & ~Modifier.FINAL);
-
-        debugField.setBoolean(null, value)
     }
 }

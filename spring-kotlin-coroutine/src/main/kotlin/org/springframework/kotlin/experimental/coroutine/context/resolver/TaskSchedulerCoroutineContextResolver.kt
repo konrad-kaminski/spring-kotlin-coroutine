@@ -16,17 +16,18 @@
 
 package org.springframework.kotlin.experimental.coroutine.context.resolver
 
-import kotlinx.coroutines.experimental.CancellableContinuation
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Delay
-import kotlinx.coroutines.experimental.DisposableHandle
-import kotlinx.coroutines.experimental.disposeOnCancellation
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.DisposableHandle
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.disposeOnCancellation
 import org.springframework.kotlin.experimental.coroutine.context.CoroutineContextResolver
 import org.springframework.scheduling.TaskScheduler
 import java.util.Date
 import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 internal open class TaskSchedulerCoroutineContextResolver : CoroutineContextResolver {
     override fun resolveContext(beanName: String, bean: Any?): CoroutineContext? =
@@ -37,21 +38,22 @@ private fun TaskScheduler.asCoroutineDispatcher(): CoroutineContext =
         TaskSchedulerDispatcher(this)
 
 
+@UseExperimental(InternalCoroutinesApi::class)
 internal class TaskSchedulerDispatcher(private val scheduler: TaskScheduler) : CoroutineDispatcher(), Delay {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         scheduler.schedule(block, Date())
     }
 
-    override fun scheduleResumeAfterDelay(time: Long, unit: TimeUnit, continuation: CancellableContinuation<Unit>) {
+    override fun scheduleResumeAfterDelay(timeMillis: Long, continuation: CancellableContinuation<Unit>) {
         val disposable = scheduler.schedule({
             with(continuation) { resumeUndispatched(Unit) }
-        }, Date(System.currentTimeMillis() + unit.toMillis(time))).asDisposableHandle()
+        }, Date(System.currentTimeMillis() + timeMillis)).asDisposableHandle()
 
         continuation.disposeOnCancellation(disposable)
     }
 
-    override fun invokeOnTimeout(time: Long, unit: TimeUnit, block: Runnable): DisposableHandle =
-        scheduler.schedule(block, Date(System.currentTimeMillis() + unit.toMillis(time))).asDisposableHandle()
+    override fun invokeOnTimeout(timeMillis: Long, block: Runnable): DisposableHandle =
+        scheduler.schedule(block, Date(System.currentTimeMillis() + timeMillis)).asDisposableHandle()
 
     override fun toString(): String = scheduler.toString()
 }

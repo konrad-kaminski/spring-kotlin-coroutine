@@ -16,9 +16,9 @@
 
 package org.springframework.data.mongodb.repository.query
 
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.consumeEach
-import kotlinx.coroutines.experimental.reactive.openSubscription
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.reactive.openSubscription
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.EntityInstantiators
 import org.springframework.data.domain.Pageable

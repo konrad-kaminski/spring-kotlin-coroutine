@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.web
 
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.delay
 import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
 import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.web.bind.annotation.GetMapping

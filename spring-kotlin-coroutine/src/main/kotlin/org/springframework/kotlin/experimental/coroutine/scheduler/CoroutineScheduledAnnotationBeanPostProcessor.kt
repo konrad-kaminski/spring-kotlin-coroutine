@@ -16,14 +16,16 @@
 
 package org.springframework.kotlin.experimental.coroutine.scheduler
 
-import kotlinx.coroutines.experimental.CoroutineStart
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.handleCoroutineException
-import kotlinx.coroutines.experimental.isActive
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.handleCoroutineException
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendAtomicCancellableCoroutine
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.springframework.aop.support.AopUtils
 import org.springframework.beans.DirectFieldAccessor
 import org.springframework.context.event.ContextRefreshedEvent
@@ -45,8 +47,10 @@ import java.util.Date
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 open internal class CoroutineScheduledAnnotationBeanPostProcessor(
         private val scheduledDispatcherName: String,
@@ -166,12 +170,13 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
 
 }
 
+@UseExperimental(InternalCoroutinesApi::class)
 data class ScheduledCoroutine(
         val bean: Any,
         val invocableMethod: Method,
         val policy: SchedulingPolicy
 ) {
-    suspend fun run(): Unit = suspendCancellableCoroutine(true) { continuation ->
+    suspend fun run(): Unit = suspendAtomicCancellableCoroutine(true) { continuation ->
         continuation.initCancellability()
         try {
             invocableMethod.invoke(bean, continuation)
@@ -191,6 +196,7 @@ data class ScheduledCoroutine(
 
 typealias ScheduledCoroutineExceptionHandler = (context: CoroutineContext, exception: Throwable, caller: Job?) -> Unit
 
+@UseExperimental(InternalCoroutinesApi::class)
 private fun CoroutineContext.asScheduledCoroutineExceptionHandler(): ScheduledCoroutineExceptionHandler =
         when (this) {
             is TaskSchedulerDispatcher -> { _, exception, _ ->

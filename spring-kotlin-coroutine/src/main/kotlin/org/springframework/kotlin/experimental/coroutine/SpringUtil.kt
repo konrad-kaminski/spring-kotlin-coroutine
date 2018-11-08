@@ -1,9 +1,9 @@
 package org.springframework.kotlin.experimental.coroutine
 
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.reactive.asPublisher
-import kotlinx.coroutines.experimental.reactive.openSubscription
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.reactive.asPublisher
+import kotlinx.coroutines.reactive.openSubscription
 import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
 import org.springframework.context.annotation.Conditional

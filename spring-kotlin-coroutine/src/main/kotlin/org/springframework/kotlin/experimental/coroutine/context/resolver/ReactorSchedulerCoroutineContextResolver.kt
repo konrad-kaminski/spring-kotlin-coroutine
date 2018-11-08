@@ -16,10 +16,10 @@
 
 package org.springframework.kotlin.experimental.coroutine.context.resolver
 
-import kotlinx.coroutines.experimental.reactor.asCoroutineDispatcher
+import kotlinx.coroutines.reactor.asCoroutineDispatcher
 import org.springframework.kotlin.experimental.coroutine.context.CoroutineContextResolver
 import reactor.core.scheduler.Scheduler
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 internal open class ReactorSchedulerCoroutineContextResolver : CoroutineContextResolver {
     override fun resolveContext(beanName: String, bean: Any?): CoroutineContext? =

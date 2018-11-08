@@ -16,9 +16,9 @@
 
 package org.springframework.web.coroutine.function.server
 
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.reactive.awaitFirstOrDefault
-import kotlinx.coroutines.experimental.reactive.openSubscription
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.reactive.awaitFirstOrDefault
+import kotlinx.coroutines.reactive.openSubscription
 import org.springframework.http.server.coroutine.CoroutineServerHttpRequest
 import org.springframework.web.server.CoroutineWebSession
 import org.springframework.web.coroutine.function.CoroutineBodyExtractor

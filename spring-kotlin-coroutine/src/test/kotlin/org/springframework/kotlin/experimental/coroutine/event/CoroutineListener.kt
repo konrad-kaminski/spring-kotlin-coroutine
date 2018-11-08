@@ -16,7 +16,7 @@
 
 package org.springframework.kotlin.experimental.coroutine.event
 
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.delay
 import org.springframework.context.event.EventListener
 import java.util.Stack
 import java.util.function.Function

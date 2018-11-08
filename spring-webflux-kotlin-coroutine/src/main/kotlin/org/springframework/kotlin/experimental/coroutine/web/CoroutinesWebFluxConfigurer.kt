@@ -16,9 +16,9 @@
 
 package org.springframework.kotlin.experimental.coroutine.web
 
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.reactive.asPublisher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.reactive.asPublisher
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Role
@@ -36,9 +36,9 @@ import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.EmptyCoroutineContext
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 open class CoroutinesWebFluxConfigurer(
@@ -74,7 +74,12 @@ open class CompletableFutureContinuation(
     override val context: CoroutineContext
         get() = EmptyCoroutineContext
 
-    override fun resume(value: Any) {
+    override fun resumeWith(result: Result<Any>) {
+        if (result.isFailure) {
+            completeExceptionally(result.exceptionOrNull())
+            return
+        }
+        val value = result.getOrNull()
         if (value is ReceiveChannel<*>) {
             val trueValue = value.asPublisher(Dispatchers.Unconfined)
 
@@ -82,9 +87,5 @@ open class CompletableFutureContinuation(
         } else {
             complete(value)
         }
-    }
-
-    override fun resumeWithException(exception: Throwable) {
-        completeExceptionally(exception)
     }
 }
