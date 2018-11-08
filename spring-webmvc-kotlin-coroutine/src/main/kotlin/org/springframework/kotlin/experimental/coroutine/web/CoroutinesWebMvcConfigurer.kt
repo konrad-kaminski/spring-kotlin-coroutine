@@ -53,12 +53,12 @@ internal open class CoroutinesWebMvcConfigurer : WebMvcConfigurer {
                         override val context: CoroutineContext
                         get() = EmptyCoroutineContext
 
-                        override fun resume(value: Any) {
-                            deferredResult.setResult(value)
-                        }
-
-                        override fun resumeWithException(exception: Throwable) {
-                            deferredResult.setErrorResult(exception)
+                        override fun resumeWith(result: Result<Any>) {
+                            if (result.isSuccess) {
+                                deferredResult.setResult(result.getOrNull())
+                            } else {
+                                deferredResult.setErrorResult(result.exceptionOrNull())
+                            }
                         }
                     }.apply {
                         mavContainer.model[DEFERRED_RESULT] = deferredResult
