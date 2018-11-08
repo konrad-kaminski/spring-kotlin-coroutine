@@ -108,6 +108,7 @@ class ContextIntSpec extends Specification {
         }
 
         then:
+        print(thread.name)
         thread.name == "ExecutorSingleTest"
     }
 }
