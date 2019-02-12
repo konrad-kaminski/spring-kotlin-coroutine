@@ -19,7 +19,7 @@ package demo.app.event
 import demo.app.util.logger
 import demo.app.web.DemoApplicationEvent
 import demo.app.web.SimpleEvent
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.delay
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 

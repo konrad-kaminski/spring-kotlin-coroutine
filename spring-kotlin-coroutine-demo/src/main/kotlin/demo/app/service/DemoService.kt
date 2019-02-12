@@ -17,10 +17,10 @@
 package demo.app.service
 
 import demo.app.util.logger
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.delay
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
-import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
+import org.springframework.kotlin.coroutine.annotation.Coroutine
+import org.springframework.kotlin.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 

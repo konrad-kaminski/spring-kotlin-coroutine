@@ -16,15 +16,17 @@
 
 package org.springframework.context.event
 
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.springframework.context.ApplicationEvent
-import org.springframework.kotlin.experimental.coroutine.event.CoroutineApplicationListener
-import org.springframework.kotlin.experimental.coroutine.event.CoroutineApplicationEventPublisher
-import org.springframework.kotlin.experimental.coroutine.event.CoroutineEvent
+import org.springframework.kotlin.coroutine.event.CoroutineApplicationListener
+import org.springframework.kotlin.coroutine.event.CoroutineApplicationEventPublisher
+import org.springframework.kotlin.coroutine.event.CoroutineEvent
 import org.springframework.util.ObjectUtils
 import java.lang.reflect.Method
-import kotlin.coroutines.experimental.intrinsics.COROUTINE_SUSPENDED
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 internal open class SimpleCoroutineApplicationListenerMethodAdapter(beanName: String,
     targetClass: Class<*>, method: Method, val publisher: CoroutineApplicationEventPublisher

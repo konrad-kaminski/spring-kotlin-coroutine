@@ -31,11 +31,11 @@ import org.springframework.data.repository.query.QueryMethod
 import org.springframework.data.repository.util.ClassUtils.hasParameterOfType
 import org.springframework.data.repository.util.ReactiveWrappers
 import org.springframework.data.util.ClassTypeInformation
-import org.springframework.kotlin.experimental.coroutine.isCoroutineCollection
-import org.springframework.kotlin.experimental.coroutine.returnTypeMetadata
+import org.springframework.kotlin.coroutine.isCoroutineCollection
+import org.springframework.kotlin.coroutine.returnTypeMetadata
 import org.springframework.util.ClassUtils
 import java.lang.reflect.Method
-import kotlin.coroutines.experimental.Continuation
+import kotlin.coroutines.Continuation
 
 open class CoroutineMongoQueryMethod(
         val method: Method,

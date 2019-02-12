@@ -20,10 +20,10 @@ import demo.app.service.DemoService
 import demo.app.util.logger
 import org.springframework.context.ApplicationEvent
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.kotlin.experimental.coroutine.annotation.Coroutine
-import org.springframework.kotlin.experimental.coroutine.context.DEFAULT_DISPATCHER
-import org.springframework.kotlin.experimental.coroutine.event.CoroutineApplicationEventPublisher
-import org.springframework.kotlin.experimental.coroutine.web.client.CoroutineRestOperations
+import org.springframework.kotlin.coroutine.annotation.Coroutine
+import org.springframework.kotlin.coroutine.context.DEFAULT_DISPATCHER
+import org.springframework.kotlin.coroutine.event.CoroutineApplicationEventPublisher
+import org.springframework.kotlin.coroutine.web.client.CoroutineRestOperations
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest

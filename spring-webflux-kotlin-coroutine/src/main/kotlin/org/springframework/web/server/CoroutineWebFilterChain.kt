@@ -16,7 +16,7 @@
 
 package org.springframework.web.server
 
-import org.springframework.kotlin.experimental.coroutine.web.awaitFirstOrNull
+import org.springframework.kotlin.coroutine.web.awaitFirstOrNull
 
 interface CoroutineWebFilterChain {
     suspend fun filter(exchange: CoroutineServerWebExchange): Unit

@@ -16,7 +16,7 @@
 
 package org.springframework.web.server.session
 
-import org.springframework.kotlin.experimental.coroutine.web.awaitFirstOrNull
+import org.springframework.kotlin.coroutine.web.awaitFirstOrNull
 import org.springframework.web.server.CoroutineWebSession
 import org.springframework.web.server.WebSession
 

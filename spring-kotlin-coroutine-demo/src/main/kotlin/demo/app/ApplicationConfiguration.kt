@@ -24,7 +24,7 @@ import org.springframework.cache.ehcache.EhCacheCacheManager
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.context.annotation.Bean
 import org.springframework.core.io.ClassPathResource
-import org.springframework.kotlin.experimental.coroutine.EnableCoroutine
+import org.springframework.kotlin.coroutine.EnableCoroutine
 import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication

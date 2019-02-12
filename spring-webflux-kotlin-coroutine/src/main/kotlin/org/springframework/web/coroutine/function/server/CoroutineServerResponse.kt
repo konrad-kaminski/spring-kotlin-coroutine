@@ -16,10 +16,10 @@
 
 package org.springframework.web.coroutine.function.server
 
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.reactive.asPublisher
-import kotlinx.coroutines.experimental.reactive.awaitFirst
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.reactive.asPublisher
+import kotlinx.coroutines.reactive.awaitFirst
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -28,7 +28,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseCookie
 import org.springframework.http.server.CoroutineServerHttpResponse
 import org.springframework.http.server.reactive.ServerHttpResponse
-import org.springframework.kotlin.experimental.coroutine.web.awaitFirstOrNull
+import org.springframework.kotlin.coroutine.web.awaitFirstOrNull
 import org.springframework.util.MultiValueMap
 import org.springframework.web.coroutine.function.CoroutineBodyInserter
 import org.springframework.web.reactive.function.BodyInserter
