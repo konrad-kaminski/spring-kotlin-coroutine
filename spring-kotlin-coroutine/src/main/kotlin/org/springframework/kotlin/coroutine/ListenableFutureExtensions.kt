@@ -137,7 +137,7 @@ private class ListenableFutureCoroutine<T>(
     private fun <T> Job.asJobCancellingCallback(): ListenableFutureCallback<T> =
             object : ListenableFutureCallback<T> {
                 override fun onFailure(exception: Throwable) {
-                    cancel(exception)
+                    cancel(CancellationException(exception.message))
                 }
 
                 override fun onSuccess(result: T) {}

@@ -25,7 +25,6 @@ import kotlinx.coroutines.handleCoroutineException
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendAtomicCancellableCoroutine
-import kotlinx.coroutines.suspendCancellableCoroutine
 import org.springframework.aop.support.AopUtils
 import org.springframework.beans.DirectFieldAccessor
 import org.springframework.context.event.ContextRefreshedEvent
@@ -116,7 +115,7 @@ open internal class CoroutineScheduledAnnotationBeanPostProcessor(
                         try {
                             coroutine.run()
                         } catch(e: Throwable) {
-                            exceptionHandler.invoke(coroutineContext, e, null)
+                            exceptionHandler.invoke(coroutineContext, e)
                         }
                     }
 
@@ -192,12 +191,12 @@ data class ScheduledCoroutine(
     }
 }
 
-typealias ScheduledCoroutineExceptionHandler = (context: CoroutineContext, exception: Throwable, caller: Job?) -> Unit
+typealias ScheduledCoroutineExceptionHandler = (context: CoroutineContext, exception: Throwable) -> Unit
 
 @UseExperimental(InternalCoroutinesApi::class)
 private fun CoroutineContext.asScheduledCoroutineExceptionHandler(): ScheduledCoroutineExceptionHandler =
         when (this) {
-            is TaskSchedulerDispatcher -> { _, exception, _ ->
+            is TaskSchedulerDispatcher -> { _, exception ->
                 TaskUtils.getDefaultErrorHandler(true).handleError(exception)
             }
             else                       -> ::handleCoroutineException

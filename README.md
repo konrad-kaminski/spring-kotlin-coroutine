@@ -26,7 +26,7 @@ This project contains several modules:
 
 ## Supported features
 
-Most of the supported features require adding an [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/EnableCoroutine.kt) annotation to your Spring 
+Most of the supported features require adding an [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/EnableCoroutine.kt) annotation to your Spring 
 [`@Configuration`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/Configuration.html) class.
 
 ### @EnableCoroutine
@@ -44,8 +44,8 @@ open class MyAppConfiguration {
 }
 ```
 
-The `proxyTargetClass`, `mode` and `order` attributes of [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/EnableCoroutine.kt) follow the same semantics as [`@EnableCaching`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/cache/annotation/EnableCaching.html).
-`schedulerDispatcher` is a [`CoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-coroutine-dispatcher/)
+The `proxyTargetClass`, `mode` and `order` attributes of [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/EnableCoroutine.kt) follow the same semantics as [`@EnableCaching`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/cache/annotation/EnableCaching.html).
+`schedulerDispatcher` is a [`CoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/)
 used to run [`@Scheduled`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/annotation/Scheduled.html) corroutines.
 
 > Note that currently only [`AdviceMode.PROXY`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/AdviceMode.html#PROXY) mode is supported.
@@ -67,21 +67,20 @@ open class MyController {
 ```
 
 ### @Coroutine
-Spring beans and its methods can be annotated with [`@Coroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/annotation/Coroutine.kt). Using this annotation you can specify
-the _coroutine context_ via the `context` attribute and the [_coroutine name_](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-coroutine-name/index.html) via the `name` attribute. 
-The `context` specifies a name of a bean from which a [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) can be created. Currently the following
+Spring beans and its methods can be annotated with [`@Coroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/annotation/Coroutine.kt). Using this annotation you can specify
+the _coroutine context_ via the `context` attribute and the [_coroutine name_](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-name/index.html) via the `name` attribute. 
+The `context` specifies a name of a bean from which a [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/) can be created. Currently the following
 contexts/bean types are supported:
 
-1. [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) type beans - used directly
-2. `DEFAULT_DISPATCHER` - a constant specifying the [`Dispatchers.Default`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-dispatchers/-default.html) context
-3. `UNCONFINED` - a constant specifying the [`Dispatchers.Unconfined`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-dispatchers/-unconfined.html) context
-4. [`Executor`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executor.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/java.util.concurrent.-executor/as-coroutine-dispatcher.html)
-5. Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/io/reactivex/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-rx1/kotlinx.coroutines.rx1/rx.-scheduler/as-coroutine-dispatcher.html)
-6. Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-rx2/kotlinx.coroutines.rx2/io.reactivex.-scheduler/as-coroutine-dispatcher.html)
-7. Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-reactor/kotlinx.coroutines.reactor/reactor.core.scheduler.-scheduler/as-coroutine-dispatcher.html)
-8. [`TaskScheduler`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/TaskScheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) with `asCoroutineDispatcher` method of [`TaskSchedulerCoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt)
+1. [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/) type beans - used directly
+2. `DEFAULT_DISPATCHER` - a constant specifying the [`Dispatchers.Default`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-default.html) context
+3. `UNCONFINED` - a constant specifying the [`Dispatchers.Unconfined`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-unconfined.html) context
+4. [`Executor`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executor.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/java.util.concurrent.-executor/as-coroutine-dispatcher.html)
+5. Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-rx2/kotlinx.coroutines.rx2/io.reactivex.-scheduler/as-coroutine-dispatcher.html)
+6. Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/) with [`asCoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-reactor/kotlinx.coroutines.reactor/reactor.core.scheduler.-scheduler/as-coroutine-dispatcher.html)
+7. [`TaskScheduler`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/TaskScheduler.html) type beans - converted to [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/) with `asCoroutineDispatcher` method of [`TaskSchedulerCoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt)
    
-You can also support your own types of beans or context names by providing Spring beans of type [`CoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/context/CoroutineContextResolver.kt):
+You can also support your own types of beans or context names by providing Spring beans of type [`CoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/context/CoroutineContextResolver.kt):
    
 ```kotlin
 interface CoroutineContextResolver {
@@ -89,7 +88,7 @@ interface CoroutineContextResolver {
 }
 ```   
 
-Using [`@Coroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/annotation/Coroutine.kt) it is quite easy to achieve the same effect as with [`@Async`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/annotation/Async.html), although the code will look much simpler:
+Using [`@Coroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/annotation/Coroutine.kt) it is quite easy to achieve the same effect as with [`@Async`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/annotation/Async.html), although the code will look much simpler:
 
 ```kotlin
 @RestController
@@ -131,7 +130,7 @@ interface CoroutineApplicationEventPublisher {
 }
 ```
 
-Your bean can inject this interface or it can implement a [`CoroutineApplicationEventPublisherAware`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/event/CoroutineApplicationEventPublisherAware.kt) interface and have
+Your bean can inject this interface or it can implement a [`CoroutineApplicationEventPublisherAware`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/event/CoroutineApplicationEventPublisherAware.kt) interface and have
 it delivered via a `setCoroutineApplicationEventPublisher` method:
 
 ```kotlin
@@ -140,7 +139,7 @@ interface CoroutineApplicationEventPublisherAware : Aware {
 }
 ```
 
-The events sent by either [`CoroutineApplicationEventPublisher`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/event/CoroutineApplicationEventPublisher.kt) or [`ApplicationEventPublisher`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html) can be received 
+The events sent by either [`CoroutineApplicationEventPublisher`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/event/CoroutineApplicationEventPublisher.kt) or [`ApplicationEventPublisher`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html) can be received 
 by any method annotated with [`@EventListener`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/event/EventListener.html) (a coroutine or a regular one). The result of coroutine listeners will
 be handled in the same way as for regular listeners:
 * if it is a [`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/) nothing will happen
@@ -173,22 +172,22 @@ class MyComponent {
 
 Coroutines annotated with [`@Scheduled`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/annotation/Scheduled.html) will
 not work with regular Spring. However, with `spring-kotlin-coroutine` you can use them the same way you would do it with regular methods with the following caveats:
-1. They will be executed using [`CoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-coroutine-dispatcher/)
+1. They will be executed using [`CoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/)
    obtained from:
-   * `schedulerDispatcher` attribute of [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/EnableCoroutine.kt) annotation (if a custom value is specified) - it works the same way as the
-     `context` attribute of [`@Coroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/annotation/Coroutine.kt) annotation (see [`@Coroutine` section](#coroutine)), or
+   * `schedulerDispatcher` attribute of [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/EnableCoroutine.kt) annotation (if a custom value is specified) - it works the same way as the
+     `context` attribute of [`@Coroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/annotation/Coroutine.kt) annotation (see [`@Coroutine` section](#coroutine)), or
    *  [`TaskScheduler`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/TaskScheduler.html) [used by `ScheduledTaskRegistrar`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/config/ScheduledTaskRegistrar.html#getScheduler--) from the [`ScheduledAnnotationBeanPostProcessor#registrar`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/annotation/ScheduledAnnotationBeanPostProcessor.html) 
-      converted into [`TaskSchedulerDispatcher`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt) (which is a [`CoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-coroutine-dispatcher/) 
-      converted with [`TaskSchedulerCoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt)) - this mimics the default behaviour of Spring for regular [`@Scheduled`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/annotation/Scheduled.html) 
+      converted into [`TaskSchedulerDispatcher`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt) (which is a [`CoroutineDispatcher`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/) 
+      converted with [`TaskSchedulerCoroutineContextResolver`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt)) - this mimics the default behaviour of Spring for regular [`@Scheduled`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/annotation/Scheduled.html) 
       annotated method.
 2. The exception thrown from the coroutine will be handled using:
-   * [Default](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/support/TaskUtils.html#getDefaultErrorHandler-boolean-) [`ErrorHandler`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/ErrorHandler.html) for repeating tasks if [`TaskSchedulerDispatcher`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt) is used,
-   * [`handleCoroutineException`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/handle-coroutine-exception.html) otherwise.
+   * [Default](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/support/TaskUtils.html#getDefaultErrorHandler-boolean-) [`ErrorHandler`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/util/ErrorHandler.html) for repeating tasks if [`TaskSchedulerDispatcher`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/context/resolver/TaskSchedulerCoroutineContextResolver.kt) is used,
+   * [`handleCoroutineException`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/handle-coroutine-exception.html) otherwise.
 
 ### CoroutineRestOperations
 
 Spring provides blocking [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) to be used as a `REST` client. `spring-kotlin-coroutine` provides 
-[`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/CoroutineRestOperations.kt) interface which has the same methods as [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html), but as coroutines:
+[`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/CoroutineRestOperations.kt) interface which has the same methods as [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html), but as coroutines:
 
 ```kotlin
 interface CoroutineRestOperations {
@@ -202,24 +201,24 @@ interface CoroutineRestOperations {
 }
 ```
 
-In order to create [`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/CoroutineRestOperations.kt) use the following:
+In order to create [`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/CoroutineRestOperations.kt) use the following:
  
 ```kotlin
 val restOps = CoroutineRestOperations(restOperations = RestTemplate(), context = null)
 val defaultRestOps = CoroutineRestOperations() 
 ``` 
 
-If you do not specify any arguments when creating [`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/CoroutineRestOperations.kt) it will delegate all calls to [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html)
+If you do not specify any arguments when creating [`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/CoroutineRestOperations.kt) it will delegate all calls to [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html)
 instance and use a special _coroutine context_ which will invoke the blocking method of [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) on a separate thread
  (just like [`AsyncRestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/AsyncRestTemplate.html)). You can specify your own [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) and [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) to change that behaviour.
 
-> Note that [`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/CoroutineRestOperations.kt) does not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/EnableCoroutine.kt) in order to work. Underneath [`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/CoroutineRestOperations.kt)
-uses [`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/proxy/CoroutineProxy.kt).  
+> Note that [`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/CoroutineRestOperations.kt) does not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/EnableCoroutine.kt) in order to work. Underneath [`CoroutineRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/CoroutineRestOperations.kt)
+uses [`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/proxy/CoroutineProxy.kt).  
 
 ### DeferredRestOperations
 
 The [`kotlinx.coroutines`](https://github.com/Kotlin/kotlinx.coroutines) library provides [`Deferred<T>`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-deferred/index.html) type 
-for non-blocking cancellable future. Based on that `spring-kotlin-coroutine` provides [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/DeferredRestOperations.kt) interface which has the same methods as 
+for non-blocking cancellable future. Based on that `spring-kotlin-coroutine` provides [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/DeferredRestOperations.kt) interface which has the same methods as 
 [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html), but with [`Deferred<T>`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-deferred/index.html) 
 return type:
 
@@ -235,20 +234,20 @@ interface DeferredRestOperations {
 }
 ```
 
-In order to create [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/DeferredRestOperations.kt) use the following:
+In order to create [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/DeferredRestOperations.kt) use the following:
  
 ```kotlin
 val restOps = DeferredRestOperations(restOperations = RestTemplate(), start = CoroutineStart.DEFAULT, context = COMMON_POOL)
 val defaultRestOps = DeferredRestOperations() 
 ``` 
 
-If you do not specify any arguments when creating [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/DeferredRestOperations.kt) it will delegate all calls to [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html)
+If you do not specify any arguments when creating [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/DeferredRestOperations.kt) it will delegate all calls to [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html)
 instance and use a special _coroutine context_ which will immediately invoke the blocking method of [`RestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) on a separate thread
  (just like [`AsyncRestTemplate`](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/AsyncRestTemplate.html)). You can specify your own [`RestOperations`](http://docs.spring.io/spring/docs/current/javadoc-api/index.html?org/springframework/web/client/RestOperations.html) and [`CoroutineContext`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-coroutine-context/) to change that behaviour.
 By changing the `start` parameter value you can specify when the REST operation should be invoked (see [`CoroutineStart`](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.experimental/-coroutine-start/index.html) for details).
 
-> Note that [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/DeferredRestOperations.kt) does not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/EnableCoroutine.kt) in order to work. Underneath [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/web/client/DeferredRestOperations.kt)
-uses [`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/proxy/CoroutineProxy.kt).  
+> Note that [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/DeferredRestOperations.kt) does not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/EnableCoroutine.kt) in order to work. Underneath [`DeferredRestOperations`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/web/client/DeferredRestOperations.kt)
+uses [`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/proxy/CoroutineProxy.kt).  
 
 ### Web Flux web methods
 
@@ -294,18 +293,18 @@ The [`kotlinx.coroutines`](https://github.com/Kotlin/kotlinx.coroutines) library
     Kotlin coroutine specific `Deferred` type.
 3. `suspend fun <T> ListenableFuture<T>.await(): T` - it allows you to create a coroutine from a `ListenableFuture`.    
 
-> Note that these extensions do not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/EnableCoroutine.kt) in order to work.
+> Note that these extensions do not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/EnableCoroutine.kt) in order to work.
 
 ### Utility functions
 
-> Note that utility functions do not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/EnableCoroutine.kt) in order to work.
+> Note that utility functions do not need [`@EnableCoroutine`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/EnableCoroutine.kt) in order to work.
 
 #### createCoroutineProxy
 
-[`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/proxy/CoroutineProxy.kt) can be used to create a smart proxy - an instance of an interface which will delegate all
+[`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/proxy/CoroutineProxy.kt) can be used to create a smart proxy - an instance of an interface which will delegate all
 function invocations to a regular object with matching method signatures. The runtime characteristics of this
 proxy call depends on the types of the interface methods, the types of the proxied object methods and
-the proxy config. The [`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/experimental/coroutine/proxy/CoroutineProxy.kt) is declared as follows:
+the proxy config. The [`createCoroutineProxy`](spring-kotlin-coroutine/src/main/kotlin/org/springframework/kotlin/coroutine/proxy/CoroutineProxy.kt) is declared as follows:
 
 ```kotlin
 fun <T: Any> createCoroutineProxy(coroutineInterface: Class<T>, obj: Any, proxyConfig: CoroutineProxyConfig): T
@@ -345,7 +344,7 @@ repositories {
 Add dependencies:
 
 ```groovy
-compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.3.6'
+compile 'org.springframework.kotlin:spring-kotlin-coroutine:0.3.7'
 ```
 
 > Note that some of the dependencies of `spring-kotlin-coroutine` are declared as optional. You should declare them as 
@@ -355,15 +354,14 @@ details:
 > | Feature                                                                                                                                | Dependency                                                |
 > |----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
 > | Web methods                                                                                                                            | `org.springframework:spring-webmvc:5.0.9.RELEASE`         |
-> | Rx1 [`Scheduler`](http://reactivex.io/RxJava/javadoc/rx/Scheduler.html) in `@Coroutine`                                                | `org.jetbrains.kotlinx:kotlinx-coroutines-rx1:0.26.0`     |
-> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:0.26.0`     |
-> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:0.26.0` |
+> | Rx2 [`Scheduler`](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Scheduler.html) in `@Coroutine`                                  | `org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.2.1`      |
+> | Reactor [`Scheduler`](https://projectreactor.io/docs/core/release/api/reactor/core/scheduler/Scheduler.html) in `@Coroutine`           | `org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.2.1`  |
 
 And make sure that you use the right Kotlin version:
 
 ```groovy
 buildscript {
-    ext.kotlin_version = '1.2.70'
+    ext.kotlin_version = '1.3.30'
 }
 ```
 
