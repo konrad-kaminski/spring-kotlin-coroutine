@@ -16,8 +16,8 @@
 
 package org.springframework.data.mongodb.repository.support
 
-import kotlinx.coroutines.experimental.reactive.awaitFirstOrDefault
-import kotlinx.coroutines.experimental.reactive.awaitSingle
+import kotlinx.coroutines.reactive.awaitFirstOrDefault
+import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.data.mongodb.core.CoroutineMongoOperations
 import org.springframework.data.mongodb.core.CoroutineMongoTemplate
 import org.springframework.data.mongodb.repository.CoroutineMongoRepository

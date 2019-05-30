@@ -16,9 +16,9 @@
 
 package org.springframework.web.server
 
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.reactor.mono
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.reactor.mono
 import reactor.core.publisher.Mono
 
 interface CoroutineWebFilter: WebFilter {

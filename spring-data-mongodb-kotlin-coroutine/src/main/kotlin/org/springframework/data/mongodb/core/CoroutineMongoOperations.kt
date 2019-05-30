@@ -20,7 +20,7 @@ import com.mongodb.ReadPreference
 import com.mongodb.client.result.DeleteResult
 import com.mongodb.client.result.UpdateResult
 import com.mongodb.coroutines.client.CoroutineMongoCollection
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.channels.ReceiveChannel
 import org.bson.Document
 import org.reactivestreams.Subscription
 import org.springframework.data.geo.GeoResult

@@ -16,15 +16,15 @@
 
 package org.springframework.data.mongodb.repository.query
 
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.EntityInstantiators
 import org.springframework.data.mongodb.core.CoroutineMongoOperations
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.repository.query.ParameterAccessor
 import org.springframework.data.repository.query.RepositoryQuery
-import org.springframework.kotlin.experimental.coroutine.util.executeSuspend
-import kotlin.coroutines.experimental.Continuation
+import org.springframework.kotlin.coroutine.util.executeSuspend
+import kotlin.coroutines.Continuation
 
 abstract class AbstractCoroutineMongoQuery(
     private val method: CoroutineMongoQueryMethod,

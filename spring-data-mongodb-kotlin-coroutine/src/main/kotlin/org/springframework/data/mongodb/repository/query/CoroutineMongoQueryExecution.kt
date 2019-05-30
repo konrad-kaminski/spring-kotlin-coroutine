@@ -16,9 +16,9 @@
 
 package org.springframework.data.mongodb.repository.query
 
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.consumeEach
-import kotlinx.coroutines.experimental.reactive.openSubscription
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.reactive.openSubscription
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.EntityInstantiators
 import org.springframework.data.domain.Pageable
@@ -29,7 +29,7 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.repository.query.ResultProcessor
 import org.springframework.data.repository.util.ReactiveWrappers
 import org.springframework.data.util.TypeInformation
-import org.springframework.kotlin.experimental.coroutine.TypeMetaData
+import org.springframework.kotlin.coroutine.TypeMetaData
 import org.springframework.util.ClassUtils
 
 interface CoroutineMongoQueryExecution {

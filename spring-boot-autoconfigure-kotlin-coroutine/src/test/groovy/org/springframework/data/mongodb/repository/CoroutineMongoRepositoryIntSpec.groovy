@@ -30,8 +30,8 @@ import test.TestRepository3
 import test.TestRepository4
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE
-import static org.springframework.kotlin.experimental.coroutine.TestUtilsKt.asList
-import static org.springframework.kotlin.experimental.coroutine.TestUtilsKt.runBlocking
+import static org.springframework.kotlin.coroutine.TestUtilsKt.asList
+import static org.springframework.kotlin.coroutine.TestUtilsKt.runBlocking
 
 @SpringBootTest(classes = IntSpecConfiguration, webEnvironment = NONE)
 @EnableAutoConfiguration

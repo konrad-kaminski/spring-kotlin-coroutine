@@ -16,7 +16,7 @@
 
 package org.springframework.data.mongodb.repository.query;
 
-import kotlin.coroutines.experimental.Continuation;
+import kotlin.coroutines.Continuation;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.lang.Nullable;
