@@ -108,6 +108,6 @@ class ContextIntSpec extends Specification {
         }
 
         then:
-        thread.name == "ExecutorSingleTest"
+        thread.name =~ /^ExecutorSingleTest/
     }
 }
