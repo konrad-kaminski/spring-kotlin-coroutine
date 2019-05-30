@@ -35,6 +35,13 @@ subprojects {
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
     [compileKotlin,compileTestKotlin]*.kotlinOptions*.jvmTarget = "1.8"
 
+    test {
+        testLogging {
+            events "failed"
+            exceptionFormat "full"
+        }
+    }
+
     repositories {
         jcenter()
         mavenCentral()
