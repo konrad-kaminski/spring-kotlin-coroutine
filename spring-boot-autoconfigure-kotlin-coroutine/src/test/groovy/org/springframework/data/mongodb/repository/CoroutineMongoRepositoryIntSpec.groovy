@@ -176,4 +176,27 @@ class CoroutineMongoRepositoryIntSpec extends Specification {
         ENTITY_ID        | true
         "abcd"           | false
     }
+
+    def "should delete entities by collection"() {
+        given:
+        def entity2 = new TestEntity()
+        entity2.id = "id-2"
+        def entity3 = new TestEntity()
+        entity3.id = "id-3"
+        runBlocking { cont ->
+            testRepository.saveAll([entity2, entity3], cont)
+        }
+
+        when:
+        runBlocking { cont ->
+            testRepository.deleteAll([entity3], cont)
+        }
+
+        then:
+        def result = runBlocking { cont ->
+            testRepository.findAll(cont)
+        }
+
+        result.size() ==  2
+    }
 }
