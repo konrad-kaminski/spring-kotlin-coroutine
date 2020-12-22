@@ -45,9 +45,13 @@ internal open class CoroutineSchedulerConfiguration: ImportAware {
 
     @Bean(COROUTINE_SCHEDULED_ANNOTATION_PROCESSOR_BEAN_NAME)
     open fun coroutineScheduledAnnotationBeanPostProcessor(
-            contextResolver: GlobalCoroutineContextResolver
+            contextResolver: GlobalCoroutineContextResolver,
+            schedulingPolicyProvider: SchedulingPolicyProvider
     ): ScheduledAnnotationBeanPostProcessor =
-        CoroutineScheduledAnnotationBeanPostProcessor(schedulerDispatcher, contextResolver, DefaultSchedulingPolicyProvider())
+        CoroutineScheduledAnnotationBeanPostProcessor(schedulerDispatcher, contextResolver, schedulingPolicyProvider)
+
+    @Bean
+    open fun defaultSchedulingPolicyProvider() = DefaultSchedulingPolicyProvider()
 }
 
 @Configuration

@@ -19,6 +19,7 @@ package org.springframework.kotlin.coroutine.scheduler
 import kotlinx.coroutines.delay
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 import org.springframework.kotlin.coroutine.EnableCoroutine
 import org.springframework.kotlin.coroutine.context.DEFAULT_DISPATCHER
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -85,6 +86,15 @@ open class FixedDelayWithInitialDelayConfiguration : DefaultDispatcherConfigurat
 @Configuration
 open class FixedDelayWithInitialDelayStringConfiguration : DefaultDispatcherConfiguration() {
     @Scheduled(initialDelayString = "1000", fixedDelay = 100)
+    suspend open fun task() {
+        counter().incrementAndGet()
+    }
+}
+
+@Configuration
+@PropertySource("classpath:/org/springframework/kotlin/coroutine/scheduler/app.yml")
+open class FixedDelayStringWithInitialDelayStringConfiguration : DefaultDispatcherConfiguration() {
+    @Scheduled(initialDelayString = "\${initialDelay}", fixedDelayString = "\${fixedDelay}")
     suspend open fun task() {
         counter().incrementAndGet()
     }

@@ -63,7 +63,8 @@ class CoroutineSchedulerSpec extends Specification {
         counter <= 10
 
         where:
-        configuration << [FixedDelayWithInitialDelayConfiguration, FixedDelayWithInitialDelayStringConfiguration]
+        configuration << [FixedDelayWithInitialDelayConfiguration, FixedDelayWithInitialDelayStringConfiguration,
+                          FixedDelayStringWithInitialDelayStringConfiguration]
     }
 
     @Unroll
