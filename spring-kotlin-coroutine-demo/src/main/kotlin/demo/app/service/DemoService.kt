@@ -27,16 +27,16 @@ import org.springframework.stereotype.Component
 @Component
 open class DemoService {
     @Scheduled(cron = "0 0 0 1 1 *")
-    suspend open fun newYear() {
+    open suspend fun newYear() {
         logger.info("Happy New Year!")
     }
 
     @Scheduled(fixedRate = 60_000)
-    suspend open fun everyMinute() {
+    open suspend fun everyMinute() {
         logger.info("I'm still alive...")
     }
 
-    suspend open fun delayedReturn(s: String, delayMillis: Long): String {
+    open suspend fun delayedReturn(s: String, delayMillis: Long): String {
         logger.info ("Before delay in [delayedReturn]")
         delay(delayMillis)
         logger.info ("After delay in [delayedReturn]")
@@ -45,14 +45,14 @@ open class DemoService {
     }
 
     @Coroutine(DEFAULT_DISPATCHER)
-    suspend open fun defaultDispatcherReturn(s: String): String {
+    open suspend fun defaultDispatcherReturn(s: String): String {
         logger.info ("In [defaultDispatcher]")
 
         return s
     }
 
     @Cacheable("cache1")
-    suspend open fun cachedDelayedReturn(s: String, delayMillis: Long): String {
+    open suspend fun cachedDelayedReturn(s: String, delayMillis: Long): String {
         logger.info ("Before delay in [cachedDelayedReturn]")
         delay(delayMillis)
         logger.info ("After delay in [cachedDelayedReturn]")
@@ -62,7 +62,7 @@ open class DemoService {
 
     @Cacheable("cache2")
     @Coroutine(DEFAULT_DISPATCHER)
-    suspend open fun cachedDefaultDispatcherDelayedReturn(s: String, delayMillis: Long): String {
+    open suspend fun cachedDefaultDispatcherDelayedReturn(s: String, delayMillis: Long): String {
         logger.info ("Before delay in [cachedDefaultDispatcherDelayedReturn]")
         delay(delayMillis)
         logger.info ("After delay in [cachedDefaultDispatcherDelayedReturn]")
