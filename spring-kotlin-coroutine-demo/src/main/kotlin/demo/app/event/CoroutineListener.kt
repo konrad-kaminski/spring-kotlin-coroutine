@@ -26,13 +26,13 @@ import org.springframework.stereotype.Component
 @Component
 open class CoroutineListener {
     @EventListener
-    suspend open fun handle(event: SimpleEvent) {
+    open suspend fun handle(event: SimpleEvent) {
         delay(10)
         logger.info ("Received event $event")
     }
 
     @EventListener
-    suspend open fun handleDemoEvent(event: DemoApplicationEvent) {
+    open suspend fun handleDemoEvent(event: DemoApplicationEvent) {
         delay(10)
         logger.info ("Received demoEvent $event")
     }
